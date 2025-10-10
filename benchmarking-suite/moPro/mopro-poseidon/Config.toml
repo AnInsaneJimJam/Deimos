@@ -1,0 +1,7 @@
+build_mode = "debug"
+target_adapters = ["circom"]
+target_platforms = ["android"]
+android = ["x86_64-linux-android"]
+auto_update = false
+
+[update]

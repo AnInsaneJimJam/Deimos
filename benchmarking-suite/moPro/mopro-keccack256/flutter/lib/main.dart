@@ -158,7 +158,7 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
 }''';
                         proofResult =
                             await _moproFlutterPlugin.generateCircomProof(
-                                "assets/circom.zkey", inputs, ProofLib.arkworks);  // Using Keccak zkey
+                                "assets/keccak_circom.zkey", inputs, ProofLib.arkworks);  // Using Keccak zkey
                       } on Exception catch (e) {
                         print("Error: $e");
                         proofResult = null;
@@ -194,7 +194,7 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
                       try {
                         var proofResult = _circomProofResult;
                         valid = await _moproFlutterPlugin.verifyCircomProof(
-                            "assets/circom.zkey", proofResult!, ProofLib.arkworks); // Using Keccak zkey
+                            "assets/keccak_circom.zkey", proofResult!, ProofLib.arkworks); // Using Keccak zkey
                       } on Exception catch (e) {
                         print("Error: $e");
                         valid = false;

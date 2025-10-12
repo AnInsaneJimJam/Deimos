@@ -2,7 +2,7 @@ import Foundation
 import mopro_keccack256
 
 do {
-    let zkeyPath = "../../../test-vectors/circom/circom.zkey"
+    let zkeyPath = "../../../test-vectors/circom/keccak_circom.zkey"
 
     // Keccak input: "Hello World! This is a test msg." as byte array
     let input_str = """

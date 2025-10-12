@@ -1,7 +1,7 @@
 import uniffi.mopro_keccack256.*
 
 try {
-    var zkeyPath = "./test-vectors/circom/circom.zkey"
+    var zkeyPath = "./test-vectors/circom/keccak_circom.zkey"
 
     val input_str: String = """{
     "in": [

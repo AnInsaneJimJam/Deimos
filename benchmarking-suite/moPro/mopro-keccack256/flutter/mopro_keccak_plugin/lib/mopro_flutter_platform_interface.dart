@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 
-import 'package:mopro_flutter/mopro_types.dart';
+import 'package:mopro_keccak/mopro_types.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 import 'mopro_flutter_method_channel.dart';

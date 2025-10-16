@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'package:mopro_flutter/mopro_flutter.dart';
-import 'package:mopro_flutter/mopro_types.dart';
+import 'package:mopro_keccak/mopro_flutter.dart';
+import 'package:mopro_keccak/mopro_types.dart';
 
 void main() {
   runApp(const MyApp());

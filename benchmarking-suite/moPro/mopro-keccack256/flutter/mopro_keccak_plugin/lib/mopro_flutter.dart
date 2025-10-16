@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/services.dart';
-import 'package:mopro_flutter/mopro_types.dart';
+import 'package:mopro_keccak/mopro_types.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'mopro_flutter_platform_interface.dart';

@@ -21,21 +21,56 @@ pub use error::MoproError;
 #[macro_use]
 mod circom;
 
-rust_witness::witness!(multiplier2);
+rust_witness::witness!(circom);
 
 set_circom_circuits! {
-    ("multiplier2_final.zkey", circom_prover::witness::WitnessFn::RustWitness(multiplier2_witness)),
+    ("circom.zkey", circom_prover::witness::WitnessFn::RustWitness(circom_witness)),
 }
 
 #[cfg(test)]
 mod circom_tests {
     use crate::circom::{generate_circom_proof, verify_circom_proof, ProofLib};
 
-    const ZKEY_PATH: &str = "./test-vectors/circom/multiplier2_final.zkey";
+    const ZKEY_PATH: &str = "./test-vectors/circom/circom.zkey";
 
     #[test]
-    fn test_multiplier2() {
-        let circuit_inputs = "{\"a\": 2, \"b\": 3}".to_string();
+    fn test_circom() {
+        let circuit_inputs = r#"{
+    "in": [
+        "72",
+        "101",
+        "108",
+        "108",
+        "111",
+        "32",
+        "87",
+        "111",
+        "114",
+        "108",
+        "100",
+        "33",
+        "32",
+        "84",
+        "104",
+        "105",
+        "115",
+        "32",
+        "105",
+        "115",
+        "32",
+        "97",
+        "32",
+        "116",
+        "101",
+        "115",
+        "116",
+        "32",
+        "109",
+        "115",
+        "103",
+        "46"
+    ]
+    }"#.to_string();
         let result =
             generate_circom_proof(ZKEY_PATH.to_string(), circuit_inputs, ProofLib::Arkworks);
         assert!(result.is_ok());
@@ -43,6 +78,7 @@ mod circom_tests {
         assert!(verify_circom_proof(ZKEY_PATH.to_string(), proof, ProofLib::Arkworks).is_ok());
     }
 }
+
 
 
 // HALO2_TEMPLATE

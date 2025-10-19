@@ -21,17 +21,17 @@ pub use error::MoproError;
 #[macro_use]
 mod circom;
 
-rust_witness::witness!(circom);
+rust_witness::witness!(keccak);
 
 set_circom_circuits! {
-    ("circom.zkey", circom_prover::witness::WitnessFn::RustWitness(circom_witness)),
+    ("keccak.zkey", circom_prover::witness::WitnessFn::RustWitness(keccak_witness)),
 }
 
 #[cfg(test)]
 mod circom_tests {
     use crate::circom::{generate_circom_proof, verify_circom_proof, ProofLib};
 
-    const ZKEY_PATH: &str = "./test-vectors/circom/circom.zkey";
+    const ZKEY_PATH: &str = "./test-vectors/circom/keccak.zkey";
 
     #[test]
     fn test_circom() {

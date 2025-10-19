@@ -16,11 +16,14 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
-  CircomProofResult? _circomProofResult;
+  // Separate state for Keccak256 and SHA256 circuits
+  CircomProofResult? _keccakProofResult;
+  CircomProofResult? _sha256ProofResult;
   Halo2ProofResult? _halo2ProofResult;
   Uint8List? _noirProofResult;
   Uint8List? _noirVerificationKey;
-  bool? _circomValid;
+  bool? _keccakValid;
+  bool? _sha256Valid;
   bool? _halo2Valid;
   bool? _noirValid;
   final _moproFlutterPlugin = MoproFlutter();
@@ -64,26 +67,18 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
               padding: const EdgeInsets.all(8.0),
               child: Text(_error.toString()),
             ),
+          
+          // Keccak256 Section
           Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextFormField(
-              controller: _controllerA,
-              decoration: const InputDecoration(
-                labelText: "Public input `a`",
-                hintText: "For example, 5",
+            padding: const EdgeInsets.all(16.0),
+            child: Text(
+              'Keccak256 Proof Generation\nUsing hardcoded input: "Hello World! This is a test msg."',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: Colors.blue[800],
               ),
-              keyboardType: TextInputType.number,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextFormField(
-              controller: _controllerB,
-              decoration: const InputDecoration(
-                labelText: "Private input `b`",
-                hintText: "For example, 3",
-              ),
-              keyboardType: TextInputType.number,
             ),
           ),
           Row(
@@ -93,9 +88,7 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
                 padding: const EdgeInsets.all(8.0),
                 child: OutlinedButton(
                     onPressed: () async {
-                      if (_controllerA.text.isEmpty ||
-                          _controllerB.text.isEmpty ||
-                          isProving) {
+                      if (isProving) {
                         return;
                       }
                       setState(() {
@@ -106,11 +99,46 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
                       FocusManager.instance.primaryFocus?.unfocus();
                       CircomProofResult? proofResult;
                       try {
-                        var inputs =
-                            '{"a":["${_controllerA.text}"],"b":["${_controllerB.text}"]}';
+                        // Hardcoded Keccak input: "Hello World! This is a test msg." as byte array
+                        var inputs = '''{
+    "in": [
+        "72",
+        "101",
+        "108",
+        "108",
+        "111",
+        "32",
+        "87",
+        "111",
+        "114",
+        "108",
+        "100",
+        "33",
+        "32",
+        "84",
+        "104",
+        "105",
+        "115",
+        "32",
+        "105",
+        "115",
+        "32",
+        "97",
+        "32",
+        "116",
+        "101",
+        "115",
+        "116",
+        "32",
+        "109",
+        "115",
+        "103",
+        "46"
+    ]
+}''';
                         proofResult =
                             await _moproFlutterPlugin.generateCircomProof(
-                                "assets/multiplier2_final.zkey", inputs, ProofLib.arkworks);  // DO NOT change the proofLib if you don't build for rapidsnark
+                                "assets/keccak.zkey", inputs, ProofLib.arkworks);  // Using Keccak zkey
                       } on Exception catch (e) {
                         print("Error: $e");
                         proofResult = null;
@@ -123,18 +151,16 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
 
                       setState(() {
                         isProving = false;
-                        _circomProofResult = proofResult;
+                        _keccakProofResult = proofResult;
                       });
                     },
-                    child: const Text("Generate Proof")),
+                    child: const Text("Prove Keccak")),
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: OutlinedButton(
                     onPressed: () async {
-                      if (_controllerA.text.isEmpty ||
-                          _controllerB.text.isEmpty ||
-                          isProving) {
+                      if (isProving) {
                         return;
                       }
                       setState(() {
@@ -145,9 +171,9 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
                       FocusManager.instance.primaryFocus?.unfocus();
                       bool? valid;
                       try {
-                        var proofResult = _circomProofResult;
+                        var proofResult = _keccakProofResult;
                         valid = await _moproFlutterPlugin.verifyCircomProof(
-                            "assets/multiplier2_final.zkey", proofResult!, ProofLib.arkworks); // DO NOT change the proofLib if you don't build for rapidsnark
+                            "assets/keccak.zkey", proofResult!, ProofLib.arkworks); // Using Keccak zkey
                       } on Exception catch (e) {
                         print("Error: $e");
                         valid = false;
@@ -166,28 +192,187 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
 
                       setState(() {
                         isProving = false;
-                        _circomValid = valid;
+                        _keccakValid = valid;
                       });
                     },
-                    child: const Text("Verify Proof")),
+                    child: const Text("Verify Keccak")),
               ),
             ],
           ),
-          if (_circomProofResult != null)
+          if (_keccakProofResult != null)
             Column(
               children: [
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Text('Proof is valid: ${_circomValid ?? false}'),
+                  child: Text('Keccak Proof is valid: ${_keccakValid ?? false}'),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child:
-                      Text('Proof inputs: ${_circomProofResult?.inputs ?? ""}'),
+                      Text('Keccak Proof inputs: ${_keccakProofResult?.inputs ?? ""}'),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Text('Proof: ${_circomProofResult?.proof ?? ""}'),
+                  child: Text('Keccak Proof: ${_keccakProofResult?.proof ?? ""}'),
+                ),
+              ],
+            ),
+          
+          // Visual divider
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 40.0),
+            child: Divider(
+              thickness: 2,
+              color: Colors.grey[400],
+            ),
+          ),
+          
+          // SHA256 Section
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text(
+              'SHA256 Proof Generation\nUsing hardcoded input: "Hello World! This is a test msg."',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: Colors.green[800],
+              ),
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: OutlinedButton(
+                    onPressed: () async {
+                      if (isProving) {
+                        return;
+                      }
+                      setState(() {
+                        _error = null;
+                        isProving = true;
+                      });
+
+                      FocusManager.instance.primaryFocus?.unfocus();
+                      CircomProofResult? proofResult;
+                      try {
+                        // Hardcoded SHA256 input: "Hello World! This is a test msg." as byte array
+                        var inputs = '''{
+    "in": [
+        "40",
+        "202",
+        "21",
+        "44",
+        "148",
+        "225",
+        "219",
+        "127",
+        "125",
+        "137",
+        "45",
+        "39",
+        "181",
+        "182",
+        "116",
+        "221",
+        "65",
+        "64",
+        "40",
+        "99",
+        "92",
+        "60",
+        "3",
+        "33",
+        "40",
+        "159",
+        "154",
+        "251",
+        "14",
+        "238",
+        "144",
+        "106"
+    ]
+}''';
+                        proofResult =
+                            await _moproFlutterPlugin.generateCircomProof(
+                                "assets/sha256.zkey", inputs, ProofLib.arkworks);  // Using SHA256 zkey
+                      } on Exception catch (e) {
+                        print("Error: $e");
+                        proofResult = null;
+                        setState(() {
+                          _error = e;
+                        });
+                      }
+
+                      if (!mounted) return;
+
+                      setState(() {
+                        isProving = false;
+                        _sha256ProofResult = proofResult;
+                      });
+                    },
+                    child: const Text("Prove SHA256")),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: OutlinedButton(
+                    onPressed: () async {
+                      if (isProving) {
+                        return;
+                      }
+                      setState(() {
+                        _error = null;
+                        isProving = true;
+                      });
+
+                      FocusManager.instance.primaryFocus?.unfocus();
+                      bool? valid;
+                      try {
+                        var proofResult = _sha256ProofResult;
+                        valid = await _moproFlutterPlugin.verifyCircomProof(
+                            "assets/sha256.zkey", proofResult!, ProofLib.arkworks); // Using SHA256 zkey
+                      } on Exception catch (e) {
+                        print("Error: $e");
+                        valid = false;
+                        setState(() {
+                          _error = e;
+                        });
+                      } on TypeError catch (e) {
+                        print("Error: $e");
+                        valid = false;
+                        setState(() {
+                          _error = Exception(e.toString());
+                        });
+                      }
+
+                      if (!mounted) return;
+
+                      setState(() {
+                        isProving = false;
+                        _sha256Valid = valid;
+                      });
+                    },
+                    child: const Text("Verify SHA256")),
+              ),
+            ],
+          ),
+          if (_sha256ProofResult != null)
+            Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text('SHA256 Proof is valid: ${_sha256Valid ?? false}'),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child:
+                      Text('SHA256 Proof inputs: ${_sha256ProofResult?.inputs ?? ""}'),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text('SHA256 Proof: ${_sha256ProofResult?.proof ?? ""}'),
                 ),
               ],
             ),

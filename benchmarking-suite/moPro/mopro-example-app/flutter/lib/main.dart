@@ -6,7 +6,16 @@ import 'dart:convert';
 import 'package:mopro_flutter/mopro_flutter.dart';
 import 'package:mopro_flutter/mopro_types.dart';
 
-// Design constants based on design.json
+// Input data structure
+class InputData {
+  final String name;
+  final String description;
+  final List<String> values;
+  
+  InputData({required this.name, required this.description, required this.values});
+}
+
+
 class AppTheme {
   static const Color primary = Color(0xFF5B56E6);
   static const Color secondary = Color(0xFF1E40AF);
@@ -57,19 +66,31 @@ class _MainSelectionPageState extends State<MainSelectionPage> {
   // Selection state
   String? _selectedFramework;
   String? _selectedAlgorithm;
-  final TextEditingController _customInputController = TextEditingController();
+  String? _selectedInput;
   bool _isLoading = false;
+  
+  final List<InputData> _availableInputs = [
+    InputData(
+      name: "Input 1",
+      description: "Standard test input - Hello World! This is a test msg.",
+      values: ["72", "101", "108", "108", "111", "32", "87", "111", "114", "108", "100", "33", "32", "84", "104", "105", "115", "32", "105", "115", "32", "97", "32", "116", "101", "115", "116", "32", "109", "115", "103", "46"]
+    ),
+    InputData(
+      name: "Input 2",
+      description: "Alternative test input",
+      values: ["40", "202", "21", "44", "148", "225", "219", "127", "125", "137", "45", "39", "181", "182", "116", "221", "65", "64", "40", "99", "92", "60", "3", "33", "40", "159", "154", "251", "14", "238", "144", "106"]
+    ),
+    InputData(
+      name: "Input 3",
+      description: "Extended test input - Hello everybody JimJam this side",
+      values: ["72", "101", "108", "108", "111", "32", "101", "118", "101", "114", "121", "98", "111", "100", "121", "32", "74", "105", "109", "74", "97", "109", "32", "116", "104", "105", "115", "32", "115", "105", "100", "101"]
+    ),
+  ];
 
   @override
   void initState() {
     super.initState();
-    _customInputController.text = "Hello World! This is a test msg.";
-  }
-
-  @override
-  void dispose() {
-    _customInputController.dispose();
-    super.dispose();
+    _selectedInput = _availableInputs.first.name; // Default to first input
   }
 
   @override
@@ -213,7 +234,7 @@ class _MainSelectionPageState extends State<MainSelectionPage> {
       onTap: () {
                         setState(() {
           _selectedFramework = value;
-          _selectedAlgorithm = null; // Reset algorithm when framework changes
+          _selectedAlgorithm = null; 
                       });
                     },
       child: Container(
@@ -268,38 +289,7 @@ class _MainSelectionPageState extends State<MainSelectionPage> {
             ),
           ),
           const SizedBox(height: 16),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: algorithms.map((algorithm) {
-              final isSelected = _selectedAlgorithm == algorithm;
-              return GestureDetector(
-                onTap: () {
-                      setState(() {
-                    _selectedAlgorithm = algorithm;
-                      });
-                    },
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  decoration: BoxDecoration(
-                    color: isSelected ? AppTheme.primary : AppTheme.surface,
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                      color: isSelected ? AppTheme.primary : AppTheme.border,
-                    ),
-                  ),
-                  child: Text(
-                    algorithm,
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: isSelected ? Colors.white : AppTheme.text,
-                    ),
-                  ),
-                ),
-              );
-            }).toList(),
-                ),
+          _buildAlgorithmGrid(algorithms),
               ],
             ),
     );
@@ -307,41 +297,188 @@ class _MainSelectionPageState extends State<MainSelectionPage> {
 
   Widget _buildCustomInput() {
     return _buildCard(
-      title: 'Custom Input',
+      title: 'Select Input',
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            'Enter text to hash',
+            'Choose a predefined input for benchmarking',
             style: TextStyle(
               fontSize: 14,
               color: AppTheme.textSecondary,
             ),
           ),
           const SizedBox(height: 12),
-          TextField(
-            controller: _customInputController,
-            decoration: InputDecoration(
-              hintText: 'Enter your custom text here...',
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: const BorderSide(color: AppTheme.border),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: const BorderSide(color: AppTheme.primary, width: 2),
-              ),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+            decoration: BoxDecoration(
+              border: Border.all(color: AppTheme.border),
+              borderRadius: BorderRadius.circular(12),
             ),
-            maxLines: 3,
+            child: DropdownButtonHideUnderline(
+              child: DropdownButton<String>(
+                value: _selectedInput,
+                hint: const Text('Select an input'),
+                isExpanded: true,
+                items: _availableInputs.map((InputData input) {
+                  return DropdownMenuItem<String>(
+                    value: input.name,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          input.name,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: AppTheme.text,
+                          ),
+                        ),
+                        Text(
+                          input.description,
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: AppTheme.textSecondary,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
+                  );
+                }).toList(),
+                onChanged: (String? newValue) {
+                  setState(() {
+                    _selectedInput = newValue;
+                  });
+                },
+              ),
+            ),
           ),
+          if (_selectedInput != null) ...[
+            const SizedBox(height: 12),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: AppTheme.background,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: AppTheme.border),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Selected: ${_selectedInput}',
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: AppTheme.text,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    _getSelectedInputDescription(),
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: AppTheme.textSecondary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ],
       ),
     );
   }
 
+  Widget _buildAlgorithmGrid(List<String> algorithms) {
+    List<Widget> rows = [];
+    
+    for (int i = 0; i < algorithms.length; i += 3) {
+      List<Widget> rowChildren = [];
+      
+      for (int j = 0; j < 3 && (i + j) < algorithms.length; j++) {
+        final algorithm = algorithms[i + j];
+        rowChildren.add(
+          Expanded(
+            child: _buildAlgorithmButton(algorithm),
+          ),
+        );
+        
+        // Add spacing between buttons (except after the last one)
+        if (j < 2 && (i + j + 1) < algorithms.length) {
+          rowChildren.add(const SizedBox(width: 12));
+        }
+      }
+      
+      while (rowChildren.length < 5) { // 3 buttons + 2 spacers = 5 widgets
+        rowChildren.add(const Expanded(child: SizedBox()));
+      }
+      
+      rows.add(
+        Row(children: rowChildren),
+      );
+      
+      // Add spacing between rows
+      if (i + 3 < algorithms.length) {
+        rows.add(const SizedBox(height: 12));
+      }
+    }
+    
+    return Column(children: rows);
+  }
+
+  Widget _buildAlgorithmButton(String algorithm) {
+    final isSelected = _selectedAlgorithm == algorithm;
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _selectedAlgorithm = algorithm;
+        });
+      },
+      child: SizedBox(
+        height: 56,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          decoration: BoxDecoration(
+            color: isSelected ? AppTheme.primary : AppTheme.surface,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: isSelected ? AppTheme.primary : AppTheme.border,
+              width: 2,
+            ),
+          ),
+          child: Center(
+            child: Text(
+              algorithm,
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: isSelected ? Colors.white : AppTheme.text,
+              ),
+              textAlign: TextAlign.center,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              softWrap: false,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  String _getSelectedInputDescription() {
+    if (_selectedInput == null) return '';
+    final input = _availableInputs.firstWhere((input) => input.name == _selectedInput);
+    return input.description;
+  }
+
   Widget _buildRunButton() {
-    final canRun = _selectedFramework != null && _selectedAlgorithm != null;
+    final canRun = _selectedFramework != null && _selectedAlgorithm != null && _selectedInput != null;
     
     return SizedBox(
       width: double.infinity,
@@ -375,7 +512,7 @@ class _MainSelectionPageState extends State<MainSelectionPage> {
             : Text(
                 canRun 
                     ? 'Run ${_selectedFramework!.toUpperCase()} - $_selectedAlgorithm'
-                    : 'Select Framework & Algorithm',
+                    : 'Select Framework, Algorithm & Input',
                 style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
@@ -431,14 +568,11 @@ class _MainSelectionPageState extends State<MainSelectionPage> {
   }
 
   void _runBenchmark() async {
-    if (_selectedFramework == null || _selectedAlgorithm == null) return;
+    if (_selectedFramework == null || _selectedAlgorithm == null || _selectedInput == null) return;
 
-                      setState(() {
+    setState(() {
       _isLoading = true;
     });
-
-    // Simulate loading time
-    await Future.delayed(const Duration(seconds: 2));
 
     if (mounted) {
       Navigator.push(
@@ -447,13 +581,14 @@ class _MainSelectionPageState extends State<MainSelectionPage> {
           builder: (context) => ProofResultPage(
             framework: _selectedFramework!,
             algorithm: _selectedAlgorithm!,
-            customInput: _customInputController.text,
+            selectedInputName: _selectedInput!,
+            selectedInputData: _availableInputs.firstWhere((input) => input.name == _selectedInput!),
           ),
         ),
       );
     }
 
-                        setState(() {
+    setState(() {
       _isLoading = false;
     });
   }
@@ -463,13 +598,15 @@ class _MainSelectionPageState extends State<MainSelectionPage> {
 class ProofResultPage extends StatefulWidget {
   final String framework;
   final String algorithm;
-  final String customInput;
+  final String selectedInputName;
+  final InputData selectedInputData;
 
   const ProofResultPage({
     super.key,
     required this.framework,
     required this.algorithm,
-    required this.customInput,
+    required this.selectedInputName,
+    required this.selectedInputData,
   });
 
   @override
@@ -558,32 +695,46 @@ class _ProofResultPageState extends State<ProofResultPage> {
             ),
           ),
           const SizedBox(height: 12),
-                const Text(
-            'Custom Input:',
-                  style: TextStyle(
+          const Text(
+            'Selected Input:',
+            style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w500,
               color: AppTheme.textSecondary,
-                  ),
-                ),
+            ),
+          ),
           const SizedBox(height: 8),
-                Container(
+          Container(
             width: double.infinity,
             padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
+            decoration: BoxDecoration(
               color: AppTheme.background,
-                    borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(8),
               border: Border.all(color: AppTheme.border),
             ),
-            child: Text(
-              '"${widget.customInput}"',
-              style: const TextStyle(
-                fontSize: 14,
-                fontStyle: FontStyle.italic,
-                color: AppTheme.text,
-              ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  widget.selectedInputName,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: AppTheme.text,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  widget.selectedInputData.description,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontStyle: FontStyle.italic,
+                    color: AppTheme.textSecondary,
+                  ),
+                ),
+              ],
             ),
-            ),
+          ),
         ],
       ),
     );
@@ -713,10 +864,8 @@ class _ProofResultPageState extends State<ProofResultPage> {
             ),
           ),
           const SizedBox(height: 16),
-          // Show benchmarking results
           _buildBenchmarkingSection(),
           const SizedBox(height: 16),
-          // Show additional proof details based on framework
           _buildProofDetails(),
         ],
       ),
@@ -962,8 +1111,9 @@ class _ProofResultPageState extends State<ProofResultPage> {
   }
 
   Future<String> _generateCircomProof(MoproFlutter plugin) async {
-    // Convert user input to proper format
-    final inputs = _textToByteArrayJson(widget.customInput);
+    // Get input data based on algorithm (special case for Poseidon)
+    final inputData = _getInputDataForAlgorithm();
+    final inputs = _inputDataToByteArrayJson(inputData);
     
     // Get the appropriate zkey path based on algorithm
     final zkeyPath = _getZkeyPath();
@@ -978,27 +1128,25 @@ class _ProofResultPageState extends State<ProofResultPage> {
       ProofLib.arkworks
     );
     
-    // Stop timing and store
     stopwatch.stop();
     
     if (proofResult == null) {
       throw Exception('Failed to generate Circom proof');
     }
     
-    // Store the proof result for verification
     setState(() {
       _circomProofResult = proofResult;
       _proofGenerationTime = stopwatch.elapsed;
     });
     
-    // Format the actual proof data
     return _formatCircomProofOutput(proofResult);
   }
 
   Future<String> _generateHalo2Proof(MoproFlutter plugin) async {
-    // Convert user input to Halo2 format
+    // Convert selected input to Halo2 format
+    final inputData = _getInputDataForAlgorithm();
     final inputs = {
-      "out": [widget.customInput]
+      "out": [inputData.join(" ")]
     };
     
     // Start timing
@@ -1029,8 +1177,9 @@ class _ProofResultPageState extends State<ProofResultPage> {
   }
 
   Future<String> _generateNoirProof(MoproFlutter plugin) async {
-    // Convert custom input to Noir format (32-byte padded byte array)
-    final List<String> customInputs = _textToNoirInput(widget.customInput);
+    // Get input data and convert to Noir format
+    final inputData = _getInputDataForAlgorithm();
+    final List<String> noirInputs = _inputDataToNoirInput(inputData);
     
     // Get the appropriate circuit path and settings
     final (circuitPath, srsPath, onChain, vk) = await _getNoirSettings();
@@ -1038,11 +1187,11 @@ class _ProofResultPageState extends State<ProofResultPage> {
     // Start timing
     final stopwatch = Stopwatch()..start();
     
-    // Generate proof using actual MoPro with custom inputs
+    // Generate proof using actual MoPro with selected inputs
     final proof = await plugin.generateNoirProof(
       circuitPath,
       srsPath,
-      customInputs,
+      noirInputs,
       onChain,
       vk,
       false // lowMemoryMode
@@ -1220,7 +1369,7 @@ Public Signals: ${inputs.toString()}
 
 Framework: ${widget.framework}
 Algorithm: ${widget.algorithm}
-Input: "${widget.customInput}"
+Input: ${widget.selectedInputName} - ${widget.selectedInputData.description}
 Timestamp: ${DateTime.now().millisecondsSinceEpoch}
 ''';
   }
@@ -1234,7 +1383,7 @@ ${widget.algorithm} Proof: Halo2ProofResult(
 
 Framework: ${widget.framework}
 Algorithm: ${widget.algorithm}
-Input: "${widget.customInput}"
+Input: ${widget.selectedInputName} - ${widget.selectedInputData.description}
 Timestamp: ${DateTime.now().millisecondsSinceEpoch}
 ''';
   }
@@ -1248,7 +1397,7 @@ ${widget.algorithm} Proof: NoirProof(
 
 Framework: ${widget.framework}
 Algorithm: ${widget.algorithm}
-Input: "${widget.customInput}"
+Input: ${widget.selectedInputName} - ${widget.selectedInputData.description}
 Timestamp: ${DateTime.now().millisecondsSinceEpoch}
 ''';
   }
@@ -1257,25 +1406,36 @@ Timestamp: ${DateTime.now().millisecondsSinceEpoch}
 
 
 
-  String _textToByteArrayJson(String text) {
-    // Convert text to 32-byte padded UTF-8 byte array for Circom
-    final bytes = utf8.encode(text);
-    final paddedBytes = List<int>.filled(32, 0);
-    for (int i = 0; i < bytes.length && i < 32; i++) {
-      paddedBytes[i] = bytes[i];
+  List<String> _getInputDataForAlgorithm() {
+    // Get the selected input data
+    List<String> inputData = widget.selectedInputData.values;
+    
+    // Special case for Poseidon: use exactly 8 bytes (as per the circuit requirement)
+    if (widget.algorithm.toLowerCase() == 'poseidon') {
+      // Take first 8 bytes, pad with zeros if needed
+      List<String> poseidonInput = inputData.take(8).toList();
+      while (poseidonInput.length < 8) {
+        poseidonInput.add('0');
+      }
+      return poseidonInput;
     }
-    return '{"in": [${paddedBytes.map((b) => '"$b"').join(', ')}]}';
+    
+    return inputData;
   }
 
+  String _inputDataToByteArrayJson(List<String> inputData) {
+    // Convert input data to JSON format for Circom
+    return '{"in": [${inputData.map((b) => '"$b"').join(', ')}]}';
+  }
 
-  List<String> _textToNoirInput(String text) {
-    // Convert text to 32-byte padded UTF-8 byte array for Noir
-    final bytes = utf8.encode(text);
-    final paddedBytes = List<int>.filled(32, 0);
-    for (int i = 0; i < bytes.length && i < 32; i++) {
-      paddedBytes[i] = bytes[i];
+  List<String> _inputDataToNoirInput(List<String> inputData) {
+    // For Noir, we need to pad to 32 bytes if necessary
+    final paddedData = List<String>.from(inputData);
+    while (paddedData.length < 32) {
+      paddedData.add('0');
     }
-    return paddedBytes.map((b) => b.toString()).toList();
+    // Take only first 32 bytes if longer
+    return paddedData.take(32).toList();
   }
 
   void _verifyProof() async {

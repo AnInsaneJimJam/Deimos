@@ -1,6 +1,6 @@
 {
     "name": "Input 1",
-    "description": "Standard test input",
+    "description": "Standard test input - Hello World! This is a test msg.",
     "in": [
         "72",
         "101",
@@ -36,3 +36,4 @@
         "46"
     ]
 }
+

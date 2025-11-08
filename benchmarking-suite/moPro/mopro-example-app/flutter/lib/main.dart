@@ -68,33 +68,93 @@ class _MainSelectionPageState extends State<MainSelectionPage> {
   String? _selectedAlgorithm;
   String? _selectedInput;
   bool _isLoading = false;
+  bool _isLoadingInputs = true;
   
-  final List<InputData> _availableInputs = [
-    InputData(
-      name: "Input 1",
-      description: "Standard test input - Hello World! This is a test msg.",
-      values: ["72", "101", "108", "108", "111", "32", "87", "111", "114", "108", "100", "33", "32", "84", "104", "105", "115", "32", "105", "115", "32", "97", "32", "116", "101", "115", "116", "32", "109", "115", "103", "46"]
-    ),
-    InputData(
-      name: "Input 2",
-      description: "Alternative test input",
-      values: ["40", "202", "21", "44", "148", "225", "219", "127", "125", "137", "45", "39", "181", "182", "116", "221", "65", "64", "40", "99", "92", "60", "3", "33", "40", "159", "154", "251", "14", "238", "144", "106"]
-    ),
-    InputData(
-      name: "Input 3",
-      description: "Extended test input - Hello everybody JimJam this side",
-      values: ["72", "101", "108", "108", "111", "32", "101", "118", "101", "114", "121", "98", "111", "100", "121", "32", "74", "105", "109", "74", "97", "109", "32", "116", "104", "105", "115", "32", "115", "105", "100", "101"]
-    ),
-  ];
+  List<InputData> _availableInputs = [];
 
   @override
   void initState() {
     super.initState();
-    _selectedInput = _availableInputs.first.name; // Default to first input
+    _loadInputs();
+  }
+
+  Future<void> _loadInputs() async {
+    try {
+      final List<InputData> loadedInputs = [];
+      
+      // Load input files
+      for (int i = 1; i <= 3; i++) {
+        try {
+          final inputData = await _loadInputFromJson('inputs/input_$i.json');
+          loadedInputs.add(inputData);
+        } catch (e) {
+          debugPrint('Error loading input_$i.json: $e');
+        }
+      }
+      
+      setState(() {
+        _availableInputs = loadedInputs;
+        _isLoadingInputs = false;
+        if (_availableInputs.isNotEmpty) {
+          _selectedInput = _availableInputs.first.name;
+        }
+      });
+    } catch (e) {
+      debugPrint('Error loading inputs: $e');
+      setState(() {
+        _isLoadingInputs = false;
+      });
+    }
+  }
+
+  Future<InputData> _loadInputFromJson(String assetPath) async {
+    try {
+      final String jsonString = await rootBundle.loadString(assetPath);
+      final Map<String, dynamic> jsonData = json.decode(jsonString);
+      
+      // Extract data from JSON
+      final String name = jsonData['name'] as String;
+      final String description = jsonData['description'] as String;
+      final List<dynamic> inArray = jsonData['in'] as List<dynamic>;
+      
+      // Convert the "in" array to List<String>
+      final List<String> values = inArray.map((e) => e.toString()).toList();
+      
+      return InputData(
+        name: name,
+        description: description,
+        values: values,
+      );
+    } catch (e) {
+      throw Exception('Failed to load input from $assetPath: $e');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    if (_isLoadingInputs) {
+      return Scaffold(
+        body: SafeArea(
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const CircularProgressIndicator(),
+                const SizedBox(height: 16),
+                Text(
+                  'Loading inputs...',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: AppTheme.textSecondary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -296,6 +356,19 @@ class _MainSelectionPageState extends State<MainSelectionPage> {
   }
 
   Widget _buildCustomInput() {
+    if (_availableInputs.isEmpty) {
+      return _buildCard(
+        title: 'Select Input',
+        child: const Text(
+          'No inputs available. Please check input files.',
+          style: TextStyle(
+            fontSize: 14,
+            color: AppTheme.textSecondary,
+          ),
+        ),
+      );
+    }
+
     return _buildCard(
       title: 'Select Input',
       child: Column(
@@ -324,28 +397,13 @@ class _MainSelectionPageState extends State<MainSelectionPage> {
                 items: _availableInputs.map((InputData input) {
                   return DropdownMenuItem<String>(
                     value: input.name,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          input.name,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: AppTheme.text,
-                          ),
-                        ),
-                        Text(
-                          input.description,
-                          style: const TextStyle(
-                            fontSize: 12,
-                            color: AppTheme.textSecondary,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
+                    child: Text(
+                      input.name,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: AppTheme.text,
+                      ),
                     ),
                   );
                 }).toList(),
@@ -386,6 +444,14 @@ class _MainSelectionPageState extends State<MainSelectionPage> {
                       color: AppTheme.textSecondary,
                     ),
                   ),
+                  const SizedBox(height: 4),
+                  Text(
+                    _getSelectedInputPreview(),
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: AppTheme.textSecondary,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -408,14 +474,12 @@ class _MainSelectionPageState extends State<MainSelectionPage> {
             child: _buildAlgorithmButton(algorithm),
           ),
         );
-        
-        // Add spacing between buttons (except after the last one)
         if (j < 2 && (i + j + 1) < algorithms.length) {
           rowChildren.add(const SizedBox(width: 12));
         }
       }
       
-      while (rowChildren.length < 5) { // 3 buttons + 2 spacers = 5 widgets
+      while (rowChildren.length < 5) { 
         rowChildren.add(const Expanded(child: SizedBox()));
       }
       
@@ -471,10 +535,22 @@ class _MainSelectionPageState extends State<MainSelectionPage> {
     );
   }
 
+  String _getSelectedInputPreview() {
+    if (_selectedInput == null) return '';
+    final input = _availableInputs.firstWhere((input) => input.name == _selectedInput);
+    return _formatInputPreview(input.values);
+  }
+
   String _getSelectedInputDescription() {
     if (_selectedInput == null) return '';
     final input = _availableInputs.firstWhere((input) => input.name == _selectedInput);
     return input.description;
+  }
+
+  String _formatInputPreview(List<String> values, {int maxItems = 12}) {
+    final shown = values.take(maxItems).join(', ');
+    final suff = values.length > maxItems ? ' ...' : '';
+    return shown + suff;
   }
 
   Widget _buildRunButton() {
@@ -656,12 +732,14 @@ class _ProofResultPageState extends State<ProofResultPage> {
           padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+            children: [
               _buildInputDisplay(),
               const SizedBox(height: 24),
               _buildProofSection(),
               const SizedBox(height: 24),
               _buildVerificationSection(),
+              const SizedBox(height: 24),
+              _buildBenchmarkingSection(),
               const SizedBox(height: 24),
               _buildResultsSection(),
             ],
@@ -725,7 +803,7 @@ class _ProofResultPageState extends State<ProofResultPage> {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  widget.selectedInputData.description,
+                  widget.selectedInputData.values.join(', '),
                   style: const TextStyle(
                     fontSize: 12,
                     fontStyle: FontStyle.italic,
@@ -863,8 +941,6 @@ class _ProofResultPageState extends State<ProofResultPage> {
               ),
             ),
           ),
-          const SizedBox(height: 16),
-          _buildBenchmarkingSection(),
           const SizedBox(height: 16),
           _buildProofDetails(),
         ],
@@ -1081,7 +1157,7 @@ class _ProofResultPageState extends State<ProofResultPage> {
     });
 
     try {
-      // Generate actual proof using MoPro framework
+      // Generate actual proof using MoPro framework 
       _proofData = await _generateRealProof();
       
       setState(() {
@@ -1369,7 +1445,7 @@ Public Signals: ${inputs.toString()}
 
 Framework: ${widget.framework}
 Algorithm: ${widget.algorithm}
-Input: ${widget.selectedInputName} - ${widget.selectedInputData.description}
+Input: [${_getInputDataForAlgorithm().join(', ')}]
 Timestamp: ${DateTime.now().millisecondsSinceEpoch}
 ''';
   }
@@ -1383,7 +1459,7 @@ ${widget.algorithm} Proof: Halo2ProofResult(
 
 Framework: ${widget.framework}
 Algorithm: ${widget.algorithm}
-Input: ${widget.selectedInputName} - ${widget.selectedInputData.description}
+Input: [${_getInputDataForAlgorithm().join(', ')}]
 Timestamp: ${DateTime.now().millisecondsSinceEpoch}
 ''';
   }
@@ -1397,7 +1473,7 @@ ${widget.algorithm} Proof: NoirProof(
 
 Framework: ${widget.framework}
 Algorithm: ${widget.algorithm}
-Input: ${widget.selectedInputName} - ${widget.selectedInputData.description}
+Input: [${_getInputDataForAlgorithm().join(', ')}]
 Timestamp: ${DateTime.now().millisecondsSinceEpoch}
 ''';
   }

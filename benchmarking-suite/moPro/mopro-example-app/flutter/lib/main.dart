@@ -438,18 +438,11 @@ class _MainSelectionPageState extends State<MainSelectionPage> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    _getSelectedInputDescription(),
+                    'Input bytes: ${_getSelectedInputPreview()}',
                     style: const TextStyle(
                       fontSize: 12,
                       color: AppTheme.textSecondary,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    _getSelectedInputPreview(),
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: AppTheme.textSecondary,
+                      fontFamily: 'monospace',
                     ),
                   ),
                 ],
@@ -541,16 +534,9 @@ class _MainSelectionPageState extends State<MainSelectionPage> {
     return _formatInputPreview(input.values);
   }
 
-  String _getSelectedInputDescription() {
-    if (_selectedInput == null) return '';
-    final input = _availableInputs.firstWhere((input) => input.name == _selectedInput);
-    return input.description;
-  }
+  String _formatInputPreview(List<String> values, {int maxItems = 1000}) {
 
-  String _formatInputPreview(List<String> values, {int maxItems = 12}) {
-    final shown = values.take(maxItems).join(', ');
-    final suff = values.length > maxItems ? ' ...' : '';
-    return shown + suff;
+    return values.join(', ');
   }
 
   Widget _buildRunButton() {
@@ -637,7 +623,7 @@ class _MainSelectionPageState extends State<MainSelectionPage> {
       case 'halo2':
         return ['Fibonacci'];
       case 'noir':
-        return ['SHA256', 'Keccak256', 'Poseidon', 'MiMC', 'Pedersen'];
+        return ['SHA256', 'Keccak256', 'Poseidon', 'MiMC', 'Pedersen', 'Blake2', 'Blake3'];
       default:
         return [];
     }
@@ -707,6 +693,8 @@ class _ProofResultPageState extends State<ProofResultPage> {
   Uint8List? _noirPoseidonVerificationKey;
   Uint8List? _noirPedersenVerificationKey;
   Uint8List? _noirSha256VerificationKey;
+  Uint8List? _noirBlake2VerificationKey;
+  Uint8List? _noirBlake3VerificationKey;
   
   // Benchmarking timing
   Duration? _proofGenerationTime;
@@ -773,15 +761,6 @@ class _ProofResultPageState extends State<ProofResultPage> {
             ),
           ),
           const SizedBox(height: 12),
-          const Text(
-            'Selected Input:',
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-              color: AppTheme.textSecondary,
-            ),
-          ),
-          const SizedBox(height: 8),
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(12),
@@ -794,19 +773,19 @@ class _ProofResultPageState extends State<ProofResultPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  widget.selectedInputName,
+                  'Input: ${widget.selectedInputName}',
                   style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
                     color: AppTheme.text,
                   ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: 8),
                 Text(
-                  widget.selectedInputData.values.join(', '),
+                  'Bytes: ${widget.selectedInputData.values.join(', ')}',
                   style: const TextStyle(
                     fontSize: 12,
-                    fontStyle: FontStyle.italic,
+                    fontFamily: 'monospace',
                     color: AppTheme.textSecondary,
                   ),
                 ),
@@ -1395,6 +1374,38 @@ class _ProofResultPageState extends State<ProofResultPage> {
           }
           verificationKey = _noirPedersenVerificationKey;
           break;
+      case 'blake2':
+          assetPath = "assets/blake2.json";
+          srsPath = "assets/blake2.srs";
+          onChain = true;
+          if (_noirBlake2VerificationKey == null) {
+            try {
+              final vkAsset = await rootBundle.load('assets/blake2.vk');
+              _noirBlake2VerificationKey = vkAsset.buffer.asUint8List();
+            } catch (e) {
+            _noirBlake2VerificationKey = await moproFlutterPlugin.getNoirVerificationKey(
+                assetPath, srsPath, onChain, lowMemoryMode,
+              );
+            }
+          }
+          verificationKey = _noirBlake2VerificationKey;
+          break;
+      case 'blake3':
+          assetPath = "assets/blake3.json";
+          srsPath = "assets/blake3.srs";
+          onChain = true;
+          if (_noirBlake3VerificationKey == null) {
+            try {
+              final vkAsset = await rootBundle.load('assets/blake3.vk');
+              _noirBlake3VerificationKey = vkAsset.buffer.asUint8List();
+            } catch (e) {
+            _noirBlake3VerificationKey = await moproFlutterPlugin.getNoirVerificationKey(
+                assetPath, srsPath, onChain, lowMemoryMode,
+              );
+            }
+          }
+          verificationKey = _noirBlake3VerificationKey;
+          break;
       default:
           assetPath = "assets/sha256.json";
           srsPath = "assets/sha256.srs";
@@ -1483,7 +1494,7 @@ Timestamp: ${DateTime.now().millisecondsSinceEpoch}
 
 
   List<String> _getInputDataForAlgorithm() {
-    // Get the selected input data
+    // Get the selected input data from JSON file
     List<String> inputData = widget.selectedInputData.values;
     
     // Special case for Poseidon: use exactly 8 bytes (as per the circuit requirement)
@@ -1494,6 +1505,21 @@ Timestamp: ${DateTime.now().millisecondsSinceEpoch}
         poseidonInput.add('0');
       }
       return poseidonInput;
+    }
+    
+    // Blake2 and Blake3 require exactly 32 bytes input
+    final algorithmLower = widget.algorithm.toLowerCase();
+    if (algorithmLower == 'blake2' || algorithmLower == 'blake3') {
+      List<String> blakeInput = List<String>.from(inputData);
+      // Take first 32 bytes, pad with zeros if needed
+      if (blakeInput.length > 32) {
+        blakeInput = blakeInput.take(32).toList();
+      } else {
+        while (blakeInput.length < 32) {
+          blakeInput.add('0');
+        }
+      }
+      return blakeInput;
     }
     
     return inputData;

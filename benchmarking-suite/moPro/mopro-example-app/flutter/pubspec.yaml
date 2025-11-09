@@ -77,6 +77,10 @@ flutter:
     - assets/sha256.zkey
     - assets/sha256.srs
     - assets/sha256.json
+    - assets/blake2.json
+    - assets/blake2.srs
+    - assets/blake3.json
+    - assets/blake3.srs
     - inputs/input_1.json
     - inputs/input_2.json
     - inputs/input_3.json

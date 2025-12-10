@@ -1,11 +1,7 @@
 build_mode = "release"
-target_adapters = [
-    "noir",
-    "halo2",
-    "circom",
-]
-target_platforms = ["android"]
-android = ["aarch64-linux-android"]
+target_adapters = ["noir"]
+target_platforms = ["ios"]
+ios = ["aarch64-apple-ios"]
 auto_update = false
 
 [update]

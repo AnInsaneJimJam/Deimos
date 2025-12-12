@@ -1636,7 +1636,7 @@ class _ProofResultPageState extends State<ProofResultPage> {
     print("DEBUG: File exists? ${await File(zkeyPath).exists()}");
 
     // Capture memory and battery BEFORE proof generation
-    _freeMemoryBeforeProof = SysInfo.getFreePhysicalMemory();
+    _freeMemoryBeforeProof = _getSafeFreeMemory();
     final battery = Battery();
     _batteryBeforeProof = await battery.batteryLevel;
     // Start timing
@@ -1656,7 +1656,7 @@ class _ProofResultPageState extends State<ProofResultPage> {
     stopwatch.stop();
     
     // Capture memory and battery AFTER proof generation
-    _freeMemoryAfterProof = SysInfo.getFreePhysicalMemory();
+    _freeMemoryAfterProof = _getSafeFreeMemory();
     _batteryAfterProof = await battery.batteryLevel;
     
     if (proofResult == null) {
@@ -1679,7 +1679,7 @@ class _ProofResultPageState extends State<ProofResultPage> {
     };
     
     // Capture memory and battery BEFORE proof generation
-    _freeMemoryBeforeProof = SysInfo.getFreePhysicalMemory();
+    _freeMemoryBeforeProof = _getSafeFreeMemory();
     final battery = Battery();
     _batteryBeforeProof = await battery.batteryLevel;
     
@@ -1700,7 +1700,7 @@ class _ProofResultPageState extends State<ProofResultPage> {
     stopwatch.stop();
     
     // Capture memory and battery AFTER proof generation
-    _freeMemoryAfterProof = SysInfo.getFreePhysicalMemory();
+    _freeMemoryAfterProof = _getSafeFreeMemory();
     _batteryAfterProof = await battery.batteryLevel;
     
     if (proofResult == null) {
@@ -1726,7 +1726,7 @@ class _ProofResultPageState extends State<ProofResultPage> {
     final (circuitPath, srsPath, onChain, vk) = await _getNoirSettings();
     
     // Capture memory and battery BEFORE proof generation
-    _freeMemoryBeforeProof = SysInfo.getFreePhysicalMemory();
+    _freeMemoryBeforeProof = _getSafeFreeMemory();
     final battery = Battery();
     _batteryBeforeProof = await battery.batteryLevel;
     
@@ -1750,7 +1750,7 @@ class _ProofResultPageState extends State<ProofResultPage> {
     stopwatch.stop();
     
     // Capture memory and battery AFTER proof generation
-    _freeMemoryAfterProof = SysInfo.getFreePhysicalMemory();
+    _freeMemoryAfterProof = _getSafeFreeMemory();
     _batteryAfterProof = await battery.batteryLevel;
     
     // Store the proof result for verification
@@ -1770,7 +1770,7 @@ class _ProofResultPageState extends State<ProofResultPage> {
     int numericInput = int.tryParse(inputData.first) ?? 17; // Default to 17 if parsing fails
     
     // Capture memory and battery BEFORE proof generation
-    _freeMemoryBeforeProof = SysInfo.getFreePhysicalMemory();
+    _freeMemoryBeforeProof = _getSafeFreeMemory();
     final battery = Battery();
     _batteryBeforeProof = await battery.batteryLevel;
     
@@ -1787,7 +1787,7 @@ class _ProofResultPageState extends State<ProofResultPage> {
     stopwatch.stop();
     
     // Capture memory and battery AFTER proof generation
-    _freeMemoryAfterProof = SysInfo.getFreePhysicalMemory();
+    _freeMemoryAfterProof = _getSafeFreeMemory();
     _batteryAfterProof = await battery.batteryLevel;
     
     // Store the proof result for verification
@@ -2313,7 +2313,7 @@ Timestamp: ${DateTime.now().millisecondsSinceEpoch}
   Future<Map<String, dynamic>> _collectSystemInfo() async {
     try {
       // Get memory information
-      final totalPhysicalMemory = SysInfo.getTotalPhysicalMemory(); // in bytes
+      final totalPhysicalMemory = _getSafeTotalMemory(); // in bytes
       
       // Calculate memory used during proof generation
       final memoryUsedBeforeProof = totalPhysicalMemory - _freeMemoryBeforeProof;
@@ -2363,8 +2363,11 @@ Timestamp: ${DateTime.now().millisecondsSinceEpoch}
     // Sample memory every 100ms during proof generation
     Timer.periodic(const Duration(milliseconds: 100), (timer) {
       if (_isGenerating) {
-        final currentFreeMemory = SysInfo.getFreePhysicalMemory();
-        final currentUsedMemory = SysInfo.getTotalPhysicalMemory() - currentFreeMemory;
+        // Skip memory monitoring on non-Android platforms
+        if (!Platform.isAndroid) return;
+        
+        final currentFreeMemory = _getSafeFreeMemory();
+        final currentUsedMemory = _getSafeTotalMemory() - currentFreeMemory;
         
         // Track peak memory usage
         if (currentUsedMemory > _peakMemoryUsage) {
@@ -2407,6 +2410,30 @@ Timestamp: ${DateTime.now().millisecondsSinceEpoch}
       return _noirProofResult!.length;
     } else if (_risc0ProofResult != null) {
       return _risc0ProofResult!.receipt.length;
+    }
+    return 0;
+  }
+
+  // Helper to safely get free memory (Android only)
+  int _getSafeFreeMemory() {
+    if (Platform.isAndroid) {
+      try {
+        return SysInfo.getFreePhysicalMemory();
+      } catch (e) {
+        print("Error getting free memory: $e");
+      }
+    }
+    return 0;
+  }
+
+  // Helper to safely get total memory (Android only)
+  int _getSafeTotalMemory() {
+    if (Platform.isAndroid) {
+      try {
+        return SysInfo.getTotalPhysicalMemory();
+      } catch (e) {
+        print("Error getting total memory: $e");
+      }
     }
     return 0;
   }

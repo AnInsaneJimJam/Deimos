@@ -2336,10 +2336,14 @@ Timestamp: ${DateTime.now().millisecondsSinceEpoch}
           'memoryConsumedByProof': memoryConsumedByProof,
 
           // Peak memory load during percentage
-          'peakMemoryLoadInPercentage': _peakMemoryUsage / totalPhysicalMemory * 100,
+          'peakMemoryLoadInPercentage': totalPhysicalMemory > 0 
+              ? (_peakMemoryUsage / totalPhysicalMemory * 100) 
+              : 0.0,
 
           // Memory consumed percentage
-          'memoryConsumedInPercentage': memoryConsumedByProof / totalPhysicalMemory * 100,
+          'memoryConsumedInPercentage': totalPhysicalMemory > 0 
+              ? (memoryConsumedByProof / totalPhysicalMemory * 100) 
+              : 0.0,
         },
         'battery': {
           'batteryBeforeProof': _batteryBeforeProof,

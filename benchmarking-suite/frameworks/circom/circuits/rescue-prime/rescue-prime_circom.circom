@@ -11,4 +11,4 @@ template RescuePrimeBench(nInputs) {
     out <== rp.out;
 }
 
-component main {public[in]} = RescuePrimeBench(8);
+component main {public[in]} = RescuePrimeBench(32);

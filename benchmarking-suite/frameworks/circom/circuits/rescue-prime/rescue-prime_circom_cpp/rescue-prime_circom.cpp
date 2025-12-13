@@ -29,15 +29,15 @@ NULL,
 NULL };
 uint get_main_input_signal_start() {return 2;}
 
-uint get_main_input_signal_no() {return 8;}
+uint get_main_input_signal_no() {return 32;}
 
-uint get_total_signal_no() {return 4565;}
+uint get_total_signal_no() {return 18245;}
 
-uint get_number_of_components() {return 650;}
+uint get_number_of_components() {return 2594;}
 
 uint get_size_of_input_hashmap() {return 256;}
 
-uint get_size_of_witness() {return 3217;}
+uint get_size_of_witness() {return 12865;}
 
 uint get_size_of_constants() {return 163;}
 
@@ -1660,10 +1660,10 @@ void RescuePrimeHash_3_create(uint soffset,uint coffset,Circom_CalcWit* ctx,std:
 ctx->componentMemory[coffset].templateId = 3;
 ctx->componentMemory[coffset].templateName = "RescuePrimeHash";
 ctx->componentMemory[coffset].signalStart = soffset;
-ctx->componentMemory[coffset].inputCounter = 8;
+ctx->componentMemory[coffset].inputCounter = 32;
 ctx->componentMemory[coffset].componentName = componentName;
 ctx->componentMemory[coffset].idFather = componentFather;
-ctx->componentMemory[coffset].subcomponents = new uint[9]{0};
+ctx->componentMemory[coffset].subcomponents = new uint[33]{0};
 }
 
 void RescuePrimeHash_3_run(uint ctx_index,Circom_CalcWit* ctx){
@@ -1691,10 +1691,10 @@ Fr_copy(aux_dest,&circuitConstants[5]);
 {
 uint aux_create = 0;
 int aux_cmp_num = 0+ctx_index+1;
-uint csoffset = mySignalStart+27;
-uint aux_dimensions[1] = {9};
-uint aux_positions [8]= {0,1,2,3,4,5,6,7};
-for (uint i_aux = 0; i_aux < 8; i_aux++) {
+uint csoffset = mySignalStart+99;
+uint aux_dimensions[1] = {33};
+uint aux_positions [32]= {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31};
+for (uint i_aux = 0; i_aux < 32; i_aux++) {
 uint i = aux_positions[i_aux];
 std::string new_cmp_name = "perms"+ctx->generate_position_array(aux_dimensions, 1, i);
 RescuePrimePermutation_2_create(csoffset,aux_cmp_num,ctx,new_cmp_name,myId);
@@ -1730,7 +1730,7 @@ Fr_copy(aux_dest,&circuitConstants[3]);
 Fr_lt(&expaux[0],&lvar[4],&circuitConstants[1]); // line circom 129
 while(Fr_isTrue(&expaux[0])){
 {
-PFrElement aux_dest = &signalValues[mySignalStart + ((0 + (1 * Fr_toInt(&lvar[4]))) + 9)];
+PFrElement aux_dest = &signalValues[mySignalStart + ((0 + (1 * Fr_toInt(&lvar[4]))) + 33)];
 // load src
 // end load src
 Fr_copy(aux_dest,&circuitConstants[3]);
@@ -1757,7 +1757,7 @@ uint cmp_index_ref = ((1 * Fr_toInt(&lvar[4])) + 0);
 {
 PFrElement aux_dest = &ctx->signalValues[ctx->componentMemory[mySubcomponents[cmp_index_ref]].signalStart + 2];
 // load src
-Fr_add(&expaux[0],&signalValues[mySignalStart + (((2 * Fr_toInt(&lvar[4])) + 0) + 9)],&signalValues[mySignalStart + ((1 * Fr_toInt(&lvar[4])) + 1)]); // line circom 136
+Fr_add(&expaux[0],&signalValues[mySignalStart + (((2 * Fr_toInt(&lvar[4])) + 0) + 33)],&signalValues[mySignalStart + ((1 * Fr_toInt(&lvar[4])) + 1)]); // line circom 136
 // end load src
 Fr_copy(aux_dest,&expaux[0]);
 }
@@ -1781,7 +1781,7 @@ uint cmp_index_ref = ((1 * Fr_toInt(&lvar[4])) + 0);
 PFrElement aux_dest = &ctx->signalValues[ctx->componentMemory[mySubcomponents[cmp_index_ref]].signalStart + 3];
 // load src
 // end load src
-Fr_copy(aux_dest,&signalValues[mySignalStart + (((2 * Fr_toInt(&lvar[4])) + 1) + 9)]);
+Fr_copy(aux_dest,&signalValues[mySignalStart + (((2 * Fr_toInt(&lvar[4])) + 1) + 33)]);
 }
 // run sub component if needed
 if(!(ctx->componentMemory[mySubcomponents[cmp_index_ref]].inputCounter -= 1)){
@@ -1806,7 +1806,7 @@ Fr_copy(aux_dest,&circuitConstants[3]);
 Fr_lt(&expaux[0],&lvar[5],&circuitConstants[1]); // line circom 141
 while(Fr_isTrue(&expaux[0])){
 {
-PFrElement aux_dest = &signalValues[mySignalStart + (((2 * (Fr_toInt(&lvar[4]) + 1)) + (1 * Fr_toInt(&lvar[5]))) + 9)];
+PFrElement aux_dest = &signalValues[mySignalStart + (((2 * (Fr_toInt(&lvar[4]) + 1)) + (1 * Fr_toInt(&lvar[5]))) + 33)];
 // load src
 cmp_index_ref_load = ((1 * Fr_toInt(&lvar[4])) + 0);
 cmp_index_ref_load = ((1 * Fr_toInt(&lvar[4])) + 0);
@@ -1835,9 +1835,9 @@ Fr_lt(&expaux[0],&lvar[4],&circuitConstants[5]); // line circom 133
 PFrElement aux_dest = &signalValues[mySignalStart + 0];
 // load src
 // end load src
-Fr_copy(aux_dest,&signalValues[mySignalStart + 25]);
+Fr_copy(aux_dest,&signalValues[mySignalStart + 97]);
 }
-for (uint i = 0; i < 9; i++){
+for (uint i = 0; i < 33; i++){
 uint index_subc = ctx->componentMemory[ctx_index].subcomponents[i];
 if (index_subc != 0){
 assert(!(ctx->componentMemory[index_subc].inputCounter));
@@ -1850,7 +1850,7 @@ void RescuePrimeBench_4_create(uint soffset,uint coffset,Circom_CalcWit* ctx,std
 ctx->componentMemory[coffset].templateId = 4;
 ctx->componentMemory[coffset].templateName = "RescuePrimeBench";
 ctx->componentMemory[coffset].signalStart = soffset;
-ctx->componentMemory[coffset].inputCounter = 8;
+ctx->componentMemory[coffset].inputCounter = 32;
 ctx->componentMemory[coffset].componentName = componentName;
 ctx->componentMemory[coffset].idFather = componentFather;
 ctx->componentMemory[coffset].subcomponents = new uint[1]{0};
@@ -1880,7 +1880,7 @@ Fr_copy(aux_dest,&circuitConstants[5]);
 }
 {
 std::string new_cmp_name = "rp";
-RescuePrimeHash_3_create(mySignalStart+9,0+ctx_index+1,ctx,new_cmp_name,myId);
+RescuePrimeHash_3_create(mySignalStart+33,0+ctx_index+1,ctx,new_cmp_name,myId);
 mySubcomponents[0] = 0+ctx_index+1;
 }
 {
@@ -1889,10 +1889,10 @@ uint cmp_index_ref = 0;
 PFrElement aux_dest = &ctx->signalValues[ctx->componentMemory[mySubcomponents[cmp_index_ref]].signalStart + 1];
 // load src
 // end load src
-Fr_copyn(aux_dest,&signalValues[mySignalStart + 1],8);
+Fr_copyn(aux_dest,&signalValues[mySignalStart + 1],32);
 }
 // need to run sub component
-ctx->componentMemory[mySubcomponents[cmp_index_ref]].inputCounter -= 8;
+ctx->componentMemory[mySubcomponents[cmp_index_ref]].inputCounter -= 32;
 assert(!(ctx->componentMemory[mySubcomponents[cmp_index_ref]].inputCounter));
 RescuePrimeHash_3_run(mySubcomponents[cmp_index_ref],ctx);
 }

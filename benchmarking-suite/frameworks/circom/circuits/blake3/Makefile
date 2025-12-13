@@ -3,10 +3,10 @@
 # Usage: make full CIRCUIT=multiplier2 POT=12
 
 # Configuration - can be overridden
-HASH_NAME ?= rescue-prime
-CIRCUIT ?= rescue-prime_circom
-POT ?= 16
-INPUT_FILE ?= input_8.json
+HASH_NAME ?= blake3
+CIRCUIT ?= circom
+POT ?= 18
+INPUT_FILE ?= input_9.json
 
 # Derived file names
 INPUT_JSON = ../../inputs/$(HASH_NAME)/$(INPUT_FILE)

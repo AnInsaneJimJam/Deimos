@@ -5,7 +5,7 @@
 # Configuration - can be overridden
 HASH_NAME ?= rescue-prime
 CIRCUIT ?= rescue-prime_circom
-POT ?= 12
+POT ?= 16
 INPUT_FILE ?= input_8.json
 
 # Derived file names

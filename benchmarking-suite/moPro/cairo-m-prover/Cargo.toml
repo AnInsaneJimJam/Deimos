@@ -4,10 +4,10 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-cairo-m-runner = { path = "../../cairo-m-vendor/crates/runner", default-features = false }
+cairo-m-runner = { git = "https://github.com/AnInsaneJimJam/cairo-m", default-features = false }
 # Aliased to avoid conflict with this crate's name
-cairo-m-prover-core = { path = "../../cairo-m-vendor/crates/prover", package = "cairo-m-prover" }
-cairo-m-common = { path = "../../cairo-m-vendor/crates/common" }
+cairo-m-prover-core = { git = "https://github.com/AnInsaneJimJam/cairo-m", package = "cairo-m-prover" }
+cairo-m-common = { git = "https://github.com/AnInsaneJimJam/cairo-m" }
 stwo-prover = { git = "https://github.com/starkware-libs/stwo", rev = "ab57a1c", features = [
     "parallel",
 ] }

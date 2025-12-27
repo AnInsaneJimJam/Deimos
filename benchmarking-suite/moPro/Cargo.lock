@@ -974,6 +974,7 @@ dependencies = [
 [[package]]
 name = "cairo-m-common"
 version = "0.1.0-alpha.1"
+source = "git+https://github.com/AnInsaneJimJam/cairo-m#96824d7c5ced657f21b5ad4a2146ff1b8afb1799"
 dependencies = [
  "anyhow",
  "num-traits",
@@ -988,6 +989,7 @@ dependencies = [
 [[package]]
 name = "cairo-m-compiler"
 version = "0.1.0-alpha.1"
+source = "git+https://github.com/AnInsaneJimJam/cairo-m#96824d7c5ced657f21b5ad4a2146ff1b8afb1799"
 dependencies = [
  "anyhow",
  "ariadne",
@@ -1014,6 +1016,7 @@ dependencies = [
 [[package]]
 name = "cairo-m-compiler-codegen"
 version = "0.1.0-alpha.1"
+source = "git+https://github.com/AnInsaneJimJam/cairo-m#96824d7c5ced657f21b5ad4a2146ff1b8afb1799"
 dependencies = [
  "cairo-m-common",
  "cairo-m-compiler-diagnostics",
@@ -1038,6 +1041,7 @@ dependencies = [
 [[package]]
 name = "cairo-m-compiler-diagnostics"
 version = "0.1.0-alpha.1"
+source = "git+https://github.com/AnInsaneJimJam/cairo-m#96824d7c5ced657f21b5ad4a2146ff1b8afb1799"
 dependencies = [
  "ariadne",
  "chumsky",
@@ -1046,6 +1050,7 @@ dependencies = [
 [[package]]
 name = "cairo-m-compiler-mir"
 version = "0.1.0-alpha.1"
+source = "git+https://github.com/AnInsaneJimJam/cairo-m#96824d7c5ced657f21b5ad4a2146ff1b8afb1799"
 dependencies = [
  "cairo-m-compiler-diagnostics",
  "cairo-m-compiler-parser",
@@ -1062,6 +1067,7 @@ dependencies = [
 [[package]]
 name = "cairo-m-compiler-parser"
 version = "0.1.0-alpha.1"
+source = "git+https://github.com/AnInsaneJimJam/cairo-m#96824d7c5ced657f21b5ad4a2146ff1b8afb1799"
 dependencies = [
  "ariadne",
  "cairo-m-compiler-diagnostics",
@@ -1080,6 +1086,7 @@ dependencies = [
 [[package]]
 name = "cairo-m-compiler-semantic"
 version = "0.1.0-alpha.1"
+source = "git+https://github.com/AnInsaneJimJam/cairo-m#96824d7c5ced657f21b5ad4a2146ff1b8afb1799"
 dependencies = [
  "anyhow",
  "ariadne",
@@ -1105,6 +1112,7 @@ dependencies = [
 [[package]]
 name = "cairo-m-project"
 version = "0.1.0-alpha.1"
+source = "git+https://github.com/AnInsaneJimJam/cairo-m#96824d7c5ced657f21b5ad4a2146ff1b8afb1799"
 dependencies = [
  "anyhow",
  "ignore",
@@ -1118,6 +1126,7 @@ dependencies = [
 [[package]]
 name = "cairo-m-prover"
 version = "0.1.0-alpha.1"
+source = "git+https://github.com/AnInsaneJimJam/cairo-m#96824d7c5ced657f21b5ad4a2146ff1b8afb1799"
 dependencies = [
  "anyhow",
  "bytemuck",
@@ -1160,6 +1169,7 @@ dependencies = [
 [[package]]
 name = "cairo-m-runner"
 version = "0.1.0-alpha.1"
+source = "git+https://github.com/AnInsaneJimJam/cairo-m#96824d7c5ced657f21b5ad4a2146ff1b8afb1799"
 dependencies = [
  "anyhow",
  "cairo-m-common",
@@ -1181,6 +1191,7 @@ dependencies = [
 [[package]]
 name = "cairo-m-test-utils"
 version = "0.1.0-alpha.1"
+source = "git+https://github.com/AnInsaneJimJam/cairo-m#96824d7c5ced657f21b5ad4a2146ff1b8afb1799"
 dependencies = [
  "once_cell",
  "pulldown-cmark",
@@ -1245,9 +1256,9 @@ checksum = "37b2a672a2cb129a2e41c10b1224bb368f9f37a2b16b612598138befd7b37eb5"
 
 [[package]]
 name = "cc"
-version = "1.2.50"
+version = "1.2.51"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9f50d563227a1c37cc0a263f64eca3334388c01c5e4c4861a9def205c614383c"
+checksum = "7a0aeaff4ff1a90589618835a598e545176939b97874f7abc7851caa0618f203"
 dependencies = [
  "find-msvc-tools",
  "jobserver",
@@ -2140,9 +2151,9 @@ dependencies = [
 
 [[package]]
 name = "find-msvc-tools"
-version = "0.1.5"
+version = "0.1.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3a3076410a55c90011c298b04d0cfa770b00fa04e1e3c97d3f6c9de105a03844"
+checksum = "645cbb3a84e60b7531617d5ae4e57f7e27308f6445f5abf653209ea76dec8dff"
 
 [[package]]
 name = "fixedbitset"
@@ -3100,9 +3111,9 @@ dependencies = [
 
 [[package]]
 name = "itoa"
-version = "1.0.16"
+version = "1.0.17"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7ee5b5339afb4c41626dde77b7a611bd4f2c202b897852b4bcf5d03eddc61010"
+checksum = "92ecc6618181def0457392ccd0ee51198e065e016d1d527a7ac1b6dc7c1f09d2"
 
 [[package]]
 name = "jobserver"
@@ -5521,9 +5532,9 @@ dependencies = [
 
 [[package]]
 name = "ruint"
-version = "1.17.0"
+version = "1.17.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a68df0380e5c9d20ce49534f292a36a7514ae21350726efe1865bdb1fa91d278"
+checksum = "7f5befb5191be3584a4edaf63435e8ff92ffff622e711ca7e77f8f8f365a9df8"
 dependencies = [
  "borsh",
  "proptest",
@@ -5694,9 +5705,9 @@ dependencies = [
 
 [[package]]
 name = "ryu"
-version = "1.0.21"
+version = "1.0.22"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "62049b2877bf12821e8f9ad256ee38fdc31db7387ec2d3b3f403024de2034aea"
+checksum = "a50f4cf475b65d88e057964e0e9bb1f0aa9bbb2036dc65c64596b42932536984"
 
 [[package]]
 name = "rzup"
@@ -5847,9 +5858,9 @@ dependencies = [
 
 [[package]]
 name = "schemars"
-version = "1.1.0"
+version = "1.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9558e172d4e8533736ba97870c4b2cd63f84b382a3d6eb063da41b91cce17289"
+checksum = "54e910108742c57a770f492731f99be216a52fadd361b06c8fb59d74ccc267d2"
 dependencies = [
  "dyn-clone",
  "ref-cast",
@@ -5965,9 +5976,9 @@ dependencies = [
 
 [[package]]
 name = "serde_json"
-version = "1.0.147"
+version = "1.0.148"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6af14725505314343e673e9ecb7cd7e8a36aa9791eb936235a3567cc31447ae4"
+checksum = "3084b546a1dd6289475996f182a22aba973866ea8e8b02c51d9f46b1336a22da"
 dependencies = [
  "itoa",
  "memchr",
@@ -6018,7 +6029,7 @@ dependencies = [
  "indexmap 1.9.3",
  "indexmap 2.12.1",
  "schemars 0.9.0",
- "schemars 1.1.0",
+ "schemars 1.2.0",
  "serde_core",
  "serde_json",
  "serde_with_macros",
@@ -8017,9 +8028,9 @@ dependencies = [
 
 [[package]]
 name = "zmij"
-version = "0.1.8"
+version = "1.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f1dccf46b25b205e4bebe1d5258a991df1cc17801017a845cb5b3fe0269781aa"
+checksum = "e6d6085d62852e35540689d1f97ad663e3971fc19cf5eceab364d62c646ea167"
 
 [[package]]
 name = "zopfli"

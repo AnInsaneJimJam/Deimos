@@ -14,7 +14,7 @@ sed -i '' 's/RustCallStatus/CircomRustCallStatus/g' "$FILE"
 # We might want to rename ffi_deimos_circom?
 # Imports
 # Force the correct module import
-sed -i '' 's/import deimos_circom/import deimos_circomFFI/g' "$FILE"
+sed -i '' 's/import deimos_circom[[:>:]]/import deimos_circomFFI/g' "$FILE"
 # (No-op, just ensuring we don't break things if we change logic later)
 
 # Types

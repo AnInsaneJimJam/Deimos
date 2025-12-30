@@ -11,7 +11,7 @@ sed -i '' 's/RustCallStatus/NoirRustCallStatus/g' "$FILE"
 
 # Imports
 # Force the correct module import
-sed -i '' 's/import deimos_noir/import deimos_noirFFI/g' "$FILE"
+sed -i '' 's/import deimos_noir[[:>:]]/import deimos_noirFFI/g' "$FILE"
 
 # Types
 sed -i '' 's/MoproError/NoirMoproError/g' "$FILE"

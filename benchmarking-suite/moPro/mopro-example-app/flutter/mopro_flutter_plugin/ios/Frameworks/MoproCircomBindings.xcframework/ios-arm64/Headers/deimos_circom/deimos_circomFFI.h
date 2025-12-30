@@ -9,41 +9,41 @@
 
 // The following structs are used to implement the lowest level
 // of the FFI, and thus useful to multiple uniffied crates.
-// We ensure they are declared exactly once, with a header guard, UNIFFI_SHARED_H.
-#ifdef UNIFFI_SHARED_H
+// We ensure they are declared exactly once, with a header guard, UNIFFI_SHARED_H_CIRCOM.
+#ifdef UNIFFI_SHARED_H_CIRCOM
     // We also try to prevent mixing versions of shared uniffi header structs.
-    // If you add anything to the #else block, you must increment the version suffix in UNIFFI_SHARED_HEADER_V4
-    #ifndef UNIFFI_SHARED_HEADER_V4
+    // If you add anything to the #else block, you must increment the version suffix in UNIFFI_SHARED_H_CIRCOMEADER_V4
+    #ifndef UNIFFI_SHARED_H_CIRCOMEADER_V4
         #error Combining helper code from multiple versions of uniffi is not supported
-    #endif // ndef UNIFFI_SHARED_HEADER_V4
+    #endif // ndef UNIFFI_SHARED_H_CIRCOMEADER_V4
 #else
-#define UNIFFI_SHARED_H
-#define UNIFFI_SHARED_HEADER_V4
-// ⚠️ Attention: If you change this #else block (ending in `#endif // def UNIFFI_SHARED_H`) you *must* ⚠️
-// ⚠️ increment the version suffix in all instances of UNIFFI_SHARED_HEADER_V4 in this file.           ⚠️
+#define UNIFFI_SHARED_H_CIRCOM
+#define UNIFFI_SHARED_H_CIRCOMEADER_V4
+// ⚠️ Attention: If you change this #else block (ending in `#endif // def UNIFFI_SHARED_H_CIRCOM`) you *must* ⚠️
+// ⚠️ increment the version suffix in all instances of UNIFFI_SHARED_H_CIRCOMEADER_V4 in this file.           ⚠️
 
-typedef struct RustBuffer
+typedef struct CircomRustBuffer
 {
     uint64_t capacity;
     uint64_t len;
     uint8_t *_Nullable data;
-} RustBuffer;
+} CircomRustBuffer;
 
-typedef struct ForeignBytes
+typedef struct CircomForeignBytes
 {
     int32_t len;
     const uint8_t *_Nullable data;
-} ForeignBytes;
+} CircomForeignBytes;
 
 // Error definitions
-typedef struct RustCallStatus {
+typedef struct CircomRustCallStatus {
     int8_t code;
-    RustBuffer errorBuf;
-} RustCallStatus;
+    CircomRustBuffer errorBuf;
+} CircomRustCallStatus;
 
-// ⚠️ Attention: If you change this #else block (ending in `#endif // def UNIFFI_SHARED_H`) you *must* ⚠️
-// ⚠️ increment the version suffix in all instances of UNIFFI_SHARED_HEADER_V4 in this file.           ⚠️
-#endif // def UNIFFI_SHARED_H
+// ⚠️ Attention: If you change this #else block (ending in `#endif // def UNIFFI_SHARED_H_CIRCOM`) you *must* ⚠️
+// ⚠️ increment the version suffix in all instances of UNIFFI_SHARED_H_CIRCOMEADER_V4 in this file.           ⚠️
+#endif // def UNIFFI_SHARED_H_CIRCOM
 #ifndef UNIFFI_FFIDEF_RUST_FUTURE_CONTINUATION_CALLBACK
 #define UNIFFI_FFIDEF_RUST_FUTURE_CONTINUATION_CALLBACK
 typedef void (*UniffiRustFutureContinuationCallback)(uint64_t, int8_t
@@ -74,7 +74,7 @@ typedef struct UniffiForeignFuture {
 #define UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_U8
 typedef struct UniffiForeignFutureStructU8 {
     uint8_t returnValue;
-    RustCallStatus callStatus;
+    CircomRustCallStatus callStatus;
 } UniffiForeignFutureStructU8;
 
 #endif
@@ -88,7 +88,7 @@ typedef void (*UniffiForeignFutureCompleteU8)(uint64_t, UniffiForeignFutureStruc
 #define UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_I8
 typedef struct UniffiForeignFutureStructI8 {
     int8_t returnValue;
-    RustCallStatus callStatus;
+    CircomRustCallStatus callStatus;
 } UniffiForeignFutureStructI8;
 
 #endif
@@ -102,7 +102,7 @@ typedef void (*UniffiForeignFutureCompleteI8)(uint64_t, UniffiForeignFutureStruc
 #define UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_U16
 typedef struct UniffiForeignFutureStructU16 {
     uint16_t returnValue;
-    RustCallStatus callStatus;
+    CircomRustCallStatus callStatus;
 } UniffiForeignFutureStructU16;
 
 #endif
@@ -116,7 +116,7 @@ typedef void (*UniffiForeignFutureCompleteU16)(uint64_t, UniffiForeignFutureStru
 #define UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_I16
 typedef struct UniffiForeignFutureStructI16 {
     int16_t returnValue;
-    RustCallStatus callStatus;
+    CircomRustCallStatus callStatus;
 } UniffiForeignFutureStructI16;
 
 #endif
@@ -130,7 +130,7 @@ typedef void (*UniffiForeignFutureCompleteI16)(uint64_t, UniffiForeignFutureStru
 #define UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_U32
 typedef struct UniffiForeignFutureStructU32 {
     uint32_t returnValue;
-    RustCallStatus callStatus;
+    CircomRustCallStatus callStatus;
 } UniffiForeignFutureStructU32;
 
 #endif
@@ -144,7 +144,7 @@ typedef void (*UniffiForeignFutureCompleteU32)(uint64_t, UniffiForeignFutureStru
 #define UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_I32
 typedef struct UniffiForeignFutureStructI32 {
     int32_t returnValue;
-    RustCallStatus callStatus;
+    CircomRustCallStatus callStatus;
 } UniffiForeignFutureStructI32;
 
 #endif
@@ -158,7 +158,7 @@ typedef void (*UniffiForeignFutureCompleteI32)(uint64_t, UniffiForeignFutureStru
 #define UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_U64
 typedef struct UniffiForeignFutureStructU64 {
     uint64_t returnValue;
-    RustCallStatus callStatus;
+    CircomRustCallStatus callStatus;
 } UniffiForeignFutureStructU64;
 
 #endif
@@ -172,7 +172,7 @@ typedef void (*UniffiForeignFutureCompleteU64)(uint64_t, UniffiForeignFutureStru
 #define UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_I64
 typedef struct UniffiForeignFutureStructI64 {
     int64_t returnValue;
-    RustCallStatus callStatus;
+    CircomRustCallStatus callStatus;
 } UniffiForeignFutureStructI64;
 
 #endif
@@ -186,7 +186,7 @@ typedef void (*UniffiForeignFutureCompleteI64)(uint64_t, UniffiForeignFutureStru
 #define UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_F32
 typedef struct UniffiForeignFutureStructF32 {
     float returnValue;
-    RustCallStatus callStatus;
+    CircomRustCallStatus callStatus;
 } UniffiForeignFutureStructF32;
 
 #endif
@@ -200,7 +200,7 @@ typedef void (*UniffiForeignFutureCompleteF32)(uint64_t, UniffiForeignFutureStru
 #define UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_F64
 typedef struct UniffiForeignFutureStructF64 {
     double returnValue;
-    RustCallStatus callStatus;
+    CircomRustCallStatus callStatus;
 } UniffiForeignFutureStructF64;
 
 #endif
@@ -214,7 +214,7 @@ typedef void (*UniffiForeignFutureCompleteF64)(uint64_t, UniffiForeignFutureStru
 #define UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_POINTER
 typedef struct UniffiForeignFutureStructPointer {
     void*_Nonnull returnValue;
-    RustCallStatus callStatus;
+    CircomRustCallStatus callStatus;
 } UniffiForeignFutureStructPointer;
 
 #endif
@@ -226,22 +226,22 @@ typedef void (*UniffiForeignFutureCompletePointer)(uint64_t, UniffiForeignFuture
 #endif
 #ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_RUST_BUFFER
 #define UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_RUST_BUFFER
-typedef struct UniffiForeignFutureStructRustBuffer {
-    RustBuffer returnValue;
-    RustCallStatus callStatus;
-} UniffiForeignFutureStructRustBuffer;
+typedef struct UniffiForeignFutureStructCircomRustBuffer {
+    CircomRustBuffer returnValue;
+    CircomRustCallStatus callStatus;
+} UniffiForeignFutureStructCircomRustBuffer;
 
 #endif
 #ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_COMPLETE_RUST_BUFFER
 #define UNIFFI_FFIDEF_FOREIGN_FUTURE_COMPLETE_RUST_BUFFER
-typedef void (*UniffiForeignFutureCompleteRustBuffer)(uint64_t, UniffiForeignFutureStructRustBuffer
+typedef void (*UniffiForeignFutureCompleteCircomRustBuffer)(uint64_t, UniffiForeignFutureStructCircomRustBuffer
     );
 
 #endif
 #ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_VOID
 #define UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_VOID
 typedef struct UniffiForeignFutureStructVoid {
-    RustCallStatus callStatus;
+    CircomRustCallStatus callStatus;
 } UniffiForeignFutureStructVoid;
 
 #endif
@@ -253,48 +253,38 @@ typedef void (*UniffiForeignFutureCompleteVoid)(uint64_t, UniffiForeignFutureStr
 #endif
 #ifndef UNIFFI_FFIDEF_UNIFFI_DEIMOS_CIRCOM_FN_FUNC_GENERATE_CIRCOM_PROOF
 #define UNIFFI_FFIDEF_UNIFFI_DEIMOS_CIRCOM_FN_FUNC_GENERATE_CIRCOM_PROOF
-RustBuffer uniffi_deimos_circom_fn_func_generate_circom_proof(RustBuffer zkey_path, RustBuffer circuit_inputs, RustBuffer proof_lib, RustCallStatus *_Nonnull out_status
-);
-#endif
-#ifndef UNIFFI_FFIDEF_UNIFFI_DEIMOS_CIRCOM_FN_FUNC_GENERATE_HALO2_PROOF
-#define UNIFFI_FFIDEF_UNIFFI_DEIMOS_CIRCOM_FN_FUNC_GENERATE_HALO2_PROOF
-RustBuffer uniffi_deimos_circom_fn_func_generate_halo2_proof(RustBuffer srs_path, RustBuffer pk_path, RustBuffer circuit_inputs, RustCallStatus *_Nonnull out_status
+CircomRustBuffer uniffi_deimos_circom_fn_func_generate_circom_proof(CircomRustBuffer zkey_path, CircomRustBuffer circuit_inputs, CircomRustBuffer proof_lib, CircomRustCallStatus *_Nonnull out_status
 );
 #endif
 #ifndef UNIFFI_FFIDEF_UNIFFI_DEIMOS_CIRCOM_FN_FUNC_MOPRO_UNIFFI_HELLO_WORLD
 #define UNIFFI_FFIDEF_UNIFFI_DEIMOS_CIRCOM_FN_FUNC_MOPRO_UNIFFI_HELLO_WORLD
-RustBuffer uniffi_deimos_circom_fn_func_mopro_uniffi_hello_world(RustCallStatus *_Nonnull out_status
+CircomRustBuffer uniffi_deimos_circom_fn_func_mopro_uniffi_hello_world(CircomRustCallStatus *_Nonnull out_status
     
 );
 #endif
 #ifndef UNIFFI_FFIDEF_UNIFFI_DEIMOS_CIRCOM_FN_FUNC_VERIFY_CIRCOM_PROOF
 #define UNIFFI_FFIDEF_UNIFFI_DEIMOS_CIRCOM_FN_FUNC_VERIFY_CIRCOM_PROOF
-int8_t uniffi_deimos_circom_fn_func_verify_circom_proof(RustBuffer zkey_path, RustBuffer proof_result, RustBuffer proof_lib, RustCallStatus *_Nonnull out_status
-);
-#endif
-#ifndef UNIFFI_FFIDEF_UNIFFI_DEIMOS_CIRCOM_FN_FUNC_VERIFY_HALO2_PROOF
-#define UNIFFI_FFIDEF_UNIFFI_DEIMOS_CIRCOM_FN_FUNC_VERIFY_HALO2_PROOF
-int8_t uniffi_deimos_circom_fn_func_verify_halo2_proof(RustBuffer srs_path, RustBuffer vk_path, RustBuffer proof, RustBuffer public_input, RustCallStatus *_Nonnull out_status
+int8_t uniffi_deimos_circom_fn_func_verify_circom_proof(CircomRustBuffer zkey_path, CircomRustBuffer proof_result, CircomRustBuffer proof_lib, CircomRustCallStatus *_Nonnull out_status
 );
 #endif
 #ifndef UNIFFI_FFIDEF_FFI_DEIMOS_CIRCOM_RUSTBUFFER_ALLOC
 #define UNIFFI_FFIDEF_FFI_DEIMOS_CIRCOM_RUSTBUFFER_ALLOC
-RustBuffer ffi_deimos_circom_rustbuffer_alloc(uint64_t size, RustCallStatus *_Nonnull out_status
+CircomRustBuffer ffi_deimos_circom_rustbuffer_alloc(uint64_t size, CircomRustCallStatus *_Nonnull out_status
 );
 #endif
 #ifndef UNIFFI_FFIDEF_FFI_DEIMOS_CIRCOM_RUSTBUFFER_FROM_BYTES
 #define UNIFFI_FFIDEF_FFI_DEIMOS_CIRCOM_RUSTBUFFER_FROM_BYTES
-RustBuffer ffi_deimos_circom_rustbuffer_from_bytes(ForeignBytes bytes, RustCallStatus *_Nonnull out_status
+CircomRustBuffer ffi_deimos_circom_rustbuffer_from_bytes(CircomForeignBytes bytes, CircomRustCallStatus *_Nonnull out_status
 );
 #endif
 #ifndef UNIFFI_FFIDEF_FFI_DEIMOS_CIRCOM_RUSTBUFFER_FREE
 #define UNIFFI_FFIDEF_FFI_DEIMOS_CIRCOM_RUSTBUFFER_FREE
-void ffi_deimos_circom_rustbuffer_free(RustBuffer buf, RustCallStatus *_Nonnull out_status
+void ffi_deimos_circom_rustbuffer_free(CircomRustBuffer buf, CircomRustCallStatus *_Nonnull out_status
 );
 #endif
 #ifndef UNIFFI_FFIDEF_FFI_DEIMOS_CIRCOM_RUSTBUFFER_RESERVE
 #define UNIFFI_FFIDEF_FFI_DEIMOS_CIRCOM_RUSTBUFFER_RESERVE
-RustBuffer ffi_deimos_circom_rustbuffer_reserve(RustBuffer buf, uint64_t additional, RustCallStatus *_Nonnull out_status
+CircomRustBuffer ffi_deimos_circom_rustbuffer_reserve(CircomRustBuffer buf, uint64_t additional, CircomRustCallStatus *_Nonnull out_status
 );
 #endif
 #ifndef UNIFFI_FFIDEF_FFI_DEIMOS_CIRCOM_RUST_FUTURE_POLL_U8
@@ -314,7 +304,7 @@ void ffi_deimos_circom_rust_future_free_u8(uint64_t handle
 #endif
 #ifndef UNIFFI_FFIDEF_FFI_DEIMOS_CIRCOM_RUST_FUTURE_COMPLETE_U8
 #define UNIFFI_FFIDEF_FFI_DEIMOS_CIRCOM_RUST_FUTURE_COMPLETE_U8
-uint8_t ffi_deimos_circom_rust_future_complete_u8(uint64_t handle, RustCallStatus *_Nonnull out_status
+uint8_t ffi_deimos_circom_rust_future_complete_u8(uint64_t handle, CircomRustCallStatus *_Nonnull out_status
 );
 #endif
 #ifndef UNIFFI_FFIDEF_FFI_DEIMOS_CIRCOM_RUST_FUTURE_POLL_I8
@@ -334,7 +324,7 @@ void ffi_deimos_circom_rust_future_free_i8(uint64_t handle
 #endif
 #ifndef UNIFFI_FFIDEF_FFI_DEIMOS_CIRCOM_RUST_FUTURE_COMPLETE_I8
 #define UNIFFI_FFIDEF_FFI_DEIMOS_CIRCOM_RUST_FUTURE_COMPLETE_I8
-int8_t ffi_deimos_circom_rust_future_complete_i8(uint64_t handle, RustCallStatus *_Nonnull out_status
+int8_t ffi_deimos_circom_rust_future_complete_i8(uint64_t handle, CircomRustCallStatus *_Nonnull out_status
 );
 #endif
 #ifndef UNIFFI_FFIDEF_FFI_DEIMOS_CIRCOM_RUST_FUTURE_POLL_U16
@@ -354,7 +344,7 @@ void ffi_deimos_circom_rust_future_free_u16(uint64_t handle
 #endif
 #ifndef UNIFFI_FFIDEF_FFI_DEIMOS_CIRCOM_RUST_FUTURE_COMPLETE_U16
 #define UNIFFI_FFIDEF_FFI_DEIMOS_CIRCOM_RUST_FUTURE_COMPLETE_U16
-uint16_t ffi_deimos_circom_rust_future_complete_u16(uint64_t handle, RustCallStatus *_Nonnull out_status
+uint16_t ffi_deimos_circom_rust_future_complete_u16(uint64_t handle, CircomRustCallStatus *_Nonnull out_status
 );
 #endif
 #ifndef UNIFFI_FFIDEF_FFI_DEIMOS_CIRCOM_RUST_FUTURE_POLL_I16
@@ -374,7 +364,7 @@ void ffi_deimos_circom_rust_future_free_i16(uint64_t handle
 #endif
 #ifndef UNIFFI_FFIDEF_FFI_DEIMOS_CIRCOM_RUST_FUTURE_COMPLETE_I16
 #define UNIFFI_FFIDEF_FFI_DEIMOS_CIRCOM_RUST_FUTURE_COMPLETE_I16
-int16_t ffi_deimos_circom_rust_future_complete_i16(uint64_t handle, RustCallStatus *_Nonnull out_status
+int16_t ffi_deimos_circom_rust_future_complete_i16(uint64_t handle, CircomRustCallStatus *_Nonnull out_status
 );
 #endif
 #ifndef UNIFFI_FFIDEF_FFI_DEIMOS_CIRCOM_RUST_FUTURE_POLL_U32
@@ -394,7 +384,7 @@ void ffi_deimos_circom_rust_future_free_u32(uint64_t handle
 #endif
 #ifndef UNIFFI_FFIDEF_FFI_DEIMOS_CIRCOM_RUST_FUTURE_COMPLETE_U32
 #define UNIFFI_FFIDEF_FFI_DEIMOS_CIRCOM_RUST_FUTURE_COMPLETE_U32
-uint32_t ffi_deimos_circom_rust_future_complete_u32(uint64_t handle, RustCallStatus *_Nonnull out_status
+uint32_t ffi_deimos_circom_rust_future_complete_u32(uint64_t handle, CircomRustCallStatus *_Nonnull out_status
 );
 #endif
 #ifndef UNIFFI_FFIDEF_FFI_DEIMOS_CIRCOM_RUST_FUTURE_POLL_I32
@@ -414,7 +404,7 @@ void ffi_deimos_circom_rust_future_free_i32(uint64_t handle
 #endif
 #ifndef UNIFFI_FFIDEF_FFI_DEIMOS_CIRCOM_RUST_FUTURE_COMPLETE_I32
 #define UNIFFI_FFIDEF_FFI_DEIMOS_CIRCOM_RUST_FUTURE_COMPLETE_I32
-int32_t ffi_deimos_circom_rust_future_complete_i32(uint64_t handle, RustCallStatus *_Nonnull out_status
+int32_t ffi_deimos_circom_rust_future_complete_i32(uint64_t handle, CircomRustCallStatus *_Nonnull out_status
 );
 #endif
 #ifndef UNIFFI_FFIDEF_FFI_DEIMOS_CIRCOM_RUST_FUTURE_POLL_U64
@@ -434,7 +424,7 @@ void ffi_deimos_circom_rust_future_free_u64(uint64_t handle
 #endif
 #ifndef UNIFFI_FFIDEF_FFI_DEIMOS_CIRCOM_RUST_FUTURE_COMPLETE_U64
 #define UNIFFI_FFIDEF_FFI_DEIMOS_CIRCOM_RUST_FUTURE_COMPLETE_U64
-uint64_t ffi_deimos_circom_rust_future_complete_u64(uint64_t handle, RustCallStatus *_Nonnull out_status
+uint64_t ffi_deimos_circom_rust_future_complete_u64(uint64_t handle, CircomRustCallStatus *_Nonnull out_status
 );
 #endif
 #ifndef UNIFFI_FFIDEF_FFI_DEIMOS_CIRCOM_RUST_FUTURE_POLL_I64
@@ -454,7 +444,7 @@ void ffi_deimos_circom_rust_future_free_i64(uint64_t handle
 #endif
 #ifndef UNIFFI_FFIDEF_FFI_DEIMOS_CIRCOM_RUST_FUTURE_COMPLETE_I64
 #define UNIFFI_FFIDEF_FFI_DEIMOS_CIRCOM_RUST_FUTURE_COMPLETE_I64
-int64_t ffi_deimos_circom_rust_future_complete_i64(uint64_t handle, RustCallStatus *_Nonnull out_status
+int64_t ffi_deimos_circom_rust_future_complete_i64(uint64_t handle, CircomRustCallStatus *_Nonnull out_status
 );
 #endif
 #ifndef UNIFFI_FFIDEF_FFI_DEIMOS_CIRCOM_RUST_FUTURE_POLL_F32
@@ -474,7 +464,7 @@ void ffi_deimos_circom_rust_future_free_f32(uint64_t handle
 #endif
 #ifndef UNIFFI_FFIDEF_FFI_DEIMOS_CIRCOM_RUST_FUTURE_COMPLETE_F32
 #define UNIFFI_FFIDEF_FFI_DEIMOS_CIRCOM_RUST_FUTURE_COMPLETE_F32
-float ffi_deimos_circom_rust_future_complete_f32(uint64_t handle, RustCallStatus *_Nonnull out_status
+float ffi_deimos_circom_rust_future_complete_f32(uint64_t handle, CircomRustCallStatus *_Nonnull out_status
 );
 #endif
 #ifndef UNIFFI_FFIDEF_FFI_DEIMOS_CIRCOM_RUST_FUTURE_POLL_F64
@@ -494,7 +484,7 @@ void ffi_deimos_circom_rust_future_free_f64(uint64_t handle
 #endif
 #ifndef UNIFFI_FFIDEF_FFI_DEIMOS_CIRCOM_RUST_FUTURE_COMPLETE_F64
 #define UNIFFI_FFIDEF_FFI_DEIMOS_CIRCOM_RUST_FUTURE_COMPLETE_F64
-double ffi_deimos_circom_rust_future_complete_f64(uint64_t handle, RustCallStatus *_Nonnull out_status
+double ffi_deimos_circom_rust_future_complete_f64(uint64_t handle, CircomRustCallStatus *_Nonnull out_status
 );
 #endif
 #ifndef UNIFFI_FFIDEF_FFI_DEIMOS_CIRCOM_RUST_FUTURE_POLL_POINTER
@@ -514,7 +504,7 @@ void ffi_deimos_circom_rust_future_free_pointer(uint64_t handle
 #endif
 #ifndef UNIFFI_FFIDEF_FFI_DEIMOS_CIRCOM_RUST_FUTURE_COMPLETE_POINTER
 #define UNIFFI_FFIDEF_FFI_DEIMOS_CIRCOM_RUST_FUTURE_COMPLETE_POINTER
-void*_Nonnull ffi_deimos_circom_rust_future_complete_pointer(uint64_t handle, RustCallStatus *_Nonnull out_status
+void*_Nonnull ffi_deimos_circom_rust_future_complete_pointer(uint64_t handle, CircomRustCallStatus *_Nonnull out_status
 );
 #endif
 #ifndef UNIFFI_FFIDEF_FFI_DEIMOS_CIRCOM_RUST_FUTURE_POLL_RUST_BUFFER
@@ -534,7 +524,7 @@ void ffi_deimos_circom_rust_future_free_rust_buffer(uint64_t handle
 #endif
 #ifndef UNIFFI_FFIDEF_FFI_DEIMOS_CIRCOM_RUST_FUTURE_COMPLETE_RUST_BUFFER
 #define UNIFFI_FFIDEF_FFI_DEIMOS_CIRCOM_RUST_FUTURE_COMPLETE_RUST_BUFFER
-RustBuffer ffi_deimos_circom_rust_future_complete_rust_buffer(uint64_t handle, RustCallStatus *_Nonnull out_status
+CircomRustBuffer ffi_deimos_circom_rust_future_complete_rust_buffer(uint64_t handle, CircomRustCallStatus *_Nonnull out_status
 );
 #endif
 #ifndef UNIFFI_FFIDEF_FFI_DEIMOS_CIRCOM_RUST_FUTURE_POLL_VOID
@@ -554,18 +544,12 @@ void ffi_deimos_circom_rust_future_free_void(uint64_t handle
 #endif
 #ifndef UNIFFI_FFIDEF_FFI_DEIMOS_CIRCOM_RUST_FUTURE_COMPLETE_VOID
 #define UNIFFI_FFIDEF_FFI_DEIMOS_CIRCOM_RUST_FUTURE_COMPLETE_VOID
-void ffi_deimos_circom_rust_future_complete_void(uint64_t handle, RustCallStatus *_Nonnull out_status
+void ffi_deimos_circom_rust_future_complete_void(uint64_t handle, CircomRustCallStatus *_Nonnull out_status
 );
 #endif
 #ifndef UNIFFI_FFIDEF_UNIFFI_DEIMOS_CIRCOM_CHECKSUM_FUNC_GENERATE_CIRCOM_PROOF
 #define UNIFFI_FFIDEF_UNIFFI_DEIMOS_CIRCOM_CHECKSUM_FUNC_GENERATE_CIRCOM_PROOF
 uint16_t uniffi_deimos_circom_checksum_func_generate_circom_proof(void
-    
-);
-#endif
-#ifndef UNIFFI_FFIDEF_UNIFFI_DEIMOS_CIRCOM_CHECKSUM_FUNC_GENERATE_HALO2_PROOF
-#define UNIFFI_FFIDEF_UNIFFI_DEIMOS_CIRCOM_CHECKSUM_FUNC_GENERATE_HALO2_PROOF
-uint16_t uniffi_deimos_circom_checksum_func_generate_halo2_proof(void
     
 );
 #endif
@@ -578,12 +562,6 @@ uint16_t uniffi_deimos_circom_checksum_func_mopro_uniffi_hello_world(void
 #ifndef UNIFFI_FFIDEF_UNIFFI_DEIMOS_CIRCOM_CHECKSUM_FUNC_VERIFY_CIRCOM_PROOF
 #define UNIFFI_FFIDEF_UNIFFI_DEIMOS_CIRCOM_CHECKSUM_FUNC_VERIFY_CIRCOM_PROOF
 uint16_t uniffi_deimos_circom_checksum_func_verify_circom_proof(void
-    
-);
-#endif
-#ifndef UNIFFI_FFIDEF_UNIFFI_DEIMOS_CIRCOM_CHECKSUM_FUNC_VERIFY_HALO2_PROOF
-#define UNIFFI_FFIDEF_UNIFFI_DEIMOS_CIRCOM_CHECKSUM_FUNC_VERIFY_HALO2_PROOF
-uint16_t uniffi_deimos_circom_checksum_func_verify_halo2_proof(void
     
 );
 #endif

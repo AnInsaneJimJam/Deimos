@@ -26,8 +26,8 @@ A new Flutter plugin project.
   s.pod_target_xcconfig = { 
     'DEFINES_MODULE' => 'YES', 
     'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'x86_64',
-    'HEADER_SEARCH_PATHS' => '"$(PODS_TARGET_SRCROOT)/Frameworks/MoproCircomBindings.xcframework/ios-arm64/Headers" "$(PODS_TARGET_SRCROOT)/Frameworks/MoproNoirBindings.xcframework/ios-arm64/Headers"',
-    'OTHER_SWIFT_FLAGS' => '-Xcc -fmodule-map-file="$(PODS_TARGET_SRCROOT)/Frameworks/MoproCircomBindings.xcframework/ios-arm64/Headers/bindings.modulemap" -Xcc -fmodule-map-file="$(PODS_TARGET_SRCROOT)/Frameworks/MoproNoirBindings.xcframework/ios-arm64/Headers/bindings.modulemap"'
+    'HEADER_SEARCH_PATHS' => '"$(PODS_TARGET_SRCROOT)/Frameworks/MoproCircomBindings.xcframework/ios-arm64/Headers/deimos_circom" "$(PODS_TARGET_SRCROOT)/Frameworks/MoproNoirBindings.xcframework/ios-arm64/Headers/deimos_noir"',
+    'OTHER_SWIFT_FLAGS' => '-Xcc -fmodule-map-file="$(PODS_TARGET_SRCROOT)/Frameworks/MoproCircomBindings.xcframework/ios-arm64/Headers/deimos_circom/module.modulemap" -Xcc -fmodule-map-file="$(PODS_TARGET_SRCROOT)/Frameworks/MoproNoirBindings.xcframework/ios-arm64/Headers/deimos_noir/module.modulemap"'
   }
   s.swift_version = '5.0'
 end

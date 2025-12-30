@@ -187,74 +187,7 @@ public class MoproFlutterPlugin: NSObject, FlutterPlugin {
         }
       }
 
-    case "generateHalo2Proof":
-      guard let args = call.arguments as? [String: Any],
-        let srsPath = args["srsPath"] as? String,
-        let pkPath = args["pkPath"] as? String,
-        let inputs = args["inputs"] as? [String: [String]]
-      else {
-        result(FlutterError(code: "ARGUMENT_ERROR", message: "Missing arguments", details: nil))
-        return
-      }
 
-      do {
-        let proofResult = try generateHalo2Proof_Circom(
-          srsPath: srsPath, pkPath: pkPath, circuitInputs: inputs)
-        let resultMap = [
-          "proof": proofResult.proof,
-          "inputs": proofResult.inputs,
-        ]
-        result(resultMap)
-      } catch {
-        result(
-          FlutterError(
-            code: "PROOF_GENERATION_ERROR", message: "Failed to generate proof",
-            details: error.localizedDescription))
-      }
-
-    case "verifyHalo2Proof":
-      guard let args = call.arguments as? [String: Any],
-        let srsPath = args["srsPath"] as? String
-      else {
-        result(
-          FlutterError(code: "ARGUMENT_ERROR", message: "Missing arguments srsPath", details: nil))
-        return
-      }
-
-      guard let args = call.arguments as? [String: Any],
-        let vkPath = args["vkPath"] as? String
-      else {
-        result(
-          FlutterError(code: "ARGUMENT_ERROR", message: "Missing arguments vkPath", details: nil))
-        return
-      }
-
-      guard let args = call.arguments as? [String: Any],
-        let proof = args["proof"] as? FlutterStandardTypedData
-      else {
-        result(
-          FlutterError(code: "ARGUMENT_ERROR", message: "Missing arguments proof", details: nil))
-        return
-      }
-
-      guard let args = call.arguments as? [String: Any],
-        let inputs = args["inputs"] as? FlutterStandardTypedData
-      else {
-        result(
-          FlutterError(code: "ARGUMENT_ERROR", message: "Missing arguments inputs", details: nil))
-        return
-      }
-
-      do {
-        let valid = try verifyHalo2Proof_Circom(
-          srsPath: srsPath, vkPath: vkPath, proof: proof.data, publicInput: inputs.data)
-        result(valid)
-      } catch {
-        result(
-          FlutterError(
-            code: "PROOF_VERIFICATION_ERROR", message: "Failed to verify proof",
-            details: error.localizedDescription))
-      }
     case "generateNoirProof":
       guard let args = call.arguments as? [String: Any],
         let circuitPath = args["circuitPath"] as? String,

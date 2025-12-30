@@ -11,10 +11,6 @@ import Foundation
 import deimos_noirFFI
 #endif
 
-public typealias NoirRustBuffer = deimos_noirFFI.RustBuffer
-public typealias NoirForeignBytes = deimos_noirFFI.ForeignBytes
-public typealias NoirRustCallStatus = deimos_noirFFI.RustCallStatus
-
 fileprivate extension NoirRustBuffer {
     // Allocate a new buffer, copying the contents of a `UInt8` array.
     init(bytes: [UInt8]) {
@@ -485,7 +481,7 @@ fileprivate struct FfiConverterData: FfiConverterNoirRustBuffer {
 }
 
 
-public struct NoirHalo2ProofResult {
+public struct Halo2ProofResult {
     public var proof: Data
     public var inputs: Data
 
@@ -498,12 +494,12 @@ public struct NoirHalo2ProofResult {
 }
 
 #if compiler(>=6)
-extension NoirHalo2ProofResult: Sendable {}
+extension Halo2ProofResult: Sendable {}
 #endif
 
 
-extension NoirHalo2ProofResult: Equatable, Hashable {
-    public static func ==(lhs: NoirHalo2ProofResult, rhs: NoirHalo2ProofResult) -> Bool {
+extension Halo2ProofResult: Equatable, Hashable {
+    public static func ==(lhs: Halo2ProofResult, rhs: Halo2ProofResult) -> Bool {
         if lhs.proof != rhs.proof {
             return false
         }
@@ -524,16 +520,16 @@ extension NoirHalo2ProofResult: Equatable, Hashable {
 #if swift(>=5.8)
 @_documentation(visibility: private)
 #endif
-public struct FfiConverterTypeNoirHalo2ProofResult: FfiConverterNoirRustBuffer {
-    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> NoirHalo2ProofResult {
+public struct FfiConverterTypeHalo2ProofResult: FfiConverterNoirRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> Halo2ProofResult {
         return
-            try NoirHalo2ProofResult(
+            try Halo2ProofResult(
                 proof: FfiConverterData.read(from: &buf), 
                 inputs: FfiConverterData.read(from: &buf)
         )
     }
 
-    public static func write(_ value: NoirHalo2ProofResult, into buf: inout [UInt8]) {
+    public static func write(_ value: Halo2ProofResult, into buf: inout [UInt8]) {
         FfiConverterData.write(value.proof, into: &buf)
         FfiConverterData.write(value.inputs, into: &buf)
     }
@@ -543,15 +539,15 @@ public struct FfiConverterTypeNoirHalo2ProofResult: FfiConverterNoirRustBuffer {
 #if swift(>=5.8)
 @_documentation(visibility: private)
 #endif
-public func FfiConverterTypeNoirHalo2ProofResult_lift(_ buf: NoirRustBuffer) throws -> NoirHalo2ProofResult {
-    return try FfiConverterTypeNoirHalo2ProofResult.lift(buf)
+public func FfiConverterTypeHalo2ProofResult_lift(_ buf: NoirRustBuffer) throws -> Halo2ProofResult {
+    return try FfiConverterTypeHalo2ProofResult.lift(buf)
 }
 
 #if swift(>=5.8)
 @_documentation(visibility: private)
 #endif
-public func FfiConverterTypeNoirHalo2ProofResult_lower(_ value: NoirHalo2ProofResult) -> NoirRustBuffer {
-    return FfiConverterTypeNoirHalo2ProofResult.lower(value)
+public func FfiConverterTypeHalo2ProofResult_lower(_ value: Halo2ProofResult) -> NoirRustBuffer {
+    return FfiConverterTypeHalo2ProofResult.lower(value)
 }
 
 
@@ -559,11 +555,9 @@ public enum NoirMoproError {
 
     
     
-    case CircomError(String
+    case NoirError(String
     )
     case Halo2Error(String
-    )
-    case NoirError(String
     )
 }
 
@@ -581,13 +575,10 @@ public struct FfiConverterTypeNoirMoproError: FfiConverterNoirRustBuffer {
         
 
         
-        case 1: return .CircomError(
+        case 1: return .NoirError(
             try FfiConverterString.read(from: &buf)
             )
         case 2: return .Halo2Error(
-            try FfiConverterString.read(from: &buf)
-            )
-        case 3: return .NoirError(
             try FfiConverterString.read(from: &buf)
             )
 
@@ -602,18 +593,13 @@ public struct FfiConverterTypeNoirMoproError: FfiConverterNoirRustBuffer {
 
         
         
-        case let .CircomError(v1):
+        case let .NoirError(v1):
             writeInt(&buf, Int32(1))
             FfiConverterString.write(v1, into: &buf)
             
         
         case let .Halo2Error(v1):
             writeInt(&buf, Int32(2))
-            FfiConverterString.write(v1, into: &buf)
-            
-        
-        case let .NoirError(v1):
-            writeInt(&buf, Int32(3))
             FfiConverterString.write(v1, into: &buf)
             
         }
@@ -721,8 +707,8 @@ fileprivate struct FfiConverterDictionaryStringSequenceString: FfiConverterNoirR
         return dict
     }
 }
-public func generateHalo2Proof(srsPath: String, pkPath: String, circuitInputs: [String: [String]])throws  -> NoirHalo2ProofResult  {
-    return try  FfiConverterTypeNoirHalo2ProofResult_lift(try rustCallWithError(FfiConverterTypeNoirMoproError_lift) {
+public func generateHalo2Proof(srsPath: String, pkPath: String, circuitInputs: [String: [String]])throws  -> Halo2ProofResult  {
+    return try  FfiConverterTypeHalo2ProofResult_lift(try rustCallWithError(FfiConverterTypeNoirMoproError_lift) {
     uniffi_deimos_noir_fn_func_generate_halo2_proof(
         FfiConverterString.lower(srsPath),
         FfiConverterString.lower(pkPath),
@@ -770,10 +756,6 @@ public func getNoirVerificationKey(circuitPath: String, srsPath: String?, onChai
     )
 })
 }
-/**
- * You can also customize the bindings by #[uniffi::export]
- * Reference: https://mozilla.github.io/uniffi-rs/latest/proc_macro/index.html
- */
 public func moproUniffiHelloWorld() -> String  {
     return try!  FfiConverterString.lift(try! rustCall() {
     uniffi_deimos_noir_fn_func_mopro_uniffi_hello_world($0
@@ -835,7 +817,7 @@ private let initializationResult: InitializationResult = {
     if (uniffi_deimos_noir_checksum_func_get_noir_verification_key() != 8981) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_deimos_noir_checksum_func_mopro_uniffi_hello_world() != 39402) {
+    if (uniffi_deimos_noir_checksum_func_mopro_uniffi_hello_world() != 29796) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_deimos_noir_checksum_func_verify_halo2_proof() != 58585) {

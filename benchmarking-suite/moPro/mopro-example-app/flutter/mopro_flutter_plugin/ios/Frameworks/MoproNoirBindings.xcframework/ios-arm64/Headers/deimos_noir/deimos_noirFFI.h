@@ -9,41 +9,41 @@
 
 // The following structs are used to implement the lowest level
 // of the FFI, and thus useful to multiple uniffied crates.
-// We ensure they are declared exactly once, with a header guard, UNIFFI_SHARED_H.
-#ifdef UNIFFI_SHARED_H
+// We ensure they are declared exactly once, with a header guard, UNIFFI_SHARED_H_NOIR.
+#ifdef UNIFFI_SHARED_H_NOIR
     // We also try to prevent mixing versions of shared uniffi header structs.
-    // If you add anything to the #else block, you must increment the version suffix in UNIFFI_SHARED_HEADER_V4
-    #ifndef UNIFFI_SHARED_HEADER_V4
+    // If you add anything to the #else block, you must increment the version suffix in UNIFFI_SHARED_H_NOIREADER_V4
+    #ifndef UNIFFI_SHARED_H_NOIREADER_V4
         #error Combining helper code from multiple versions of uniffi is not supported
-    #endif // ndef UNIFFI_SHARED_HEADER_V4
+    #endif // ndef UNIFFI_SHARED_H_NOIREADER_V4
 #else
-#define UNIFFI_SHARED_H
-#define UNIFFI_SHARED_HEADER_V4
-// ⚠️ Attention: If you change this #else block (ending in `#endif // def UNIFFI_SHARED_H`) you *must* ⚠️
-// ⚠️ increment the version suffix in all instances of UNIFFI_SHARED_HEADER_V4 in this file.           ⚠️
+#define UNIFFI_SHARED_H_NOIR
+#define UNIFFI_SHARED_H_NOIREADER_V4
+// ⚠️ Attention: If you change this #else block (ending in `#endif // def UNIFFI_SHARED_H_NOIR`) you *must* ⚠️
+// ⚠️ increment the version suffix in all instances of UNIFFI_SHARED_H_NOIREADER_V4 in this file.           ⚠️
 
-typedef struct RustBuffer
+typedef struct NoirRustBuffer
 {
     uint64_t capacity;
     uint64_t len;
     uint8_t *_Nullable data;
-} RustBuffer;
+} NoirRustBuffer;
 
-typedef struct ForeignBytes
+typedef struct NoirForeignBytes
 {
     int32_t len;
     const uint8_t *_Nullable data;
-} ForeignBytes;
+} NoirForeignBytes;
 
 // Error definitions
-typedef struct RustCallStatus {
+typedef struct NoirRustCallStatus {
     int8_t code;
-    RustBuffer errorBuf;
-} RustCallStatus;
+    NoirRustBuffer errorBuf;
+} NoirRustCallStatus;
 
-// ⚠️ Attention: If you change this #else block (ending in `#endif // def UNIFFI_SHARED_H`) you *must* ⚠️
-// ⚠️ increment the version suffix in all instances of UNIFFI_SHARED_HEADER_V4 in this file.           ⚠️
-#endif // def UNIFFI_SHARED_H
+// ⚠️ Attention: If you change this #else block (ending in `#endif // def UNIFFI_SHARED_H_NOIR`) you *must* ⚠️
+// ⚠️ increment the version suffix in all instances of UNIFFI_SHARED_H_NOIREADER_V4 in this file.           ⚠️
+#endif // def UNIFFI_SHARED_H_NOIR
 #ifndef UNIFFI_FFIDEF_RUST_FUTURE_CONTINUATION_CALLBACK
 #define UNIFFI_FFIDEF_RUST_FUTURE_CONTINUATION_CALLBACK
 typedef void (*UniffiRustFutureContinuationCallback)(uint64_t, int8_t
@@ -74,7 +74,7 @@ typedef struct UniffiForeignFuture {
 #define UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_U8
 typedef struct UniffiForeignFutureStructU8 {
     uint8_t returnValue;
-    RustCallStatus callStatus;
+    NoirRustCallStatus callStatus;
 } UniffiForeignFutureStructU8;
 
 #endif
@@ -88,7 +88,7 @@ typedef void (*UniffiForeignFutureCompleteU8)(uint64_t, UniffiForeignFutureStruc
 #define UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_I8
 typedef struct UniffiForeignFutureStructI8 {
     int8_t returnValue;
-    RustCallStatus callStatus;
+    NoirRustCallStatus callStatus;
 } UniffiForeignFutureStructI8;
 
 #endif
@@ -102,7 +102,7 @@ typedef void (*UniffiForeignFutureCompleteI8)(uint64_t, UniffiForeignFutureStruc
 #define UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_U16
 typedef struct UniffiForeignFutureStructU16 {
     uint16_t returnValue;
-    RustCallStatus callStatus;
+    NoirRustCallStatus callStatus;
 } UniffiForeignFutureStructU16;
 
 #endif
@@ -116,7 +116,7 @@ typedef void (*UniffiForeignFutureCompleteU16)(uint64_t, UniffiForeignFutureStru
 #define UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_I16
 typedef struct UniffiForeignFutureStructI16 {
     int16_t returnValue;
-    RustCallStatus callStatus;
+    NoirRustCallStatus callStatus;
 } UniffiForeignFutureStructI16;
 
 #endif
@@ -130,7 +130,7 @@ typedef void (*UniffiForeignFutureCompleteI16)(uint64_t, UniffiForeignFutureStru
 #define UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_U32
 typedef struct UniffiForeignFutureStructU32 {
     uint32_t returnValue;
-    RustCallStatus callStatus;
+    NoirRustCallStatus callStatus;
 } UniffiForeignFutureStructU32;
 
 #endif
@@ -144,7 +144,7 @@ typedef void (*UniffiForeignFutureCompleteU32)(uint64_t, UniffiForeignFutureStru
 #define UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_I32
 typedef struct UniffiForeignFutureStructI32 {
     int32_t returnValue;
-    RustCallStatus callStatus;
+    NoirRustCallStatus callStatus;
 } UniffiForeignFutureStructI32;
 
 #endif
@@ -158,7 +158,7 @@ typedef void (*UniffiForeignFutureCompleteI32)(uint64_t, UniffiForeignFutureStru
 #define UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_U64
 typedef struct UniffiForeignFutureStructU64 {
     uint64_t returnValue;
-    RustCallStatus callStatus;
+    NoirRustCallStatus callStatus;
 } UniffiForeignFutureStructU64;
 
 #endif
@@ -172,7 +172,7 @@ typedef void (*UniffiForeignFutureCompleteU64)(uint64_t, UniffiForeignFutureStru
 #define UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_I64
 typedef struct UniffiForeignFutureStructI64 {
     int64_t returnValue;
-    RustCallStatus callStatus;
+    NoirRustCallStatus callStatus;
 } UniffiForeignFutureStructI64;
 
 #endif
@@ -186,7 +186,7 @@ typedef void (*UniffiForeignFutureCompleteI64)(uint64_t, UniffiForeignFutureStru
 #define UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_F32
 typedef struct UniffiForeignFutureStructF32 {
     float returnValue;
-    RustCallStatus callStatus;
+    NoirRustCallStatus callStatus;
 } UniffiForeignFutureStructF32;
 
 #endif
@@ -200,7 +200,7 @@ typedef void (*UniffiForeignFutureCompleteF32)(uint64_t, UniffiForeignFutureStru
 #define UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_F64
 typedef struct UniffiForeignFutureStructF64 {
     double returnValue;
-    RustCallStatus callStatus;
+    NoirRustCallStatus callStatus;
 } UniffiForeignFutureStructF64;
 
 #endif
@@ -214,7 +214,7 @@ typedef void (*UniffiForeignFutureCompleteF64)(uint64_t, UniffiForeignFutureStru
 #define UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_POINTER
 typedef struct UniffiForeignFutureStructPointer {
     void*_Nonnull returnValue;
-    RustCallStatus callStatus;
+    NoirRustCallStatus callStatus;
 } UniffiForeignFutureStructPointer;
 
 #endif
@@ -226,22 +226,22 @@ typedef void (*UniffiForeignFutureCompletePointer)(uint64_t, UniffiForeignFuture
 #endif
 #ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_RUST_BUFFER
 #define UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_RUST_BUFFER
-typedef struct UniffiForeignFutureStructRustBuffer {
-    RustBuffer returnValue;
-    RustCallStatus callStatus;
-} UniffiForeignFutureStructRustBuffer;
+typedef struct UniffiForeignFutureStructNoirRustBuffer {
+    NoirRustBuffer returnValue;
+    NoirRustCallStatus callStatus;
+} UniffiForeignFutureStructNoirRustBuffer;
 
 #endif
 #ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_COMPLETE_RUST_BUFFER
 #define UNIFFI_FFIDEF_FOREIGN_FUTURE_COMPLETE_RUST_BUFFER
-typedef void (*UniffiForeignFutureCompleteRustBuffer)(uint64_t, UniffiForeignFutureStructRustBuffer
+typedef void (*UniffiForeignFutureCompleteNoirRustBuffer)(uint64_t, UniffiForeignFutureStructNoirRustBuffer
     );
 
 #endif
 #ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_VOID
 #define UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_VOID
 typedef struct UniffiForeignFutureStructVoid {
-    RustCallStatus callStatus;
+    NoirRustCallStatus callStatus;
 } UniffiForeignFutureStructVoid;
 
 #endif
@@ -253,53 +253,53 @@ typedef void (*UniffiForeignFutureCompleteVoid)(uint64_t, UniffiForeignFutureStr
 #endif
 #ifndef UNIFFI_FFIDEF_UNIFFI_DEIMOS_NOIR_FN_FUNC_GENERATE_HALO2_PROOF
 #define UNIFFI_FFIDEF_UNIFFI_DEIMOS_NOIR_FN_FUNC_GENERATE_HALO2_PROOF
-RustBuffer uniffi_deimos_noir_fn_func_generate_halo2_proof(RustBuffer srs_path, RustBuffer pk_path, RustBuffer circuit_inputs, RustCallStatus *_Nonnull out_status
+NoirRustBuffer uniffi_deimos_noir_fn_func_generate_halo2_proof(NoirRustBuffer srs_path, NoirRustBuffer pk_path, NoirRustBuffer circuit_inputs, NoirRustCallStatus *_Nonnull out_status
 );
 #endif
 #ifndef UNIFFI_FFIDEF_UNIFFI_DEIMOS_NOIR_FN_FUNC_GENERATE_NOIR_PROOF
 #define UNIFFI_FFIDEF_UNIFFI_DEIMOS_NOIR_FN_FUNC_GENERATE_NOIR_PROOF
-RustBuffer uniffi_deimos_noir_fn_func_generate_noir_proof(RustBuffer circuit_path, RustBuffer srs_path, RustBuffer inputs, int8_t on_chain, RustBuffer vk, int8_t low_memory_mode, RustCallStatus *_Nonnull out_status
+NoirRustBuffer uniffi_deimos_noir_fn_func_generate_noir_proof(NoirRustBuffer circuit_path, NoirRustBuffer srs_path, NoirRustBuffer inputs, int8_t on_chain, NoirRustBuffer vk, int8_t low_memory_mode, NoirRustCallStatus *_Nonnull out_status
 );
 #endif
 #ifndef UNIFFI_FFIDEF_UNIFFI_DEIMOS_NOIR_FN_FUNC_GET_NOIR_VERIFICATION_KEY
 #define UNIFFI_FFIDEF_UNIFFI_DEIMOS_NOIR_FN_FUNC_GET_NOIR_VERIFICATION_KEY
-RustBuffer uniffi_deimos_noir_fn_func_get_noir_verification_key(RustBuffer circuit_path, RustBuffer srs_path, int8_t on_chain, int8_t low_memory_mode, RustCallStatus *_Nonnull out_status
+NoirRustBuffer uniffi_deimos_noir_fn_func_get_noir_verification_key(NoirRustBuffer circuit_path, NoirRustBuffer srs_path, int8_t on_chain, int8_t low_memory_mode, NoirRustCallStatus *_Nonnull out_status
 );
 #endif
 #ifndef UNIFFI_FFIDEF_UNIFFI_DEIMOS_NOIR_FN_FUNC_MOPRO_UNIFFI_HELLO_WORLD
 #define UNIFFI_FFIDEF_UNIFFI_DEIMOS_NOIR_FN_FUNC_MOPRO_UNIFFI_HELLO_WORLD
-RustBuffer uniffi_deimos_noir_fn_func_mopro_uniffi_hello_world(RustCallStatus *_Nonnull out_status
+NoirRustBuffer uniffi_deimos_noir_fn_func_mopro_uniffi_hello_world(NoirRustCallStatus *_Nonnull out_status
     
 );
 #endif
 #ifndef UNIFFI_FFIDEF_UNIFFI_DEIMOS_NOIR_FN_FUNC_VERIFY_HALO2_PROOF
 #define UNIFFI_FFIDEF_UNIFFI_DEIMOS_NOIR_FN_FUNC_VERIFY_HALO2_PROOF
-int8_t uniffi_deimos_noir_fn_func_verify_halo2_proof(RustBuffer srs_path, RustBuffer vk_path, RustBuffer proof, RustBuffer public_input, RustCallStatus *_Nonnull out_status
+int8_t uniffi_deimos_noir_fn_func_verify_halo2_proof(NoirRustBuffer srs_path, NoirRustBuffer vk_path, NoirRustBuffer proof, NoirRustBuffer public_input, NoirRustCallStatus *_Nonnull out_status
 );
 #endif
 #ifndef UNIFFI_FFIDEF_UNIFFI_DEIMOS_NOIR_FN_FUNC_VERIFY_NOIR_PROOF
 #define UNIFFI_FFIDEF_UNIFFI_DEIMOS_NOIR_FN_FUNC_VERIFY_NOIR_PROOF
-int8_t uniffi_deimos_noir_fn_func_verify_noir_proof(RustBuffer circuit_path, RustBuffer proof, int8_t on_chain, RustBuffer vk, int8_t low_memory_mode, RustCallStatus *_Nonnull out_status
+int8_t uniffi_deimos_noir_fn_func_verify_noir_proof(NoirRustBuffer circuit_path, NoirRustBuffer proof, int8_t on_chain, NoirRustBuffer vk, int8_t low_memory_mode, NoirRustCallStatus *_Nonnull out_status
 );
 #endif
 #ifndef UNIFFI_FFIDEF_FFI_DEIMOS_NOIR_RUSTBUFFER_ALLOC
 #define UNIFFI_FFIDEF_FFI_DEIMOS_NOIR_RUSTBUFFER_ALLOC
-RustBuffer ffi_deimos_noir_rustbuffer_alloc(uint64_t size, RustCallStatus *_Nonnull out_status
+NoirRustBuffer ffi_deimos_noir_rustbuffer_alloc(uint64_t size, NoirRustCallStatus *_Nonnull out_status
 );
 #endif
 #ifndef UNIFFI_FFIDEF_FFI_DEIMOS_NOIR_RUSTBUFFER_FROM_BYTES
 #define UNIFFI_FFIDEF_FFI_DEIMOS_NOIR_RUSTBUFFER_FROM_BYTES
-RustBuffer ffi_deimos_noir_rustbuffer_from_bytes(ForeignBytes bytes, RustCallStatus *_Nonnull out_status
+NoirRustBuffer ffi_deimos_noir_rustbuffer_from_bytes(NoirForeignBytes bytes, NoirRustCallStatus *_Nonnull out_status
 );
 #endif
 #ifndef UNIFFI_FFIDEF_FFI_DEIMOS_NOIR_RUSTBUFFER_FREE
 #define UNIFFI_FFIDEF_FFI_DEIMOS_NOIR_RUSTBUFFER_FREE
-void ffi_deimos_noir_rustbuffer_free(RustBuffer buf, RustCallStatus *_Nonnull out_status
+void ffi_deimos_noir_rustbuffer_free(NoirRustBuffer buf, NoirRustCallStatus *_Nonnull out_status
 );
 #endif
 #ifndef UNIFFI_FFIDEF_FFI_DEIMOS_NOIR_RUSTBUFFER_RESERVE
 #define UNIFFI_FFIDEF_FFI_DEIMOS_NOIR_RUSTBUFFER_RESERVE
-RustBuffer ffi_deimos_noir_rustbuffer_reserve(RustBuffer buf, uint64_t additional, RustCallStatus *_Nonnull out_status
+NoirRustBuffer ffi_deimos_noir_rustbuffer_reserve(NoirRustBuffer buf, uint64_t additional, NoirRustCallStatus *_Nonnull out_status
 );
 #endif
 #ifndef UNIFFI_FFIDEF_FFI_DEIMOS_NOIR_RUST_FUTURE_POLL_U8
@@ -319,7 +319,7 @@ void ffi_deimos_noir_rust_future_free_u8(uint64_t handle
 #endif
 #ifndef UNIFFI_FFIDEF_FFI_DEIMOS_NOIR_RUST_FUTURE_COMPLETE_U8
 #define UNIFFI_FFIDEF_FFI_DEIMOS_NOIR_RUST_FUTURE_COMPLETE_U8
-uint8_t ffi_deimos_noir_rust_future_complete_u8(uint64_t handle, RustCallStatus *_Nonnull out_status
+uint8_t ffi_deimos_noir_rust_future_complete_u8(uint64_t handle, NoirRustCallStatus *_Nonnull out_status
 );
 #endif
 #ifndef UNIFFI_FFIDEF_FFI_DEIMOS_NOIR_RUST_FUTURE_POLL_I8
@@ -339,7 +339,7 @@ void ffi_deimos_noir_rust_future_free_i8(uint64_t handle
 #endif
 #ifndef UNIFFI_FFIDEF_FFI_DEIMOS_NOIR_RUST_FUTURE_COMPLETE_I8
 #define UNIFFI_FFIDEF_FFI_DEIMOS_NOIR_RUST_FUTURE_COMPLETE_I8
-int8_t ffi_deimos_noir_rust_future_complete_i8(uint64_t handle, RustCallStatus *_Nonnull out_status
+int8_t ffi_deimos_noir_rust_future_complete_i8(uint64_t handle, NoirRustCallStatus *_Nonnull out_status
 );
 #endif
 #ifndef UNIFFI_FFIDEF_FFI_DEIMOS_NOIR_RUST_FUTURE_POLL_U16
@@ -359,7 +359,7 @@ void ffi_deimos_noir_rust_future_free_u16(uint64_t handle
 #endif
 #ifndef UNIFFI_FFIDEF_FFI_DEIMOS_NOIR_RUST_FUTURE_COMPLETE_U16
 #define UNIFFI_FFIDEF_FFI_DEIMOS_NOIR_RUST_FUTURE_COMPLETE_U16
-uint16_t ffi_deimos_noir_rust_future_complete_u16(uint64_t handle, RustCallStatus *_Nonnull out_status
+uint16_t ffi_deimos_noir_rust_future_complete_u16(uint64_t handle, NoirRustCallStatus *_Nonnull out_status
 );
 #endif
 #ifndef UNIFFI_FFIDEF_FFI_DEIMOS_NOIR_RUST_FUTURE_POLL_I16
@@ -379,7 +379,7 @@ void ffi_deimos_noir_rust_future_free_i16(uint64_t handle
 #endif
 #ifndef UNIFFI_FFIDEF_FFI_DEIMOS_NOIR_RUST_FUTURE_COMPLETE_I16
 #define UNIFFI_FFIDEF_FFI_DEIMOS_NOIR_RUST_FUTURE_COMPLETE_I16
-int16_t ffi_deimos_noir_rust_future_complete_i16(uint64_t handle, RustCallStatus *_Nonnull out_status
+int16_t ffi_deimos_noir_rust_future_complete_i16(uint64_t handle, NoirRustCallStatus *_Nonnull out_status
 );
 #endif
 #ifndef UNIFFI_FFIDEF_FFI_DEIMOS_NOIR_RUST_FUTURE_POLL_U32
@@ -399,7 +399,7 @@ void ffi_deimos_noir_rust_future_free_u32(uint64_t handle
 #endif
 #ifndef UNIFFI_FFIDEF_FFI_DEIMOS_NOIR_RUST_FUTURE_COMPLETE_U32
 #define UNIFFI_FFIDEF_FFI_DEIMOS_NOIR_RUST_FUTURE_COMPLETE_U32
-uint32_t ffi_deimos_noir_rust_future_complete_u32(uint64_t handle, RustCallStatus *_Nonnull out_status
+uint32_t ffi_deimos_noir_rust_future_complete_u32(uint64_t handle, NoirRustCallStatus *_Nonnull out_status
 );
 #endif
 #ifndef UNIFFI_FFIDEF_FFI_DEIMOS_NOIR_RUST_FUTURE_POLL_I32
@@ -419,7 +419,7 @@ void ffi_deimos_noir_rust_future_free_i32(uint64_t handle
 #endif
 #ifndef UNIFFI_FFIDEF_FFI_DEIMOS_NOIR_RUST_FUTURE_COMPLETE_I32
 #define UNIFFI_FFIDEF_FFI_DEIMOS_NOIR_RUST_FUTURE_COMPLETE_I32
-int32_t ffi_deimos_noir_rust_future_complete_i32(uint64_t handle, RustCallStatus *_Nonnull out_status
+int32_t ffi_deimos_noir_rust_future_complete_i32(uint64_t handle, NoirRustCallStatus *_Nonnull out_status
 );
 #endif
 #ifndef UNIFFI_FFIDEF_FFI_DEIMOS_NOIR_RUST_FUTURE_POLL_U64
@@ -439,7 +439,7 @@ void ffi_deimos_noir_rust_future_free_u64(uint64_t handle
 #endif
 #ifndef UNIFFI_FFIDEF_FFI_DEIMOS_NOIR_RUST_FUTURE_COMPLETE_U64
 #define UNIFFI_FFIDEF_FFI_DEIMOS_NOIR_RUST_FUTURE_COMPLETE_U64
-uint64_t ffi_deimos_noir_rust_future_complete_u64(uint64_t handle, RustCallStatus *_Nonnull out_status
+uint64_t ffi_deimos_noir_rust_future_complete_u64(uint64_t handle, NoirRustCallStatus *_Nonnull out_status
 );
 #endif
 #ifndef UNIFFI_FFIDEF_FFI_DEIMOS_NOIR_RUST_FUTURE_POLL_I64
@@ -459,7 +459,7 @@ void ffi_deimos_noir_rust_future_free_i64(uint64_t handle
 #endif
 #ifndef UNIFFI_FFIDEF_FFI_DEIMOS_NOIR_RUST_FUTURE_COMPLETE_I64
 #define UNIFFI_FFIDEF_FFI_DEIMOS_NOIR_RUST_FUTURE_COMPLETE_I64
-int64_t ffi_deimos_noir_rust_future_complete_i64(uint64_t handle, RustCallStatus *_Nonnull out_status
+int64_t ffi_deimos_noir_rust_future_complete_i64(uint64_t handle, NoirRustCallStatus *_Nonnull out_status
 );
 #endif
 #ifndef UNIFFI_FFIDEF_FFI_DEIMOS_NOIR_RUST_FUTURE_POLL_F32
@@ -479,7 +479,7 @@ void ffi_deimos_noir_rust_future_free_f32(uint64_t handle
 #endif
 #ifndef UNIFFI_FFIDEF_FFI_DEIMOS_NOIR_RUST_FUTURE_COMPLETE_F32
 #define UNIFFI_FFIDEF_FFI_DEIMOS_NOIR_RUST_FUTURE_COMPLETE_F32
-float ffi_deimos_noir_rust_future_complete_f32(uint64_t handle, RustCallStatus *_Nonnull out_status
+float ffi_deimos_noir_rust_future_complete_f32(uint64_t handle, NoirRustCallStatus *_Nonnull out_status
 );
 #endif
 #ifndef UNIFFI_FFIDEF_FFI_DEIMOS_NOIR_RUST_FUTURE_POLL_F64
@@ -499,7 +499,7 @@ void ffi_deimos_noir_rust_future_free_f64(uint64_t handle
 #endif
 #ifndef UNIFFI_FFIDEF_FFI_DEIMOS_NOIR_RUST_FUTURE_COMPLETE_F64
 #define UNIFFI_FFIDEF_FFI_DEIMOS_NOIR_RUST_FUTURE_COMPLETE_F64
-double ffi_deimos_noir_rust_future_complete_f64(uint64_t handle, RustCallStatus *_Nonnull out_status
+double ffi_deimos_noir_rust_future_complete_f64(uint64_t handle, NoirRustCallStatus *_Nonnull out_status
 );
 #endif
 #ifndef UNIFFI_FFIDEF_FFI_DEIMOS_NOIR_RUST_FUTURE_POLL_POINTER
@@ -519,7 +519,7 @@ void ffi_deimos_noir_rust_future_free_pointer(uint64_t handle
 #endif
 #ifndef UNIFFI_FFIDEF_FFI_DEIMOS_NOIR_RUST_FUTURE_COMPLETE_POINTER
 #define UNIFFI_FFIDEF_FFI_DEIMOS_NOIR_RUST_FUTURE_COMPLETE_POINTER
-void*_Nonnull ffi_deimos_noir_rust_future_complete_pointer(uint64_t handle, RustCallStatus *_Nonnull out_status
+void*_Nonnull ffi_deimos_noir_rust_future_complete_pointer(uint64_t handle, NoirRustCallStatus *_Nonnull out_status
 );
 #endif
 #ifndef UNIFFI_FFIDEF_FFI_DEIMOS_NOIR_RUST_FUTURE_POLL_RUST_BUFFER
@@ -539,7 +539,7 @@ void ffi_deimos_noir_rust_future_free_rust_buffer(uint64_t handle
 #endif
 #ifndef UNIFFI_FFIDEF_FFI_DEIMOS_NOIR_RUST_FUTURE_COMPLETE_RUST_BUFFER
 #define UNIFFI_FFIDEF_FFI_DEIMOS_NOIR_RUST_FUTURE_COMPLETE_RUST_BUFFER
-RustBuffer ffi_deimos_noir_rust_future_complete_rust_buffer(uint64_t handle, RustCallStatus *_Nonnull out_status
+NoirRustBuffer ffi_deimos_noir_rust_future_complete_rust_buffer(uint64_t handle, NoirRustCallStatus *_Nonnull out_status
 );
 #endif
 #ifndef UNIFFI_FFIDEF_FFI_DEIMOS_NOIR_RUST_FUTURE_POLL_VOID
@@ -559,7 +559,7 @@ void ffi_deimos_noir_rust_future_free_void(uint64_t handle
 #endif
 #ifndef UNIFFI_FFIDEF_FFI_DEIMOS_NOIR_RUST_FUTURE_COMPLETE_VOID
 #define UNIFFI_FFIDEF_FFI_DEIMOS_NOIR_RUST_FUTURE_COMPLETE_VOID
-void ffi_deimos_noir_rust_future_complete_void(uint64_t handle, RustCallStatus *_Nonnull out_status
+void ffi_deimos_noir_rust_future_complete_void(uint64_t handle, NoirRustCallStatus *_Nonnull out_status
 );
 #endif
 #ifndef UNIFFI_FFIDEF_UNIFFI_DEIMOS_NOIR_CHECKSUM_FUNC_GENERATE_HALO2_PROOF

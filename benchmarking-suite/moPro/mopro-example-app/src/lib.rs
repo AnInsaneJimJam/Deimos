@@ -1,5 +1,5 @@
-// use methods::{RISC0_CIRCUIT_ELF, RISC0_CIRCUIT_ID};
-// use risc0_zkvm::{default_prover, ExecutorEnv, Receipt};
+use methods::{RISC0_CIRCUIT_ELF, RISC0_CIRCUIT_ID};
+use risc0_zkvm::{default_prover, ExecutorEnv, Receipt};
 
 // Initializes the shared UniFFI scaffolding and defines the `MoproError` enum.
 mopro_ffi::app!();
@@ -17,11 +17,9 @@ mod stubs;
 mod error;
 pub use error::MoproError;
 
+// CIRCOM_TEMPLATE
+// --- Circom Example of using groth16 proving and verifying circuits ---
 
-// ==============================================================================
-// CIRCOM TEMPLATE (Uncomment to build for Circom)
-// ==============================================================================
-/*
 // Module containing the Circom circuit logic (Multiplier2)
 #[macro_use]
 mod circom;
@@ -33,6 +31,7 @@ rust_witness::witness!(pedersen);
 rust_witness::witness!(poseidon);
 rust_witness::witness!(sha256);
 
+
 set_circom_circuits! {
     ("blake2s256.zkey", circom_prover::witness::WitnessFn::RustWitness(blake2s256_witness)),
     ("keccak.zkey", circom_prover::witness::WitnessFn::RustWitness(keccak_witness)),
@@ -41,7 +40,6 @@ set_circom_circuits! {
     ("poseidon.zkey", circom_prover::witness::WitnessFn::RustWitness(poseidon_witness)),
     ("sha256.zkey", circom_prover::witness::WitnessFn::RustWitness(sha256_witness)),
 }
-*/
 
 #[cfg(test)]
 mod circom_tests {
@@ -182,81 +180,80 @@ mod halo2_tests {
 
 // Module containing the Noir circuit logic (Multiplier2)
 mod noir;
+
 #[cfg(test)]
-// mod noir_tests {
-//    use super::noir::{generate_noir_proof, get_noir_verification_key, verify_noir_proof};
-//    use serial_test::serial;
+mod noir_tests {
+    use super::noir::{generate_noir_proof, get_noir_verification_key, verify_noir_proof};
+    use serial_test::serial;
 
-//     #[test]
-//     #[serial]
-//     fn test_noir_multiplier2() {
-//         let srs_path = "./test-vectors/noir/noir_multiplier2.srs".to_string();
-//         let circuit_path = "./test-vectors/noir/noir_multiplier2.json".to_string();
-//         let circuit_inputs = vec!["3".to_string(), "5".to_string()];
-//         let vk = get_noir_verification_key(
-//             circuit_path.clone(),
-//             Some(srs_path.clone()),
-//             true,  // on_chain (uses Keccak for Solidity compatibility)
-//             false, // low_memory_mode
-//         )
-//         .unwrap();
+    #[test]
+    #[serial]
+    fn test_noir_multiplier2() {
+        let srs_path = "./test-vectors/noir/noir_multiplier2.srs".to_string();
+        let circuit_path = "./test-vectors/noir/noir_multiplier2.json".to_string();
+        let circuit_inputs = vec!["3".to_string(), "5".to_string()];
+        let vk = get_noir_verification_key(
+            circuit_path.clone(),
+            Some(srs_path.clone()),
+            true,  // on_chain (uses Keccak for Solidity compatibility)
+            false, // low_memory_mode
+        )
+        .unwrap();
 
-//         let proof = generate_noir_proof(
-//             circuit_path.clone(),
-//             Some(srs_path.clone()),
-//             circuit_inputs.clone(),
-//             true, // on_chain (uses Keccak for Solidity compatibility)
-//             vk.clone(),
-//             false, // low_memory_mode
-//         )
-//         .unwrap();
+        let proof = generate_noir_proof(
+            circuit_path.clone(),
+            Some(srs_path.clone()),
+            circuit_inputs.clone(),
+            true, // on_chain (uses Keccak for Solidity compatibility)
+            vk.clone(),
+            false, // low_memory_mode
+        )
+        .unwrap();
 
-//         let valid = verify_noir_proof(
-//             circuit_path,
-//             proof,
-//             true, // on_chain (uses Keccak for Solidity compatibility)
-//             vk,
-//             false, // low_memory_mode
-//         )
-//         .unwrap();
-//         assert!(valid);
-//     }
+        let valid = verify_noir_proof(
+            circuit_path,
+            proof,
+            true, // on_chain (uses Keccak for Solidity compatibility)
+            vk,
+            false, // low_memory_mode
+        )
+        .unwrap();
+        assert!(valid);
+    }
 
-//     #[test]
-//     #[serial]
-//     fn test_noir_multiplier2_with_existing_vk() {
-//         let srs_path = "./test-vectors/noir/noir_multiplier2.srs".to_string();
-//         let circuit_path = "./test-vectors/noir/noir_multiplier2.json".to_string();
-//         let vk_path = "./test-vectors/noir/noir_multiplier2.vk".to_string();
+    #[test]
+    #[serial]
+    fn test_noir_multiplier2_with_existing_vk() {
+        let srs_path = "./test-vectors/noir/noir_multiplier2.srs".to_string();
+        let circuit_path = "./test-vectors/noir/noir_multiplier2.json".to_string();
+        let vk_path = "./test-vectors/noir/noir_multiplier2.vk".to_string();
 
-//         // read vk from file as Vec<u8>
-//         let vk = std::fs::read(vk_path).unwrap();
+        // read vk from file as Vec<u8>
+        let vk = std::fs::read(vk_path).unwrap();
 
-//         let circuit_inputs = vec!["3".to_string(), "5".to_string()];
+        let circuit_inputs = vec!["3".to_string(), "5".to_string()];
 
-//         let proof = generate_noir_proof(
-//             circuit_path.clone(),
-//             Some(srs_path),
-//             circuit_inputs,
-//             true, // on_chain (uses Keccak for Solidity compatibility)
-//             vk.clone(),
-//             false, // low_memory_mode
-//         )
-//         .unwrap();
+        let proof = generate_noir_proof(
+            circuit_path.clone(),
+            Some(srs_path),
+            circuit_inputs,
+            true, // on_chain (uses Keccak for Solidity compatibility)
+            vk.clone(),
+            false, // low_memory_mode
+        )
+        .unwrap();
 
-//         let valid = verify_noir_proof(
-//             circuit_path,
-//             proof,
-//             true, // on_chain (uses Keccak for Solidity compatibility)
-//             vk,
-//             false, // low_memory_mode
-//         )
-//         .unwrap();
-//         assert!(valid);
-//         .unwrap();
-//         assert!(valid);
-//     }
-// }
+        let valid = verify_noir_proof(
+            circuit_path,
+            proof,
+            true, // on_chain (uses Keccak for Solidity compatibility)
+            vk,
+            false, // low_memory_mode
+        )
+        .unwrap();
+        assert!(valid);
+    }
+}
 
 
 #[cfg(test)]
@@ -268,82 +265,82 @@ mod uniffi_tests {
 }
 
 
-// #[derive(uniffi::Error, thiserror::Error, Debug)]
-// pub enum Risc0Error {
-//     #[error("Failed to prove: {0}")]
-//     ProveError(String),
-//     #[error("Failed to serialize receipt: {0}")]
-//     SerializeError(String),
-//     #[error("Failed to verify: {0}")]
-//     VerifyError(String),
-//     #[error("Failed to decode journal: {0}")]
-//     DecodeError(String),
-// }
+#[derive(uniffi::Error, thiserror::Error, Debug)]
+pub enum Risc0Error {
+    #[error("Failed to prove: {0}")]
+    ProveError(String),
+    #[error("Failed to serialize receipt: {0}")]
+    SerializeError(String),
+    #[error("Failed to verify: {0}")]
+    VerifyError(String),
+    #[error("Failed to decode journal: {0}")]
+    DecodeError(String),
+}
 
-// #[derive(uniffi::Record, Clone)]
-// pub struct Risc0ProofOutput {
-//     pub receipt: Vec<u8>,
-// }
+#[derive(uniffi::Record, Clone)]
+pub struct Risc0ProofOutput {
+    pub receipt: Vec<u8>,
+}
 
-// #[derive(uniffi::Record, Clone)]
-// pub struct Risc0VerifyOutput {
-//     pub is_valid: bool,
-//     pub output_value: u32,
-// }
+#[derive(uniffi::Record, Clone)]
+pub struct Risc0VerifyOutput {
+    pub is_valid: bool,
+    pub output_value: u32,
+}
 
-// #[uniffi::export]
-// pub fn risc0_prove(input: u32) -> Result<Risc0ProofOutput, Risc0Error> {
-//     // Create executor environment with input
-//     let env = ExecutorEnv::builder()
-//         .write(&input)
-//         .map_err(|e| Risc0Error::ProveError(format!("Failed to write input: {}", e)))?
-//         .build()
-//         .map_err(|e| {
-//             Risc0Error::ProveError(format!("Failed to build executor environment: {}", e))
-//         })?;
+#[uniffi::export]
+pub fn risc0_prove(input: u32) -> Result<Risc0ProofOutput, Risc0Error> {
+    // Create executor environment with input
+    let env = ExecutorEnv::builder()
+        .write(&input)
+        .map_err(|e| Risc0Error::ProveError(format!("Failed to write input: {}", e)))?
+        .build()
+        .map_err(|e| {
+            Risc0Error::ProveError(format!("Failed to build executor environment: {}", e))
+        })?;
 
-//     // Get the default prover
-//     let prover = default_prover();
+    // Get the default prover
+    let prover = default_prover();
 
-//     // Generate proof
-//     let prove_info = prover
-//         .prove(env, RISC0_CIRCUIT_ELF)
-//         .map_err(|e| Risc0Error::ProveError(format!("Failed to generate proof: {}", e)))?;
+    // Generate proof
+    let prove_info = prover
+        .prove(env, RISC0_CIRCUIT_ELF)
+        .map_err(|e| Risc0Error::ProveError(format!("Failed to generate proof: {}", e)))?;
 
-//     // Extract receipt
-//     let receipt = prove_info.receipt;
+    // Extract receipt
+    let receipt = prove_info.receipt;
 
-//     // Serialize receipt to bytes
-//     let receipt_bytes = bincode::serialize(&receipt)
-//         .map_err(|e| Risc0Error::SerializeError(format!("Failed to serialize receipt: {}", e)))?;
+    // Serialize receipt to bytes
+    let receipt_bytes = bincode::serialize(&receipt)
+        .map_err(|e| Risc0Error::SerializeError(format!("Failed to serialize receipt: {}", e)))?;
 
-//     Ok(Risc0ProofOutput {
-//         receipt: receipt_bytes,
-//     })
-// }
+    Ok(Risc0ProofOutput {
+        receipt: receipt_bytes,
+    })
+}
 
-// #[uniffi::export]
-// pub fn risc0_verify(receipt_bytes: Vec<u8>) -> Result<Risc0VerifyOutput, Risc0Error> {
-//     // Deserialize receipt from bytes
-//     let receipt: Receipt = bincode::deserialize(&receipt_bytes)
-//         .map_err(|e| Risc0Error::SerializeError(format!("Failed to deserialize receipt: {}", e)))?;
+#[uniffi::export]
+pub fn risc0_verify(receipt_bytes: Vec<u8>) -> Result<Risc0VerifyOutput, Risc0Error> {
+    // Deserialize receipt from bytes
+    let receipt: Receipt = bincode::deserialize(&receipt_bytes)
+        .map_err(|e| Risc0Error::SerializeError(format!("Failed to deserialize receipt: {}", e)))?;
 
-//     // Verify the receipt
-//     receipt
-//         .verify(RISC0_CIRCUIT_ID)
-//         .map_err(|e| Risc0Error::VerifyError(format!("Failed to verify receipt: {}", e)))?;
+    // Verify the receipt
+    receipt
+        .verify(RISC0_CIRCUIT_ID)
+        .map_err(|e| Risc0Error::VerifyError(format!("Failed to verify receipt: {}", e)))?;
 
-//     // Extract output from journal
-//     let output_value: u32 = receipt
-//         .journal
-//         .decode()
-//         .map_err(|e| Risc0Error::DecodeError(format!("Failed to decode journal: {}", e)))?;
+    // Extract output from journal
+    let output_value: u32 = receipt
+        .journal
+        .decode()
+        .map_err(|e| Risc0Error::DecodeError(format!("Failed to decode journal: {}", e)))?;
 
-//     Ok(Risc0VerifyOutput {
-//         is_valid: true,
-//         output_value,
-//     })
-// }
+    Ok(Risc0VerifyOutput {
+        is_valid: true,
+        output_value,
+    })
+}
 
 
 #[cfg(test)]

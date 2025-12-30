@@ -3,7 +3,6 @@
 
 // swiftlint:disable all
 import Foundation
-import deimos_circomFFI
 
 // Depending on the consumer's build setup, the low-level FFI code
 // might be in a separate module, or it might be compiled inline into
@@ -11,10 +10,6 @@ import deimos_circomFFI
 #if canImport(deimos_circomFFI)
 import deimos_circomFFI
 #endif
-
-public typealias CircomRustBuffer = deimos_circomFFI.RustBuffer
-public typealias CircomForeignBytes = deimos_circomFFI.ForeignBytes
-public typealias CircomRustCallStatus = deimos_circomFFI.RustCallStatus
 
 fileprivate extension CircomRustBuffer {
     // Allocate a new buffer, copying the contents of a `UInt8` array.
@@ -467,24 +462,6 @@ fileprivate struct FfiConverterString: FfiConverter {
     }
 }
 
-#if swift(>=5.8)
-@_documentation(visibility: private)
-#endif
-fileprivate struct FfiConverterData: FfiConverterCircomRustBuffer {
-    typealias SwiftType = Data
-
-    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> Data {
-        let len: Int32 = try readInt(&buf)
-        return Data(try readBytes(&buf, count: Int(len)))
-    }
-
-    public static func write(_ value: Data, into buf: inout [UInt8]) {
-        let len = Int32(value.count)
-        writeInt(&buf, len)
-        writeBytes(&buf, value)
-    }
-}
-
 
 public struct CircomProof {
     public var a: G1
@@ -806,85 +783,11 @@ public func FfiConverterTypeG2_lower(_ value: G2) -> CircomRustBuffer {
 }
 
 
-public struct CircomHalo2ProofResult {
-    public var proof: Data
-    public var inputs: Data
-
-    // Default memberwise initializers are never public by default, so we
-    // declare one manually.
-    public init(proof: Data, inputs: Data) {
-        self.proof = proof
-        self.inputs = inputs
-    }
-}
-
-#if compiler(>=6)
-extension CircomHalo2ProofResult: Sendable {}
-#endif
-
-
-extension CircomHalo2ProofResult: Equatable, Hashable {
-    public static func ==(lhs: CircomHalo2ProofResult, rhs: CircomHalo2ProofResult) -> Bool {
-        if lhs.proof != rhs.proof {
-            return false
-        }
-        if lhs.inputs != rhs.inputs {
-            return false
-        }
-        return true
-    }
-
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(proof)
-        hasher.combine(inputs)
-    }
-}
-
-
-
-#if swift(>=5.8)
-@_documentation(visibility: private)
-#endif
-public struct FfiConverterTypeCircomHalo2ProofResult: FfiConverterCircomRustBuffer {
-    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> CircomHalo2ProofResult {
-        return
-            try CircomHalo2ProofResult(
-                proof: FfiConverterData.read(from: &buf), 
-                inputs: FfiConverterData.read(from: &buf)
-        )
-    }
-
-    public static func write(_ value: CircomHalo2ProofResult, into buf: inout [UInt8]) {
-        FfiConverterData.write(value.proof, into: &buf)
-        FfiConverterData.write(value.inputs, into: &buf)
-    }
-}
-
-
-#if swift(>=5.8)
-@_documentation(visibility: private)
-#endif
-public func FfiConverterTypeCircomHalo2ProofResult_lift(_ buf: CircomRustBuffer) throws -> CircomHalo2ProofResult {
-    return try FfiConverterTypeCircomHalo2ProofResult.lift(buf)
-}
-
-#if swift(>=5.8)
-@_documentation(visibility: private)
-#endif
-public func FfiConverterTypeCircomHalo2ProofResult_lower(_ value: CircomHalo2ProofResult) -> CircomRustBuffer {
-    return FfiConverterTypeCircomHalo2ProofResult.lower(value)
-}
-
-
 public enum CircomMoproError {
 
     
     
     case CircomError(String
-    )
-    case Halo2Error(String
-    )
-    case NoirError(String
     )
 }
 
@@ -905,12 +808,6 @@ public struct FfiConverterTypeCircomMoproError: FfiConverterCircomRustBuffer {
         case 1: return .CircomError(
             try FfiConverterString.read(from: &buf)
             )
-        case 2: return .Halo2Error(
-            try FfiConverterString.read(from: &buf)
-            )
-        case 3: return .NoirError(
-            try FfiConverterString.read(from: &buf)
-            )
 
          default: throw UniffiInternalError.unexpectedEnumCase
         }
@@ -925,16 +822,6 @@ public struct FfiConverterTypeCircomMoproError: FfiConverterCircomRustBuffer {
         
         case let .CircomError(v1):
             writeInt(&buf, Int32(1))
-            FfiConverterString.write(v1, into: &buf)
-            
-        
-        case let .Halo2Error(v1):
-            writeInt(&buf, Int32(2))
-            FfiConverterString.write(v1, into: &buf)
-            
-        
-        case let .NoirError(v1):
-            writeInt(&buf, Int32(3))
             FfiConverterString.write(v1, into: &buf)
             
         }
@@ -1059,32 +946,6 @@ fileprivate struct FfiConverterSequenceString: FfiConverterCircomRustBuffer {
         return seq
     }
 }
-
-#if swift(>=5.8)
-@_documentation(visibility: private)
-#endif
-fileprivate struct FfiConverterDictionaryStringSequenceString: FfiConverterCircomRustBuffer {
-    public static func write(_ value: [String: [String]], into buf: inout [UInt8]) {
-        let len = Int32(value.count)
-        writeInt(&buf, len)
-        for (key, value) in value {
-            FfiConverterString.write(key, into: &buf)
-            FfiConverterSequenceString.write(value, into: &buf)
-        }
-    }
-
-    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> [String: [String]] {
-        let len: Int32 = try readInt(&buf)
-        var dict = [String: [String]]()
-        dict.reserveCapacity(Int(len))
-        for _ in 0..<len {
-            let key = try FfiConverterString.read(from: &buf)
-            let value = try FfiConverterSequenceString.read(from: &buf)
-            dict[key] = value
-        }
-        return dict
-    }
-}
 public func generateCircomProof(zkeyPath: String, circuitInputs: String, proofLib: CircomProofLib)throws  -> CircomProofResult  {
     return try  FfiConverterTypeCircomProofResult_lift(try rustCallWithError(FfiConverterTypeCircomMoproError_lift) {
     uniffi_deimos_circom_fn_func_generate_circom_proof(
@@ -1094,19 +955,6 @@ public func generateCircomProof(zkeyPath: String, circuitInputs: String, proofLi
     )
 })
 }
-public func generateHalo2Proof_Circom(srsPath: String, pkPath: String, circuitInputs: [String: [String]])throws  -> CircomHalo2ProofResult  {
-    return try  FfiConverterTypeCircomHalo2ProofResult_lift(try rustCallWithError(FfiConverterTypeCircomMoproError_lift) {
-    uniffi_deimos_circom_fn_func_generate_halo2_proof(
-        FfiConverterString.lower(srsPath),
-        FfiConverterString.lower(pkPath),
-        FfiConverterDictionaryStringSequenceString.lower(circuitInputs),$0
-    )
-})
-}
-/**
- * You can also customize the bindings by #[uniffi::export]
- * Reference: https://mozilla.github.io/uniffi-rs/latest/proc_macro/index.html
- */
 public func moproUniffiHelloWorld_Circom() -> String  {
     return try!  FfiConverterString.lift(try! rustCall() {
     uniffi_deimos_circom_fn_func_mopro_uniffi_hello_world($0
@@ -1119,16 +967,6 @@ public func verifyCircomProof(zkeyPath: String, proofResult: CircomProofResult, 
         FfiConverterString.lower(zkeyPath),
         FfiConverterTypeCircomProofResult_lower(proofResult),
         FfiConverterTypeCircomProofLib_lower(proofLib),$0
-    )
-})
-}
-public func verifyHalo2Proof_Circom(srsPath: String, vkPath: String, proof: Data, publicInput: Data)throws  -> Bool  {
-    return try  FfiConverterBool.lift(try rustCallWithError(FfiConverterTypeCircomMoproError_lift) {
-    uniffi_deimos_circom_fn_func_verify_halo2_proof(
-        FfiConverterString.lower(srsPath),
-        FfiConverterString.lower(vkPath),
-        FfiConverterData.lower(proof),
-        FfiConverterData.lower(publicInput),$0
     )
 })
 }
@@ -1151,16 +989,10 @@ private let initializationResult: InitializationResult = {
     if (uniffi_deimos_circom_checksum_func_generate_circom_proof() != 61206) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_deimos_circom_checksum_func_generate_halo2_proof() != 3239) {
-        return InitializationResult.apiChecksumMismatch
-    }
-    if (uniffi_deimos_circom_checksum_func_mopro_uniffi_hello_world() != 12522) {
+    if (uniffi_deimos_circom_checksum_func_mopro_uniffi_hello_world() != 64975) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_deimos_circom_checksum_func_verify_circom_proof() != 26290) {
-        return InitializationResult.apiChecksumMismatch
-    }
-    if (uniffi_deimos_circom_checksum_func_verify_halo2_proof() != 65032) {
         return InitializationResult.apiChecksumMismatch
     }
 

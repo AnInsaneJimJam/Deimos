@@ -139,6 +139,32 @@ class MethodChannelMoproFlutter extends MoproFlutterPlatform {
   }
 
   @override
+  Future<CairoProofOutput> generateCairoProof(String programJson, String inputsJson) async {
+    final proofResult = await methodChannel
+        .invokeMethod<Map<Object?, Object?>>('generateCairoProof', {
+      'programJson': programJson,
+      'inputsJson': inputsJson,
+    });
+
+    if (proofResult == null) {
+      throw Exception('Failed to generate Cairo proof');
+    }
+
+    return CairoProofOutput.fromMap(proofResult);
+  }
+
+  @override
+  Future<CairoVerifyOutput> verifyCairoProof(Uint8List proof) async {
+    final verifyResult = await methodChannel
+        .invokeMethod<Map<Object?, Object?>>('verifyCairoProof', {
+      'proof': proof,
+    });
+
+    if (verifyResult == null) {
+      throw Exception('Failed to verify Cairo proof');
+    }
+
+    return CairoVerifyOutput.fromMap(verifyResult);
   Future<Map<String, int>> getIOSMemoryUsage() async {
     final result = await methodChannel.invokeMethod<Map<Object?, Object?>>('getIOSMemoryUsage');
     if (result == null) {

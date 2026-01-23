@@ -12,6 +12,9 @@ import 'package:http/http.dart' as http;
 import 'package:system_info2/system_info2.dart';
 import 'package:battery_plus/battery_plus.dart';
 
+// IMP1 Integration
+import 'package:Deimos/channels/imp1_channel.dart';
+
 // Input data structure
 class InputData {
   final String name;
@@ -254,6 +257,7 @@ class _MainSelectionPageState extends State<MainSelectionPage> {
       {'name': 'Halo2', 'value': 'halo2', 'icon': Icons.layers},
       {'name': 'Noir', 'value': 'noir', 'icon': Icons.nightlight_round},
       {'name': 'RISC Zero', 'value': 'risc0', 'icon': Icons.developer_board},
+      {'name': 'IMP1', 'value': 'imp1', 'icon': Icons.flash_on},
     ];
 
     return _buildCard(
@@ -762,6 +766,8 @@ class _MainSelectionPageState extends State<MainSelectionPage> {
         return 'Noir';
       case 'risc0':
         return 'RISC Zero';
+      case 'imp1':
+        return 'IMP1';
       default:
         return framework;
     }
@@ -777,6 +783,8 @@ class _MainSelectionPageState extends State<MainSelectionPage> {
         return ['SHA256', 'Keccak256', 'Poseidon', 'MiMC', 'Pedersen', 'Blake2', 'Blake3'];
       case 'risc0':
         return ['Factor'];
+      case 'imp1':
+        return ['SHA256'];
       default:
         return [];
     }
@@ -932,6 +940,10 @@ class _ProofResultPageState extends State<ProofResultPage> {
   // RISC-V results
   Risc0ProofOutput? _risc0ProofResult;
   Risc0VerifyOutput? _risc0VerifyResult;
+  
+  // IMP1 results
+  IMP1ProofResult? _imp1ProofResult;
+  IMP1VerifyResult? _imp1VerifyResult;
   
   // Store Noir verification keys (like in old implementation)
   Uint8List? _noirMimcVerificationKey;
@@ -1605,6 +1617,8 @@ class _ProofResultPageState extends State<ProofResultPage> {
         return await _generateNoirProof(moproFlutterPlugin);
       case 'risc0':
         return await _generateRisc0Proof(moproFlutterPlugin);
+      case 'imp1':
+        return await _generateIMP1Proof();
       default:
         throw Exception('Unknown framework: ${widget.framework}');
     }
@@ -1782,6 +1796,56 @@ class _ProofResultPageState extends State<ProofResultPage> {
     // Format the actual proof data
     return _formatRisc0ProofOutput(proofResult);
   }
+
+  Future<String> _generateIMP1Proof() async {
+    // Get circuit name (lowercase)
+    final circuitName = widget.algorithm.toLowerCase();
+    
+    // Capture memory and battery BEFORE proof generation
+    _freeMemoryBeforeProof = SysInfo.getFreePhysicalMemory();
+    final battery = Battery();
+    _batteryBeforeProof = await battery.batteryLevel;
+    
+    // Start timing
+    final stopwatch = Stopwatch()..start();
+    
+    // Start memory monitoring in background
+    _startMemoryMonitoring();
+    
+    // Generate proof using IMP1
+    final proofResult = await IMP1Channel.generateProof(
+      circuitName: circuitName,
+    );
+    
+    // Stop timing
+    stopwatch.stop();
+    
+    // Capture memory and battery AFTER proof generation
+    _freeMemoryAfterProof = SysInfo.getFreePhysicalMemory();
+    _batteryAfterProof = await battery.batteryLevel;
+    
+    // Store the proof result for verification
+    setState(() {
+      _imp1ProofResult = proofResult;
+      _proofGenerationTime = stopwatch.elapsed;
+    });
+    
+    // Format proof output
+    return '''
+IMP1 Proof Generated Successfully!
+
+Circuit: $circuitName
+Proving Time: ${proofResult.provingTimeMs}ms
+Proof Size: ${proofResult.proofSizeBytes} bytes
+
+Proof Data:
+${proofResult.proof.substring(0, proofResult.proof.length > 200 ? 200 : proofResult.proof.length)}...
+
+Public Inputs:
+${proofResult.publicInputs}
+''';
+  }
+
 
   String _getZkeyPath() {
     switch (widget.algorithm.toLowerCase()) {
@@ -2125,6 +2189,9 @@ Timestamp: ${DateTime.now().millisecondsSinceEpoch}
       case 'risc0':
         isValid = await _verifyRisc0Proof(moproFlutterPlugin);
         break;
+      case 'imp1':
+        isValid = await _verifyIMP1Proof();
+        break;
       default:
         throw Exception('Unknown framework: ${widget.framework}');
     }
@@ -2217,6 +2284,33 @@ Timestamp: ${DateTime.now().millisecondsSinceEpoch}
     
     return verifyResult.isValid;
   }
+
+  Future<bool> _verifyIMP1Proof() async {
+    if (_imp1ProofResult == null) {
+      throw Exception('No proof available for verification');
+    }
+    
+    final circuitName = widget.algorithm.toLowerCase();
+    
+    // Start timing
+    final stopwatch = Stopwatch()..start();
+    
+    final verifyResult = await IMP1Channel.verifyProof(
+      circuitName: circuitName,
+      proofData: _imp1ProofResult!.proof,
+      publicInputs: _imp1ProofResult!.publicInputs,
+    );
+    
+    // Stop timing and store
+    stopwatch.stop();
+    setState(() {
+      _proofVerificationTime = stopwatch.elapsed;
+      _imp1VerifyResult = verifyResult;
+    });
+    
+    return verifyResult.isValid;
+  }
+
 
   // Collect device information and send to backend
   Future<void> _sendDataToBackend() async {

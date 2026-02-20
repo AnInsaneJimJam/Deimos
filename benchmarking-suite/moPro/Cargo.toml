@@ -22,16 +22,6 @@ opt-level = 3
 debug = 1
 lto = true
 
-# Patch cairo-m git deps to use the local clone
-[patch."https://github.com/x-senpai-x/cairo-m"]
-cairo-m-runner = { path = "../../../cairo-m/crates/runner" }
-cairo-m-prover = { path = "../../../cairo-m/crates/prover" }
-cairo-m-common = { path = "../../../cairo-m/crates/common" }
-
-# Patch stwo to use the local submodule inside cairo-m (same rev)
-[patch."https://github.com/starkware-libs/stwo"]
-stwo-prover = { path = "../../../cairo-m/external/stwo/crates/prover" }
-
 # Patch zkhash to use the fork with M31 field support (same as cairo-m)
 [patch."https://github.com/HorizenLabs/poseidon2.git"]
 zkhash = { git = "https://github.com/AntoineFONDEUR/poseidon2.git", branch = "poseidon2-M31" }

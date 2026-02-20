@@ -1190,6 +1190,7 @@ dependencies = [
 [[package]]
 name = "cairo-m-common"
 version = "0.1.0-alpha.1"
+source = "git+https://github.com/AnInsaneJimJam/cairo-m#8985123e1aaee8d5e00aba95631820298c3e98e4"
 dependencies = [
  "anyhow",
  "num-traits",
@@ -1204,6 +1205,7 @@ dependencies = [
 [[package]]
 name = "cairo-m-compiler"
 version = "0.1.0-alpha.1"
+source = "git+https://github.com/AnInsaneJimJam/cairo-m#8985123e1aaee8d5e00aba95631820298c3e98e4"
 dependencies = [
  "anyhow",
  "ariadne",
@@ -1230,6 +1232,7 @@ dependencies = [
 [[package]]
 name = "cairo-m-compiler-codegen"
 version = "0.1.0-alpha.1"
+source = "git+https://github.com/AnInsaneJimJam/cairo-m#8985123e1aaee8d5e00aba95631820298c3e98e4"
 dependencies = [
  "cairo-m-common",
  "cairo-m-compiler-diagnostics",
@@ -1254,6 +1257,7 @@ dependencies = [
 [[package]]
 name = "cairo-m-compiler-diagnostics"
 version = "0.1.0-alpha.1"
+source = "git+https://github.com/AnInsaneJimJam/cairo-m#8985123e1aaee8d5e00aba95631820298c3e98e4"
 dependencies = [
  "ariadne",
  "chumsky",
@@ -1262,6 +1266,7 @@ dependencies = [
 [[package]]
 name = "cairo-m-compiler-mir"
 version = "0.1.0-alpha.1"
+source = "git+https://github.com/AnInsaneJimJam/cairo-m#8985123e1aaee8d5e00aba95631820298c3e98e4"
 dependencies = [
  "cairo-m-compiler-diagnostics",
  "cairo-m-compiler-parser",
@@ -1278,6 +1283,7 @@ dependencies = [
 [[package]]
 name = "cairo-m-compiler-parser"
 version = "0.1.0-alpha.1"
+source = "git+https://github.com/AnInsaneJimJam/cairo-m#8985123e1aaee8d5e00aba95631820298c3e98e4"
 dependencies = [
  "ariadne",
  "cairo-m-compiler-diagnostics",
@@ -1296,6 +1302,7 @@ dependencies = [
 [[package]]
 name = "cairo-m-compiler-semantic"
 version = "0.1.0-alpha.1"
+source = "git+https://github.com/AnInsaneJimJam/cairo-m#8985123e1aaee8d5e00aba95631820298c3e98e4"
 dependencies = [
  "anyhow",
  "ariadne",
@@ -1321,6 +1328,7 @@ dependencies = [
 [[package]]
 name = "cairo-m-project"
 version = "0.1.0-alpha.1"
+source = "git+https://github.com/AnInsaneJimJam/cairo-m#8985123e1aaee8d5e00aba95631820298c3e98e4"
 dependencies = [
  "anyhow",
  "ignore",
@@ -1334,6 +1342,7 @@ dependencies = [
 [[package]]
 name = "cairo-m-prover"
 version = "0.1.0-alpha.1"
+source = "git+https://github.com/AnInsaneJimJam/cairo-m#8985123e1aaee8d5e00aba95631820298c3e98e4"
 dependencies = [
  "anyhow",
  "bytemuck",
@@ -1376,6 +1385,7 @@ dependencies = [
 [[package]]
 name = "cairo-m-runner"
 version = "0.1.0-alpha.1"
+source = "git+https://github.com/AnInsaneJimJam/cairo-m#8985123e1aaee8d5e00aba95631820298c3e98e4"
 dependencies = [
  "anyhow",
  "cairo-m-common",
@@ -1397,6 +1407,7 @@ dependencies = [
 [[package]]
 name = "cairo-m-test-utils"
 version = "0.1.0-alpha.1"
+source = "git+https://github.com/AnInsaneJimJam/cairo-m#8985123e1aaee8d5e00aba95631820298c3e98e4"
 dependencies = [
  "once_cell",
  "pulldown-cmark",
@@ -7588,6 +7599,7 @@ dependencies = [
 [[package]]
 name = "stwo-prover"
 version = "0.1.1"
+source = "git+https://github.com/starkware-libs/stwo?rev=ab57a1c#ab57a1cd7f92673c0ec4a6ab64feee01d7121276"
 dependencies = [
  "blake2",
  "blake3",

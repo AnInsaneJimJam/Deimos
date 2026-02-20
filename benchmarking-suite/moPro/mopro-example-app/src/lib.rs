@@ -583,7 +583,7 @@ mod cairo_tests {
 // --- ProveKit Example ---
 
 #[cfg(feature = "provekit")]
-use provekit_wrapper::{prove, verify};
+use provekit_wrapper::{prove as _provekit_prove, verify as _provekit_verify};
 
 #[cfg(feature = "provekit")]
 #[derive(uniffi::Error, thiserror::Error, Debug)]
@@ -609,7 +609,7 @@ pub struct ProveKitVerifyOutput {
 #[cfg(feature = "provekit")]
 #[uniffi::export]
 pub fn provekit_prove(prover_path: String, input_toml: String) -> Result<ProveKitProofOutput, ProveKitError> {
-    let proof = prove(&prover_path, &input_toml)
+    let proof = _provekit_prove(&prover_path, &input_toml)
         .map_err(|e| ProveKitError::ProveError(e.to_string()))?;
     Ok(ProveKitProofOutput { proof })
 }
@@ -617,7 +617,7 @@ pub fn provekit_prove(prover_path: String, input_toml: String) -> Result<ProveKi
 #[cfg(feature = "provekit")]
 #[uniffi::export]
 pub fn provekit_verify(verifier_path: String, proof: Vec<u8>) -> Result<ProveKitVerifyOutput, ProveKitError> {
-    let is_valid = verify(&verifier_path, &proof)
+    let is_valid = _provekit_verify(&verifier_path, &proof)
         .map_err(|e| ProveKitError::VerifyError(e.to_string()))?;
     Ok(ProveKitVerifyOutput { is_valid })
 }

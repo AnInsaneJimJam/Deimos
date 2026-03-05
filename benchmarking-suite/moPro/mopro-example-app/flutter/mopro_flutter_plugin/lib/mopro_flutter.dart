@@ -18,7 +18,7 @@ class MoproFlutter {
     final file = File('${directory.path}/$assetPath');
 
     // Write the bytes to a file in the file system
-    await file.writeAsBytes(byteData.buffer.asUint8List());
+    await file.writeAsBytes(byteData.buffer.asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
 
     return file.path; // Return the file path
   }
@@ -35,26 +35,6 @@ class MoproFlutter {
       String zkeyFile, CircomProofResult proof, ProofLib proofLib) async {
     return await copyAssetToFileSystem(zkeyFile).then((path) async {
       return await MoproFlutterPlatform.instance.verifyCircomProof(path, proof, proofLib);
-    });
-  }
-
-  Future<Halo2ProofResult?> generateHalo2Proof(
-      String srsPath, String pkPath, Map<String, List<String>> inputs) async {
-    return await copyAssetToFileSystem(srsPath).then((srsPath) async {
-      return await copyAssetToFileSystem(pkPath).then((pkPath) async {
-        return await MoproFlutterPlatform.instance
-            .generateHalo2Proof(srsPath, pkPath, inputs);
-      });
-    });
-  }
-
-  Future<bool> verifyHalo2Proof(
-      String srsPath, String vkPath, Uint8List proof, Uint8List inputs) async {
-    return await copyAssetToFileSystem(srsPath).then((srsPath) async {
-      return await copyAssetToFileSystem(vkPath).then((vkPath) async {
-        return await MoproFlutterPlatform.instance
-            .verifyHalo2Proof(srsPath, vkPath, proof, inputs);
-      });
     });
   }
 

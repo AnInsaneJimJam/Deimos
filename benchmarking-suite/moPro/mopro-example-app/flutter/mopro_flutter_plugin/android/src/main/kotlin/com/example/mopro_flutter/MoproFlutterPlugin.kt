@@ -137,11 +137,13 @@ class MoproFlutterPlugin : FlutterPlugin, MethodCallHandler {
 
             val proofLib = if (proofLibIndex == 0) ProofLib.ARKWORKS else ProofLib.RAPIDSNARK
 
-            val res = generateGroth16Proof(zkeyPath, inputs, proofLib)
-            val resultMap = convertCircomProof(res)
-
-            
-            result.success(resultMap)
+            try {
+                val res = generateGroth16Proof(zkeyPath, inputs, proofLib)
+                val resultMap = convertCircomProof(res)
+                result.success(resultMap)
+            } catch (e: Exception) {
+                result.error("PROOF_GENERATION_ERROR", "Failed to generate Groth16 proof", e.message)
+            }
         } else if (call.method == "verifyCircomProof") {
             val zkeyPath = call.argument<String>("zkeyPath") ?: return result.error(
                 "ARGUMENT_ERROR",
@@ -163,14 +165,14 @@ class MoproFlutterPlugin : FlutterPlugin, MethodCallHandler {
 
             val proofLib = if (proofLibIndex == 0) ProofLib.ARKWORKS else ProofLib.RAPIDSNARK
 
-            val circomProofResult = convertCircomProofResult(proof)
-            val res = verifyGroth16Proof(zkeyPath, circomProofResult, proofLib)
-            result.success(res)
+            try {
+                val circomProofResult = convertCircomProofResult(proof)
+                val res = verifyGroth16Proof(zkeyPath, circomProofResult, proofLib)
+                result.success(res)
+            } catch (e: Exception) {
+                result.error("PROOF_VERIFICATION_ERROR", "Failed to verify Groth16 proof", e.message)
+            }
 
-        } else if (call.method== "generateHalo2Proof") {
-            result.notImplemented()
-        } else if (call.method== "verifyHalo2Proof") {
-            result.notImplemented()
         } else if (call.method== "generateNoirProof") {
             val circuitPath = call.argument<String>("circuitPath") ?: return result.error(
                 "ARGUMENT_ERROR",

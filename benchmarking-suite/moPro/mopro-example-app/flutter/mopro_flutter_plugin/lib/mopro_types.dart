@@ -80,22 +80,6 @@ class CircomProofResult {
   }
 }
 
-class Halo2ProofResult {
-  final Uint8List proof;
-  final Uint8List inputs;
-
-  Halo2ProofResult(this.proof, this.inputs);
-
-  factory Halo2ProofResult.fromMap(Map<Object?, Object?> proofResult) {
-    return Halo2ProofResult(
-        proofResult["proof"] as Uint8List, proofResult["inputs"] as Uint8List);
-  }
-
-  Map<String, dynamic> toMap() {
-    return {"proof": proof, "inputs": inputs};
-  }
-}
-
 class Risc0ProofOutput {
   final Uint8List receipt;
 

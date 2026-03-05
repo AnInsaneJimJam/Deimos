@@ -287,7 +287,6 @@ class _MainSelectionPageState extends State<MainSelectionPage> {
   Widget _buildFrameworkSelection() {
     final frameworks = [
       {'name': 'Circom', 'value': 'circom', 'icon': Icons.speed},
-      {'name': 'Halo2', 'value': 'halo2', 'icon': Icons.layers},
       {'name': 'Noir', 'value': 'noir', 'icon': Icons.nightlight_round},
       {'name': 'RISC Zero', 'value': 'risc0', 'icon': Icons.developer_board},
       {'name': 'Cairo', 'value': 'cairo', 'icon': Icons.architecture},
@@ -796,8 +795,6 @@ class _MainSelectionPageState extends State<MainSelectionPage> {
     switch (framework) {
       case 'circom':
         return 'Circom';
-      case 'halo2':
-        return 'Halo2';
       case 'noir':
         return 'Noir';
       case 'risc0':
@@ -817,8 +814,6 @@ class _MainSelectionPageState extends State<MainSelectionPage> {
     switch (framework) {
       case 'circom':
         return ['SHA256', 'Keccak256', 'Blake2s256', 'Blake3', 'MiMC256', 'Pedersen', 'Poseidon', 'RescuePrime'];
-      case 'halo2':
-        return ['Fibonacci'];
       case 'noir':
         return ['SHA256', 'Keccak256', 'Poseidon', 'MiMC', 'Blake2', 'Blake3', 'RescuePrime', 'Anemoi'];
       case 'risc0':
@@ -1017,7 +1012,6 @@ class _ProofResultPageState extends State<ProofResultPage> {
   
   // Store actual proof objects for verification
   CircomProofResult? _circomProofResult;
-  Halo2ProofResult? _halo2ProofResult;
   Uint8List? _noirProofResult;
   
   // RISC-V results
@@ -1464,8 +1458,6 @@ class _ProofResultPageState extends State<ProofResultPage> {
     switch (widget.framework.toLowerCase()) {
       case 'circom':
         return _buildCircomProofDetails();
-      case 'halo2':
-        return _buildHalo2ProofDetails();
       case 'noir':
         return _buildNoirProofDetails();
       case 'risc0':
@@ -1512,27 +1504,6 @@ class _ProofResultPageState extends State<ProofResultPage> {
         Text('π_b.y: [${_circomProofResult!.proof.b.y.join(', ')}]'),
         Text('π_b.z: [${_circomProofResult!.proof.b.z.join(', ')}]'),
         Text('π_c: [${_circomProofResult!.proof.c.x}, ${_circomProofResult!.proof.c.y}, ${_circomProofResult!.proof.c.z}]'),
-      ],
-    );
-  }
-
-  Widget _buildHalo2ProofDetails() {
-    if (_halo2ProofResult == null) return const SizedBox.shrink();
-    
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-          Text(
-          'Proof Details:',
-            style: TextStyle(
-              fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: AppTheme.secondary,
-          ),
-        ),
-        const SizedBox(height: 8),
-        Text('Proof Size: ${_halo2ProofResult!.proof.length} bytes'),
-        Text('Inputs: ${_halo2ProofResult!.inputs.toString()}'),
       ],
     );
   }
@@ -1700,8 +1671,6 @@ class _ProofResultPageState extends State<ProofResultPage> {
     switch (widget.framework.toLowerCase()) {
       case 'circom':
         return await _generateCircomProof(moproFlutterPlugin);
-      case 'halo2':
-        return await _generateHalo2Proof(moproFlutterPlugin);
       case 'noir':
         return await _generateNoirProof(moproFlutterPlugin);
       case 'risc0':
@@ -1739,7 +1708,7 @@ class _ProofResultPageState extends State<ProofResultPage> {
     // Start memory monitoring in background
     _startMemoryMonitoring();
     
-    // Generate proof using actual MoPro - use asset path directly like Halo2/Noir
+    // Generate proof using actual MoPro
     print("DEBUG: Calling generateCircomProof with asset path: $zkeyAssetPath");
     final proofResult = await plugin.generateCircomProof(
       zkeyAssetPath, 
@@ -1764,54 +1733,6 @@ class _ProofResultPageState extends State<ProofResultPage> {
     });
     
     return _formatCircomProofOutput(proofResult);
-  }
-
-  Future<String> _generateHalo2Proof(MoproFlutter plugin) async {
-    // Convert selected input to Halo2 format
-    final inputData = _getInputDataForAlgorithm();
-    final inputs = {
-      "out": [inputData.join(" ")]
-    };
-    
-    // Capture memory and battery BEFORE proof generation
-    final memSnapshotBefore = await _getMemorySnapshot();
-    _freeMemoryBeforeProof = memSnapshotBefore.free;
-    final battery = Battery();
-    _batteryBeforeProof = await battery.batteryLevel;
-    
-    // Start timing
-    final stopwatch = Stopwatch()..start();
-    
-    // Start memory monitoring in background
-    _startMemoryMonitoring();
-    
-    // Generate proof using actual MoPro
-    final proofResult = await plugin.generateHalo2Proof(
-      "assets/plonk_fibonacci_srs.bin",
-      "assets/plonk_fibonacci_pk.bin", 
-      inputs.cast<String, List<String>>()
-    );
-    
-    // Stop timing and store
-    stopwatch.stop();
-    
-    // Capture memory and battery AFTER proof generation
-    final memSnapshotAfter = await _getMemorySnapshot();
-    _freeMemoryAfterProof = memSnapshotAfter.free;
-    _batteryAfterProof = await battery.batteryLevel;
-    
-    if (proofResult == null) {
-      throw Exception('Failed to generate Halo2 proof');
-    }
-    
-    // Store the proof result for verification
-    setState(() {
-      _halo2ProofResult = proofResult;
-      _proofGenerationTime = stopwatch.elapsed;
-    });
-    
-    // Format the actual proof data
-    return _formatHalo2ProofOutput(proofResult);
   }
 
   Future<String> _generateNoirProof(MoproFlutter plugin) async {
@@ -2124,20 +2045,6 @@ Timestamp: ${DateTime.now().millisecondsSinceEpoch}
 ''';
   }
 
-  String _formatHalo2ProofOutput(Halo2ProofResult proofResult) {
-    return '''
-${widget.algorithm} Proof: Halo2ProofResult(
-  proof: ${proofResult.proof.toString()}
-  inputs: ${proofResult.inputs.toString()}
-)
-
-Framework: ${widget.framework}
-Algorithm: ${widget.algorithm}
-Input: [${_getInputDataForAlgorithm().join(', ')}]
-Timestamp: ${DateTime.now().millisecondsSinceEpoch}
-''';
-  }
-
   String _formatNoirProofOutput(Uint8List proof) {
     return '''
 ${widget.algorithm} Proof: NoirProof(
@@ -2234,9 +2141,6 @@ Timestamp: ${DateTime.now().millisecondsSinceEpoch}
       case 'circom':
         isValid = await _verifyCircomProof(moproFlutterPlugin);
         break;
-      case 'halo2':
-        isValid = await _verifyHalo2Proof(moproFlutterPlugin);
-        break;
       case 'noir':
         isValid = await _verifyNoirProof(moproFlutterPlugin);
         break;
@@ -2274,30 +2178,6 @@ Timestamp: ${DateTime.now().millisecondsSinceEpoch}
     // Stop timing and store
     stopwatch.stop();
     setState(() {
-      _proofVerificationTime = stopwatch.elapsed;
-    });
-    
-    return result;
-  }
-
-  Future<bool> _verifyHalo2Proof(MoproFlutter plugin) async {
-    if (_halo2ProofResult == null) {
-      throw Exception('No proof available for verification');
-    }
-    
-    // Start timing
-    final stopwatch = Stopwatch()..start();
-    
-    final result = await plugin.verifyHalo2Proof(
-      "assets/plonk_fibonacci_srs.bin",
-      "assets/plonk_fibonacci_vk.bin",
-      _halo2ProofResult!.proof,
-      _halo2ProofResult!.inputs
-    );
-    
-    // Stop timing and store
-    stopwatch.stop();
-      setState(() {
       _proofVerificationTime = stopwatch.elapsed;
     });
     
@@ -2581,8 +2461,7 @@ Timestamp: ${DateTime.now().millisecondsSinceEpoch}
   int _getProofSize() {
     if (_circomProofResult != null) {
       return _proofData?.length ?? 0;
-    } else if (_halo2ProofResult != null) {
-      return _halo2ProofResult!.proof.length;
+
     } else if (_noirProofResult != null) {
       return _noirProofResult!.length;
     } else if (_risc0ProofResult != null) {

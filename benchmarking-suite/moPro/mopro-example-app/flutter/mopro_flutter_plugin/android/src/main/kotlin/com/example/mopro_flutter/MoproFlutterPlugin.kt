@@ -22,7 +22,7 @@ class FlutterG2(x: List<String>, y: List<String>, z: List<String>) {
     val z = z
 }
 
-class FlutterCircomProof(a: FlutterG1, b: FlutterG2, c: FlutterG1, protocol: String, curve: String) {
+class FlutterGroth16Proof(a: FlutterG1, b: FlutterG2, c: FlutterG1, protocol: String, curve: String) {
     val a = a
     val b = b
     val c = c
@@ -30,17 +30,17 @@ class FlutterCircomProof(a: FlutterG1, b: FlutterG2, c: FlutterG1, protocol: Str
     val curve = curve
 }
 
-class FlutterCircomProofResult(proof: FlutterCircomProof, inputs: List<String>) {
+class FlutterGroth16ProofResult(proof: FlutterGroth16Proof, inputs: List<String>) {
     val proof = proof
     val inputs = inputs
 }
 
-fun convertCircomProof(res: Groth16ProofResult): Map<String, Any> {
+fun convertGroth16Proof(res: Groth16ProofResult): Map<String, Any> {
     val g1a = FlutterG1(res.proof.a.x, res.proof.a.y, res.proof.a.z)
             val g2b = FlutterG2(res.proof.b.x, res.proof.b.y, res.proof.b.z)
             val g1c = FlutterG1(res.proof.c.x, res.proof.c.y, res.proof.c.z)
-            val circomProof = FlutterCircomProof(g1a, g2b, g1c, res.proof.protocol, res.proof.curve)
-            val circomProofResult = FlutterCircomProofResult(circomProof, res.inputs)
+            val circomProof = FlutterGroth16Proof(g1a, g2b, g1c, res.proof.protocol, res.proof.curve)
+            val circomProofResult = FlutterGroth16ProofResult(circomProof, res.inputs)
             // Convert to Map before sending
     val resultMap = mapOf(
         "proof" to mapOf(
@@ -66,7 +66,7 @@ fun convertCircomProof(res: Groth16ProofResult): Map<String, Any> {
     )
     return resultMap
 }
-fun convertCircomProofResult(proofResult: Map<String, Any>): Groth16ProofResult {
+fun convertGroth16ProofResult(proofResult: Map<String, Any>): Groth16ProofResult {
     val proofMap = proofResult["proof"] as Map<String, Any>
     val aMap = proofMap["a"] as Map<String, Any>
     val g1a = G1(
@@ -115,7 +115,7 @@ class MoproFlutterPlugin : FlutterPlugin, MethodCallHandler {
     }
 
     override fun onMethodCall(call: MethodCall, result: Result) {
-        if (call.method == "generateCircomProof") {
+        if (call.method == "generateGroth16Proof") {
             val zkeyPath = call.argument<String>("zkeyPath") ?: return result.error(
                 "ARGUMENT_ERROR",
                 "Missing zkeyPath",
@@ -139,12 +139,12 @@ class MoproFlutterPlugin : FlutterPlugin, MethodCallHandler {
 
             try {
                 val res = generateGroth16Proof(zkeyPath, inputs, proofLib)
-                val resultMap = convertCircomProof(res)
+                val resultMap = convertGroth16Proof(res)
                 result.success(resultMap)
             } catch (e: Exception) {
                 result.error("PROOF_GENERATION_ERROR", "Failed to generate Groth16 proof", e.message)
             }
-        } else if (call.method == "verifyCircomProof") {
+        } else if (call.method == "verifyGroth16Proof") {
             val zkeyPath = call.argument<String>("zkeyPath") ?: return result.error(
                 "ARGUMENT_ERROR",
                 "Missing zkeyPath",
@@ -166,14 +166,14 @@ class MoproFlutterPlugin : FlutterPlugin, MethodCallHandler {
             val proofLib = if (proofLibIndex == 0) ProofLib.ARKWORKS else ProofLib.RAPIDSNARK
 
             try {
-                val circomProofResult = convertCircomProofResult(proof)
+                val circomProofResult = convertGroth16ProofResult(proof)
                 val res = verifyGroth16Proof(zkeyPath, circomProofResult, proofLib)
                 result.success(res)
             } catch (e: Exception) {
                 result.error("PROOF_VERIFICATION_ERROR", "Failed to verify Groth16 proof", e.message)
             }
 
-        } else if (call.method== "generateNoirProof") {
+        } else if (call.method== "generateBarretenbergProof") {
             val circuitPath = call.argument<String>("circuitPath") ?: return result.error(
                 "ARGUMENT_ERROR",
                 "Missing circuitPath",
@@ -208,7 +208,7 @@ class MoproFlutterPlugin : FlutterPlugin, MethodCallHandler {
 
             val res = generateBarretenbergProof(circuitPath, srsPath, inputs, onChain, vk, lowMemoryMode)
             result.success(res)
-        } else if (call.method== "verifyNoirProof") {
+        } else if (call.method== "verifyBarretenbergProof") {
             val circuitPath = call.argument<String>("circuitPath") ?: return result.error(
                 "ARGUMENT_ERROR",
                 "Missing circuitPath",
@@ -242,7 +242,7 @@ class MoproFlutterPlugin : FlutterPlugin, MethodCallHandler {
             val res = verifyBarretenbergProof(circuitPath, proof, onChain, vk, lowMemoryMode)
             result.success(res)
 
-        } else if (call.method== "getNoirVerificationKey") {
+        } else if (call.method== "getBarretenbergVerificationKey") {
             val circuitPath = call.argument<String>("circuitPath") ?: return result.error(
                 "ARGUMENT_ERROR",
                 "Missing circuitPath",

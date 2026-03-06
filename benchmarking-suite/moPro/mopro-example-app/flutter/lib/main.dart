@@ -107,7 +107,7 @@ class _MainSelectionPageState extends State<MainSelectionPage> {
         }
       }
 
-      // Load Field inputs for Noir
+      // Load Field inputs for Barretenberg
       final fieldSizesNoir = ['1f', '2f', '3f', '5f', '9f', '17f', '34f'];
       for (var size in fieldSizesNoir) {
         try {
@@ -122,7 +122,7 @@ class _MainSelectionPageState extends State<MainSelectionPage> {
         }
       }
 
-      // Load Field inputs for Circom
+      // Load Field inputs for Groth16
       final fieldSizesCircom = ['16f', '32f', '64f', '128f'];
       for (var size in fieldSizesCircom) {
         try {
@@ -286,8 +286,8 @@ class _MainSelectionPageState extends State<MainSelectionPage> {
 
   Widget _buildFrameworkSelection() {
     final frameworks = [
-      {'name': 'Circom', 'value': 'circom', 'icon': Icons.speed},
-      {'name': 'Noir', 'value': 'noir', 'icon': Icons.nightlight_round},
+      {'name': 'Groth16', 'value': 'groth16', 'icon': Icons.speed},
+      {'name': 'Barretenberg', 'value': 'barretenberg', 'icon': Icons.nightlight_round},
       {'name': 'RISC Zero', 'value': 'risc0', 'icon': Icons.developer_board},
       {'name': 'Cairo', 'value': 'cairo', 'icon': Icons.architecture},
       {'name': 'IMP1', 'value': 'imp1', 'icon': Icons.flash_on},
@@ -793,10 +793,10 @@ class _MainSelectionPageState extends State<MainSelectionPage> {
 
   String _getFrameworkDisplayName(String framework) {
     switch (framework) {
-      case 'circom':
-        return 'Circom';
-      case 'noir':
-        return 'Noir';
+      case 'groth16':
+        return 'Groth16';
+      case 'barretenberg':
+        return 'Barretenberg';
       case 'risc0':
         return 'RISC Zero';
       case 'cairo':
@@ -812,9 +812,9 @@ class _MainSelectionPageState extends State<MainSelectionPage> {
 
   List<String> _getAlgorithmsForFramework(String framework) {
     switch (framework) {
-      case 'circom':
+      case 'groth16':
         return ['SHA256', 'Keccak256', 'Blake2s256', 'Blake3', 'MiMC256', 'Pedersen', 'Poseidon', 'RescuePrime'];
-      case 'noir':
+      case 'barretenberg':
         return ['SHA256', 'Keccak256', 'Poseidon', 'MiMC', 'Blake2', 'Blake3', 'RescuePrime', 'Anemoi'];
       case 'risc0':
         return ['Factor'];
@@ -841,7 +841,7 @@ class _MainSelectionPageState extends State<MainSelectionPage> {
     final bytesAlgorithms = ['SHA256', 'Keccak256', 'Blake2s256', 'Blake3', 'Pedersen', 'Blake2'];
     
     if (bytesAlgorithms.contains(_selectedAlgorithm)) {
-      if (_selectedFramework == 'circom' || _selectedFramework == 'imp1') {
+      if (_selectedFramework == 'groth16' || _selectedFramework == 'imp1') {
         final allowed = ['Input 16', 'Input 32', 'Input 64', 'Input 128'];
         _availableInputs = _bytesInputs.where((input) => allowed.contains(input.name)).toList();
       } else {
@@ -849,14 +849,14 @@ class _MainSelectionPageState extends State<MainSelectionPage> {
       }
     } else {
       // Select field inputs based on framework
-      if (_selectedFramework == 'noir') {
+      if (_selectedFramework == 'barretenberg') {
         _availableInputs = _fieldInputsNoir;
-      } else if (_selectedFramework == 'circom') {
+      } else if (_selectedFramework == 'groth16') {
         _availableInputs = _fieldInputsCircom;
       } else if (_selectedFramework == 'provekit') {
         _availableInputs = _fieldInputsNoir;
       } else {
-        // For other frameworks, use Circom inputs as default
+        // For other frameworks, use Groth16 inputs as default
         _availableInputs = _fieldInputsCircom;
       }
     }
@@ -1011,7 +1011,7 @@ class _ProofResultPageState extends State<ProofResultPage> {
   String? _error;
   
   // Store actual proof objects for verification
-  CircomProofResult? _circomProofResult;
+  Groth16ProofResult? _circomProofResult;
   Uint8List? _noirProofResult;
   
   // RISC-V results
@@ -1030,7 +1030,7 @@ class _ProofResultPageState extends State<ProofResultPage> {
   ProveKitProofOutput? _provekitProofResult;
   ProveKitVerifyOutput? _provekitVerifyResult;
   
-  // Store Noir verification keys (like in old implementation)
+  // Store Barretenberg verification keys (like in old implementation)
   final Map<String, Uint8List> _noirVerificationKeys = {};
   
   // Benchmarking timing
@@ -1456,9 +1456,9 @@ class _ProofResultPageState extends State<ProofResultPage> {
   
   Widget _buildProofDetails() {
     switch (widget.framework.toLowerCase()) {
-      case 'circom':
+      case 'groth16':
         return _buildCircomProofDetails();
-      case 'noir':
+      case 'barretenberg':
         return _buildNoirProofDetails();
       case 'risc0':
         return _buildRisc0ProofDetails();
@@ -1669,10 +1669,10 @@ class _ProofResultPageState extends State<ProofResultPage> {
     final moproFlutterPlugin = MoproFlutter();
     
     switch (widget.framework.toLowerCase()) {
-      case 'circom':
-        return await _generateCircomProof(moproFlutterPlugin);
-      case 'noir':
-        return await _generateNoirProof(moproFlutterPlugin);
+      case 'groth16':
+        return await _generateGroth16Proof(moproFlutterPlugin);
+      case 'barretenberg':
+        return await _generateBarretenbergProof(moproFlutterPlugin);
       case 'risc0':
         return await _generateRisc0Proof(moproFlutterPlugin);
       case 'cairo':
@@ -1688,7 +1688,7 @@ class _ProofResultPageState extends State<ProofResultPage> {
 
 
 
-  Future<String> _generateCircomProof(MoproFlutter plugin) async {
+  Future<String> _generateGroth16Proof(MoproFlutter plugin) async {
     // Get input data based on algorithm (special case for Poseidon)
     final inputData = _getInputDataForAlgorithm();
     final inputs = _inputDataToByteArrayJson(inputData);
@@ -1709,8 +1709,8 @@ class _ProofResultPageState extends State<ProofResultPage> {
     _startMemoryMonitoring();
     
     // Generate proof using actual MoPro
-    print("DEBUG: Calling generateCircomProof with asset path: $zkeyAssetPath");
-    final proofResult = await plugin.generateCircomProof(
+    print("DEBUG: Calling generateGroth16Proof with asset path: $zkeyAssetPath");
+    final proofResult = await plugin.generateGroth16Proof(
       zkeyAssetPath, 
             inputs, 
       ProofLib.arkworks
@@ -1724,7 +1724,7 @@ class _ProofResultPageState extends State<ProofResultPage> {
     _batteryAfterProof = await battery.batteryLevel;
     
     if (proofResult == null) {
-      throw Exception('Failed to generate Circom proof');
+      throw Exception('Failed to generate Groth16 proof');
     }
     
     setState(() {
@@ -1735,8 +1735,8 @@ class _ProofResultPageState extends State<ProofResultPage> {
     return _formatCircomProofOutput(proofResult);
   }
 
-  Future<String> _generateNoirProof(MoproFlutter plugin) async {
-    // Get input data and convert to Noir format
+  Future<String> _generateBarretenbergProof(MoproFlutter plugin) async {
+    // Get input data and convert to Barretenberg format
     final inputData = _getInputDataForAlgorithm();
     
     // Get the appropriate circuit path and settings
@@ -1756,7 +1756,7 @@ class _ProofResultPageState extends State<ProofResultPage> {
     _startMemoryMonitoring();
     
     // Generate proof using actual MoPro with selected inputs
-    final proof = await plugin.generateNoirProof(
+    final proof = await plugin.generateBarretenbergProof(
       circuitPath,
       srsPath,
       noirInputs,
@@ -1874,7 +1874,7 @@ ${proofResult.publicInputs}
 
   String _getZkeyPath() {
     // Construct path dynamically based on algorithm and input size
-    // naming convention: assets/circom/zkey/{algorithm}_{suffix}.zkey
+    // naming convention: assets/groth16/zkey/{algorithm}_{suffix}.zkey
     
     // 1. Get algorithm name prefix
     String algoPrefix = widget.algorithm.toLowerCase();
@@ -1892,7 +1892,7 @@ ${proofResult.publicInputs}
     // The input name format is strictly "Input {suffix}" as defined in MainSelectionPage
     final suffix = widget.selectedInputName.split(' ').last;
     
-    return "assets/circom/zkey/${algoPrefix}_${suffix}.zkey";
+    return "assets/groth16/zkey/${algoPrefix}_${suffix}.zkey";
   }
 
   bool _isNoirBytesAlgorithm(String algorithm) {
@@ -1965,15 +1965,15 @@ ${proofResult.publicInputs}
         vkAssetPath = 'assets/pedersen.vk';
       } else {
         final baseName = '${algorithmKey}_bytes_$targetInputSize';
-        assetPath = 'assets/noir/$baseName.json';
-        srsPath = 'assets/noir/$baseName.srs';
+        assetPath = 'assets/barretenberg/$baseName.json';
+        srsPath = 'assets/barretenberg/$baseName.srs';
         onChain = true;
       }
     } else if (_isNoirFieldAlgorithm(algorithm)) {
       targetInputSize = _mapNoirFieldSize(rawInputSize);
       final baseName = '${algorithmKey}_field_$targetInputSize';
-      assetPath = 'assets/noir/$baseName.json';
-      srsPath = 'assets/noir/$baseName.srs';
+      assetPath = 'assets/barretenberg/$baseName.json';
+      srsPath = 'assets/barretenberg/$baseName.srs';
       onChain = algorithm != 'Poseidon';
     } else {
       targetInputSize = _mapNoirByteSize(rawInputSize);
@@ -1999,7 +1999,7 @@ ${proofResult.publicInputs}
       }
     }
 
-    verificationKey ??= await moproFlutterPlugin.getNoirVerificationKey(
+    verificationKey ??= await moproFlutterPlugin.getBarretenbergVerificationKey(
       assetPath,
       srsPath,
       onChain,
@@ -2011,7 +2011,7 @@ ${proofResult.publicInputs}
     return (assetPath, srsPath, onChain, verificationKey, targetInputSize);
   }
 
-  String _formatCircomProofOutput(CircomProofResult proofResult) {
+  String _formatCircomProofOutput(Groth16ProofResult proofResult) {
     final proof = proofResult.proof;
     final inputs = proofResult.inputs;
     
@@ -2083,12 +2083,12 @@ Timestamp: ${DateTime.now().millisecondsSinceEpoch}
   }
 
   String _inputDataToByteArrayJson(List<String> inputData) {
-    // Convert input data to JSON format for Circom
+    // Convert input data to JSON format for Groth16
     return '{"in": [${inputData.map((b) => '"$b"').join(', ')}]}';
   }
 
   List<String> _inputDataToNoirInput(List<String> inputData, int targetSize) {
-    // Noir circuits expect a fixed input size; pad or truncate to match
+    // Barretenberg circuits expect a fixed input size; pad or truncate to match
     final paddedData = List<String>.from(inputData);
     while (paddedData.length < targetSize) {
       paddedData.add('0');
@@ -2138,11 +2138,11 @@ Timestamp: ${DateTime.now().millisecondsSinceEpoch}
     
     bool isValid;
     switch (widget.framework.toLowerCase()) {
-      case 'circom':
-        isValid = await _verifyCircomProof(moproFlutterPlugin);
+      case 'groth16':
+        isValid = await _verifyGroth16Proof(moproFlutterPlugin);
         break;
-      case 'noir':
-        isValid = await _verifyNoirProof(moproFlutterPlugin);
+      case 'barretenberg':
+        isValid = await _verifyBarretenbergProof(moproFlutterPlugin);
         break;
       case 'risc0':
         isValid = await _verifyRisc0Proof(moproFlutterPlugin);
@@ -2163,7 +2163,7 @@ Timestamp: ${DateTime.now().millisecondsSinceEpoch}
     return isValid;
   }
 
-  Future<bool> _verifyCircomProof(MoproFlutter plugin) async {
+  Future<bool> _verifyGroth16Proof(MoproFlutter plugin) async {
     if (_circomProofResult == null) {
       throw Exception('No proof available for verification');
     }
@@ -2173,7 +2173,7 @@ Timestamp: ${DateTime.now().millisecondsSinceEpoch}
     // Start timing
     final stopwatch = Stopwatch()..start();
     
-    final result = await plugin.verifyCircomProof(zkeyAssetPath, _circomProofResult!, ProofLib.arkworks);
+    final result = await plugin.verifyGroth16Proof(zkeyAssetPath, _circomProofResult!, ProofLib.arkworks);
     
     // Stop timing and store
     stopwatch.stop();
@@ -2184,7 +2184,7 @@ Timestamp: ${DateTime.now().millisecondsSinceEpoch}
     return result;
   }
 
-  Future<bool> _verifyNoirProof(MoproFlutter plugin) async {
+  Future<bool> _verifyBarretenbergProof(MoproFlutter plugin) async {
     if (_noirProofResult == null) {
       throw Exception('No proof available for verification');
     }
@@ -2194,7 +2194,7 @@ Timestamp: ${DateTime.now().millisecondsSinceEpoch}
     // Start timing
     final stopwatch = Stopwatch()..start();
     
-    final result = await plugin.verifyNoirProof(circuitPath, _noirProofResult!, onChain, vk, false);
+    final result = await plugin.verifyBarretenbergProof(circuitPath, _noirProofResult!, onChain, vk, false);
     
     // Stop timing and store
     stopwatch.stop();

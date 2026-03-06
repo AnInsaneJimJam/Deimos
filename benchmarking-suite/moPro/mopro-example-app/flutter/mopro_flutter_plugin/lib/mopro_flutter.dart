@@ -23,47 +23,47 @@ class MoproFlutter {
     return file.path; // Return the file path
   }
 
-  Future<CircomProofResult?> generateCircomProof(
+  Future<Groth16ProofResult?> generateGroth16Proof(
       String zkeyFile, String inputs, ProofLib proofLib) async {
     return await copyAssetToFileSystem(zkeyFile).then((path) async {
       return await MoproFlutterPlatform.instance
-          .generateCircomProof(path, inputs, proofLib);
+          .generateGroth16Proof(path, inputs, proofLib);
     });
   }
 
-  Future<bool> verifyCircomProof(
-      String zkeyFile, CircomProofResult proof, ProofLib proofLib) async {
+  Future<bool> verifyGroth16Proof(
+      String zkeyFile, Groth16ProofResult proof, ProofLib proofLib) async {
     return await copyAssetToFileSystem(zkeyFile).then((path) async {
-      return await MoproFlutterPlatform.instance.verifyCircomProof(path, proof, proofLib);
+      return await MoproFlutterPlatform.instance.verifyGroth16Proof(path, proof, proofLib);
     });
   }
 
-  Future<Uint8List> generateNoirProof(String circuitPath, String? srsPath, List<String> inputs, bool onChain, Uint8List vk, bool lowMemoryMode) async {
+  Future<Uint8List> generateBarretenbergProof(String circuitPath, String? srsPath, List<String> inputs, bool onChain, Uint8List vk, bool lowMemoryMode) async {
     return await copyAssetToFileSystem(circuitPath).then((circuitPath) async {
       if (srsPath != null) {
         return await copyAssetToFileSystem(srsPath).then((srsPath) async {
-          return await MoproFlutterPlatform.instance.generateNoirProof(circuitPath, srsPath, inputs, onChain, vk, lowMemoryMode);
+          return await MoproFlutterPlatform.instance.generateBarretenbergProof(circuitPath, srsPath, inputs, onChain, vk, lowMemoryMode);
         });
       } else {
-        return await MoproFlutterPlatform.instance.generateNoirProof(circuitPath, null, inputs, onChain, vk, lowMemoryMode);
+        return await MoproFlutterPlatform.instance.generateBarretenbergProof(circuitPath, null, inputs, onChain, vk, lowMemoryMode);
       }
     });
   }
 
-  Future<bool> verifyNoirProof(String circuitPath, Uint8List proof, bool onChain, Uint8List vk, bool lowMemoryMode) async {
+  Future<bool> verifyBarretenbergProof(String circuitPath, Uint8List proof, bool onChain, Uint8List vk, bool lowMemoryMode) async {
     return await copyAssetToFileSystem(circuitPath).then((circuitPath) async {  
-      return await MoproFlutterPlatform.instance.verifyNoirProof(circuitPath, proof, onChain, vk, lowMemoryMode);
+      return await MoproFlutterPlatform.instance.verifyBarretenbergProof(circuitPath, proof, onChain, vk, lowMemoryMode);
     });
   }
 
-  Future<Uint8List> getNoirVerificationKey(String circuitPath, String? srsPath, bool onChain, bool lowMemoryMode) async {
+  Future<Uint8List> getBarretenbergVerificationKey(String circuitPath, String? srsPath, bool onChain, bool lowMemoryMode) async {
     return await copyAssetToFileSystem(circuitPath).then((circuitPath) async {
       if (srsPath != null) {
         return await copyAssetToFileSystem(srsPath).then((srsPath) async {
-          return await MoproFlutterPlatform.instance.getNoirVerificationKey(circuitPath, srsPath, onChain, lowMemoryMode);
+          return await MoproFlutterPlatform.instance.getBarretenbergVerificationKey(circuitPath, srsPath, onChain, lowMemoryMode);
         });
       } else {
-        return await MoproFlutterPlatform.instance.getNoirVerificationKey(circuitPath, null, onChain, lowMemoryMode);
+        return await MoproFlutterPlatform.instance.getBarretenbergVerificationKey(circuitPath, null, onChain, lowMemoryMode);
       }
     });
   }

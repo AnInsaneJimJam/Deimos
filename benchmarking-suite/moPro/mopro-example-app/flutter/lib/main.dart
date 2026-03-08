@@ -76,8 +76,6 @@ class _MainSelectionPageState extends State<MainSelectionPage> {
   String? _selectedFramework;
   String? _selectedAlgorithm;
   String? _selectedInput;
-  //only when framework is 'groth16'
-  String _selectedProofBackend = 'arkworks';
   bool _isLoading = false;
   bool _isLoadingInputs = true;
   
@@ -210,7 +208,6 @@ class _MainSelectionPageState extends State<MainSelectionPage> {
               const SizedBox(height: 24),
               _buildFrameworkSelection(),
               const SizedBox(height: 24),
-              if (_selectedFramework == 'groth16') ..._buildBackendSelection(),
               _buildAlgorithmSelection(),
               const SizedBox(height: 24),
               _buildCustomInput(),
@@ -289,7 +286,8 @@ class _MainSelectionPageState extends State<MainSelectionPage> {
 
   Widget _buildFrameworkSelection() {
     final frameworks = [
-      {'name': 'Groth16', 'value': 'groth16', 'icon': Icons.speed},
+      {'name': 'Arkworks', 'value': 'arkworks', 'icon': Icons.verified_user},
+      {'name': 'Rapidsnark', 'value': 'rapidsnark', 'icon': Icons.bolt},
       {'name': 'Barretenberg', 'value': 'barretenberg', 'icon': Icons.nightlight_round},
       {'name': 'RISC Zero', 'value': 'risc0', 'icon': Icons.developer_board},
       {'name': 'Cairo', 'value': 'cairo', 'icon': Icons.architecture},
@@ -370,7 +368,6 @@ class _MainSelectionPageState extends State<MainSelectionPage> {
                   setState(() {
                     _selectedFramework = newValue;
                     _selectedAlgorithm = null; // Reset algorithm when framework changes
-                    _selectedProofBackend = 'arkworks'; 
                   });
                 },
               ),
@@ -381,80 +378,6 @@ class _MainSelectionPageState extends State<MainSelectionPage> {
     );
   }
 
-  List<Widget> _buildBackendSelection() {
-    final backends = [
-      {'name': 'Arkworks', 'value': 'arkworks'},
-      {'name': 'Rapidsnark', 'value': 'rapidsnark'},
-    ];
-
-    return [
-      _buildCard(
-        title: 'Proof Backend',
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Choose the Circom proving backend',
-              style: TextStyle(
-                fontSize: 14,
-                color: AppTheme.textSecondary,
-              ),
-            ),
-            const SizedBox(height: 16),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-              decoration: BoxDecoration(
-                color: AppTheme.primary.withOpacity(0.05),
-                border: Border.all(color: AppTheme.primary, width: 2),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: DropdownButtonHideUnderline(
-                child: DropdownButton<String>(
-                  value: _selectedProofBackend,
-                  isExpanded: true,
-                  icon: const Icon(Icons.arrow_drop_down, color: AppTheme.primary),
-                  items: backends.map((backend) {
-                    return DropdownMenuItem<String>(
-                      value: backend['value']!,
-                      child: Row(
-                        children: [
-                          Icon(
-                            backend['value'] == 'rapidsnark'
-                                ? Icons.bolt
-                                : Icons.verified_user,
-                            size: 20,
-                            color: AppTheme.primary,
-                          ),
-                          const SizedBox(width: 12),
-                          Text(
-                            backend['name']!,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color: AppTheme.text,
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  }).toList(),
-                  onChanged: (String? newValue) {
-                    if (newValue != null) {
-                      setState(() {
-                        _selectedProofBackend = newValue;
-                      });
-                    }
-                  },
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-      const SizedBox(height: 24),
-    ];
-  }
 
   Widget _buildAlgorithmSelection() {
     final isEnabled = _selectedFramework != null;
@@ -734,10 +657,6 @@ class _MainSelectionPageState extends State<MainSelectionPage> {
                 const SizedBox(height: 16),
                 _buildSummaryRow('Framework', _getFrameworkDisplayName(_selectedFramework!)),
                 const SizedBox(height: 10),
-                if (_selectedFramework == 'groth16') ...[
-                  _buildSummaryRow('Backend', _selectedProofBackend == 'rapidsnark' ? 'Rapidsnark' : 'Arkworks'),
-                  const SizedBox(height: 10),
-                ],
                 _buildSummaryRow('Circuit', _selectedAlgorithm!),
                 const SizedBox(height: 10),
                 _buildSummaryRow('Input', _selectedInput!),
@@ -875,7 +794,8 @@ class _MainSelectionPageState extends State<MainSelectionPage> {
 
   String _getFrameworkDisplayName(String framework) {
     switch (framework) {
-      case 'groth16':
+      case 'arkworks':
+      case 'rapidsnark':
         return 'Groth16';
       case 'barretenberg':
         return 'Barretenberg';
@@ -894,7 +814,8 @@ class _MainSelectionPageState extends State<MainSelectionPage> {
 
   List<String> _getAlgorithmsForFramework(String framework) {
     switch (framework) {
-      case 'groth16':
+      case 'arkworks':
+      case 'rapidsnark':
         return ['SHA256', 'Keccak256', 'Blake2s256', 'Blake3', 'MiMC256', 'Pedersen', 'Poseidon', 'RescuePrime'];
       case 'barretenberg':
         return ['SHA256', 'Keccak256', 'Poseidon', 'MiMC', 'Blake2', 'Blake3', 'RescuePrime', 'Anemoi'];
@@ -923,7 +844,7 @@ class _MainSelectionPageState extends State<MainSelectionPage> {
     final bytesAlgorithms = ['SHA256', 'Keccak256', 'Blake2s256', 'Blake3', 'Pedersen', 'Blake2'];
     
     if (bytesAlgorithms.contains(_selectedAlgorithm)) {
-      if (_selectedFramework == 'groth16' || _selectedFramework == 'imp1') {
+      if (_selectedFramework == 'arkworks' || _selectedFramework == 'rapidsnark' || _selectedFramework == 'imp1') {
         final allowed = ['Input 16', 'Input 32', 'Input 64', 'Input 128'];
         _availableInputs = _bytesInputs.where((input) => allowed.contains(input.name)).toList();
       } else {
@@ -933,7 +854,7 @@ class _MainSelectionPageState extends State<MainSelectionPage> {
       // Select field inputs based on framework
       if (_selectedFramework == 'barretenberg') {
         _availableInputs = _fieldInputsNoir;
-      } else if (_selectedFramework == 'groth16') {
+      } else if (_selectedFramework == 'arkworks' || _selectedFramework == 'rapidsnark') {
         _availableInputs = _fieldInputsCircom;
       } else if (_selectedFramework == 'provekit') {
         _availableInputs = _fieldInputsNoir;
@@ -972,7 +893,6 @@ class _MainSelectionPageState extends State<MainSelectionPage> {
           algorithm: _selectedAlgorithm!,
           selectedInputName: _selectedInput!,
           selectedInputData: _availableInputs.firstWhere((input) => input.name == _selectedInput!),
-          proofBackend: _selectedProofBackend,
         ),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           const begin = Offset(1.0, 0.0);
@@ -1073,7 +993,6 @@ class ProofResultPage extends StatefulWidget {
   final String algorithm;
   final String selectedInputName;
   final InputData selectedInputData;
-  final String proofBackend;
 
   const ProofResultPage({
     super.key,
@@ -1081,7 +1000,6 @@ class ProofResultPage extends StatefulWidget {
     required this.algorithm,
     required this.selectedInputName,
     required this.selectedInputData,
-    this.proofBackend = 'arkworks',
   });
 
   @override
@@ -1295,9 +1213,9 @@ class _ProofResultPageState extends State<ProofResultPage> {
             ),
           ),
           const SizedBox(height: 8),
-          if (widget.framework == 'groth16') ...[
+          if (widget.framework == 'arkworks' || widget.framework == 'rapidsnark') ...[
             Text(
-              'Backend: ${widget.proofBackend[0].toUpperCase()}${widget.proofBackend.substring(1)}',
+              'Backend: ${widget.framework[0].toUpperCase()}${widget.framework.substring(1)}',
               style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
@@ -1765,7 +1683,8 @@ class _ProofResultPageState extends State<ProofResultPage> {
     final moproFlutterPlugin = MoproFlutter();
     
     switch (widget.framework.toLowerCase()) {
-      case 'groth16':
+      case 'arkworks':
+      case 'rapidsnark':
         return await _generateGroth16Proof(moproFlutterPlugin);
       case 'barretenberg':
         return await _generateBarretenbergProof(moproFlutterPlugin);
@@ -1806,7 +1725,7 @@ class _ProofResultPageState extends State<ProofResultPage> {
     
     // Generate proof using actual MoPro
     print("DEBUG: Calling generateGroth16Proof with asset path: $zkeyAssetPath");
-    final _proofLib = widget.proofBackend == 'rapidsnark'
+    final _proofLib = widget.framework == 'rapidsnark'
         ? ProofLib.rapidsnark
         : ProofLib.arkworks;
     final proofResult = await plugin.generateGroth16Proof(
@@ -2237,7 +2156,8 @@ Timestamp: ${DateTime.now().millisecondsSinceEpoch}
     
     bool isValid;
     switch (widget.framework.toLowerCase()) {
-      case 'groth16':
+      case 'arkworks':
+      case 'rapidsnark':
         isValid = await _verifyGroth16Proof(moproFlutterPlugin);
         break;
       case 'barretenberg':
@@ -2272,7 +2192,7 @@ Timestamp: ${DateTime.now().millisecondsSinceEpoch}
     // Start timing
     final stopwatch = Stopwatch()..start();
     
-    final _verifyProofLib = widget.proofBackend == 'rapidsnark'
+    final _verifyProofLib = widget.framework == 'rapidsnark'
         ? ProofLib.rapidsnark
         : ProofLib.arkworks;
     final result = await plugin.verifyGroth16Proof(zkeyAssetPath, _circomProofResult!, _verifyProofLib);
@@ -2555,7 +2475,7 @@ Timestamp: ${DateTime.now().millisecondsSinceEpoch}
       // Additional metadata
       'proofSize': _getProofSize(),
       'customInputs': customInputs, // Add custom inputs here
-      'proofBackend': widget.framework == 'groth16' ? widget.proofBackend : 'N/A',
+      'proofBackend': (widget.framework == 'arkworks' || widget.framework == 'rapidsnark') ? widget.framework : 'N/A',
 
       'timestamp': DateTime.now().toIso8601String(),
     };

@@ -25,9 +25,7 @@ export const receiveBenchmarkResult = async (req, res) => {
         .where('deviceInfo.androidId', '==', androidId)
         .where('circuit', '==', circuit)
         .where('framework', '==', framework)
-        .where('language', '==', language)
-        .limit(1)
-        .get();
+        .where('language', '==', language).limit(1).get();
 
       if (!existingSnapshot.empty) {
         logger.info(`Duplicate benchmark detected - Circuit: ${circuit}, Framework: ${framework}, Language: ${language}, AndroidId: ${androidId}`);

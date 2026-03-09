@@ -47,7 +47,7 @@ export const getBenchmarks = async (req, res) => {
 
     // Get all filtered data
     const snapshot = await query.get();
-    
+
     // Convert to array and sort by timestamp (latest to oldest)
     const allData = [];
     snapshot.forEach(doc => {
@@ -56,7 +56,7 @@ export const getBenchmarks = async (req, res) => {
         ...doc.data()
       });
     });
-    
+
     // Sort by timestamp in descending order (latest first)
     allData.sort((a, b) => {
       const timeA = new Date(a.timestamp || a.createdAt || 0).getTime();

@@ -286,7 +286,8 @@ class _MainSelectionPageState extends State<MainSelectionPage> {
 
   Widget _buildFrameworkSelection() {
     final frameworks = [
-      {'name': 'Groth16', 'value': 'groth16', 'icon': Icons.speed},
+      {'name': 'Arkworks', 'value': 'arkworks', 'icon': Icons.verified_user},
+      {'name': 'Rapidsnark', 'value': 'rapidsnark', 'icon': Icons.bolt},
       {'name': 'Barretenberg', 'value': 'barretenberg', 'icon': Icons.nightlight_round},
       {'name': 'RISC Zero', 'value': 'risc0', 'icon': Icons.developer_board},
       {'name': 'Cairo', 'value': 'cairo', 'icon': Icons.architecture},
@@ -793,7 +794,8 @@ class _MainSelectionPageState extends State<MainSelectionPage> {
 
   String _getFrameworkDisplayName(String framework) {
     switch (framework) {
-      case 'groth16':
+      case 'arkworks':
+      case 'rapidsnark':
         return 'Groth16';
       case 'barretenberg':
         return 'Barretenberg';
@@ -812,7 +814,8 @@ class _MainSelectionPageState extends State<MainSelectionPage> {
 
   List<String> _getAlgorithmsForFramework(String framework) {
     switch (framework) {
-      case 'groth16':
+      case 'arkworks':
+      case 'rapidsnark':
         return ['SHA256', 'Keccak256', 'Blake2s256', 'Blake3', 'MiMC256', 'Pedersen', 'Poseidon', 'RescuePrime'];
       case 'barretenberg':
         return ['SHA256', 'Keccak256', 'Poseidon', 'MiMC', 'Blake2', 'Blake3', 'RescuePrime', 'Anemoi'];
@@ -841,7 +844,7 @@ class _MainSelectionPageState extends State<MainSelectionPage> {
     final bytesAlgorithms = ['SHA256', 'Keccak256', 'Blake2s256', 'Blake3', 'Pedersen', 'Blake2'];
     
     if (bytesAlgorithms.contains(_selectedAlgorithm)) {
-      if (_selectedFramework == 'groth16' || _selectedFramework == 'imp1') {
+      if (_selectedFramework == 'arkworks' || _selectedFramework == 'rapidsnark' || _selectedFramework == 'imp1') {
         final allowed = ['Input 16', 'Input 32', 'Input 64', 'Input 128'];
         _availableInputs = _bytesInputs.where((input) => allowed.contains(input.name)).toList();
       } else {
@@ -851,7 +854,7 @@ class _MainSelectionPageState extends State<MainSelectionPage> {
       // Select field inputs based on framework
       if (_selectedFramework == 'barretenberg') {
         _availableInputs = _fieldInputsNoir;
-      } else if (_selectedFramework == 'groth16') {
+      } else if (_selectedFramework == 'arkworks' || _selectedFramework == 'rapidsnark') {
         _availableInputs = _fieldInputsCircom;
       } else if (_selectedFramework == 'provekit') {
         _availableInputs = _fieldInputsNoir;
@@ -1669,7 +1672,8 @@ class _ProofResultPageState extends State<ProofResultPage> {
     final moproFlutterPlugin = MoproFlutter();
     
     switch (widget.framework.toLowerCase()) {
-      case 'groth16':
+      case 'arkworks':
+      case 'rapidsnark':
         return await _generateGroth16Proof(moproFlutterPlugin);
       case 'barretenberg':
         return await _generateBarretenbergProof(moproFlutterPlugin);
@@ -1710,10 +1714,13 @@ class _ProofResultPageState extends State<ProofResultPage> {
     
     // Generate proof using actual MoPro
     print("DEBUG: Calling generateGroth16Proof with asset path: $zkeyAssetPath");
+    final _proofLib = widget.framework == 'rapidsnark'
+        ? ProofLib.rapidsnark
+        : ProofLib.arkworks;
     final proofResult = await plugin.generateGroth16Proof(
       zkeyAssetPath, 
             inputs, 
-      ProofLib.arkworks
+      _proofLib
     );
     
     stopwatch.stop();
@@ -2138,7 +2145,8 @@ Timestamp: ${DateTime.now().millisecondsSinceEpoch}
     
     bool isValid;
     switch (widget.framework.toLowerCase()) {
-      case 'groth16':
+      case 'arkworks':
+      case 'rapidsnark':
         isValid = await _verifyGroth16Proof(moproFlutterPlugin);
         break;
       case 'barretenberg':
@@ -2173,7 +2181,10 @@ Timestamp: ${DateTime.now().millisecondsSinceEpoch}
     // Start timing
     final stopwatch = Stopwatch()..start();
     
-    final result = await plugin.verifyGroth16Proof(zkeyAssetPath, _circomProofResult!, ProofLib.arkworks);
+    final _verifyProofLib = widget.framework == 'rapidsnark'
+        ? ProofLib.rapidsnark
+        : ProofLib.arkworks;
+    final result = await plugin.verifyGroth16Proof(zkeyAssetPath, _circomProofResult!, _verifyProofLib);
     
     // Stop timing and store
     stopwatch.stop();
@@ -2453,6 +2464,7 @@ Timestamp: ${DateTime.now().millisecondsSinceEpoch}
       // Additional metadata
       'proofSize': _getProofSize(),
       'customInputs': customInputs, // Add custom inputs here
+      'proofBackend': (widget.framework == 'arkworks' || widget.framework == 'rapidsnark') ? widget.framework : 'N/A',
 
       'timestamp': DateTime.now().toIso8601String(),
     };

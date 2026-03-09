@@ -165,11 +165,6 @@ export default function BenchmarksPage() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-6 pt-4">
 
 
-
-
-
-
-
         {/* Filters */}
         <div className="mb-4 bg-white rounded-lg shadow-sm p-4 border border-[#E0DEDB]">
           <div className="flex flex-wrap gap-3">
@@ -404,7 +399,7 @@ export default function BenchmarksPage() {
                                     )}
                                   </div>
                                 </div>
-                                
+
                                 {/* Custom Inputs */}
                                 {item.customInputs && Object.keys(item.customInputs).length > 0 && (
                                   <div className="bg-white rounded-lg p-3 shadow-sm border border-[rgba(55,50,47,0.12)]">

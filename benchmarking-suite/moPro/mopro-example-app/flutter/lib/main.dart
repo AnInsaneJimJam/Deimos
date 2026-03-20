@@ -2502,9 +2502,15 @@ Timestamp: ${DateTime.now().millisecondsSinceEpoch}
     // Start memory monitoring in background
     _startMemoryMonitoring();
 
+    String entrypoint = "main";
+    if (widget.algorithm.toLowerCase() == "sha256") {
+      entrypoint = "sha256_hash";
+    }
+    
     final proofResult = await plugin.generateCairoProof(
       "assets/cairo_sha256.json",
-      inputsJson
+      inputsJson,
+      entrypoint
     );
 
     stopwatch.stop();

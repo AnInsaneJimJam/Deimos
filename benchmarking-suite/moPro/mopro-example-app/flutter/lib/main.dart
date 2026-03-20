@@ -2487,9 +2487,19 @@ Timestamp: ${DateTime.now().millisecondsSinceEpoch}
   }
 
   Future<String> _generateCairoProof(MoproFlutter plugin) async {
-    // Load the dedicated input file for Cairo
-    // This ensures we match the exact format expected by the cairo-m prover (Vec<u32> + len)
-    final inputsJson = await rootBundle.loadString('assets/cairo_input.json');
+    // Generate inputs dynamically based on the algorithm
+    String inputsJson;
+    String entrypoint = "main";
+    String programPath = "assets/cairo_sha256.json"; // default
+
+    if (widget.algorithm.toLowerCase() == "sha256") {
+      entrypoint = "sha256_hash";
+      final inputData = _getInputDataForAlgorithm();
+      inputsJson = _prepareCairoSha256Input(inputData);
+    } else {
+      // Fallback
+      inputsJson = await rootBundle.loadString('assets/cairo_input.json');
+    }
     
     // Capture memory and battery BEFORE proof generation
     _freeMemoryBeforeProof = SysInfo.getFreePhysicalMemory();
@@ -2501,14 +2511,9 @@ Timestamp: ${DateTime.now().millisecondsSinceEpoch}
     
     // Start memory monitoring in background
     _startMemoryMonitoring();
-
-    String entrypoint = "main";
-    if (widget.algorithm.toLowerCase() == "sha256") {
-      entrypoint = "sha256_hash";
-    }
     
     final proofResult = await plugin.generateCairoProof(
-      "assets/cairo_sha256.json",
+      programPath,
       inputsJson,
       entrypoint
     );
@@ -2524,6 +2529,42 @@ Timestamp: ${DateTime.now().millisecondsSinceEpoch}
     });
 
     return _formatCairoProofOutput(proofResult);
+  }
+
+  String _prepareCairoSha256Input(List<String> inputData) {
+    // 1. Convert string list to byte list
+    List<int> bytes = inputData.map((s) => int.parse(s)).toList();
+    final originalBitLen = bytes.length * 8;
+    
+    // 2. Append the 0x80 byte
+    bytes.add(0x80);
+    
+    // 3. Pad with 0s until length % 64 == 56
+    while (bytes.length % 64 != 56) {
+      bytes.add(0);
+    }
+    
+    // 4. Append 8-byte length in bits (big-endian)
+    for (int i = 7; i >= 0; i--) {
+      bytes.add((originalBitLen >> (i * 8)) & 0xff);
+    }
+    
+    // 5. Convert to 32-bit words (big-endian), ensuring unsigned 32-bit wrap around
+    List<int> words = [];
+    for (int i = 0; i < bytes.length; i += 4) {
+      int word = (bytes[i] << 24) |
+                 (bytes[i + 1] << 16) |
+                 (bytes[i + 2] << 8) |
+                 bytes[i + 3];
+      // Force unsigned 32-bit integer handling for JSON output
+      words.add(word.toUnsigned(32));
+    }
+    
+    // 6. Calculate chunks
+    int numChunks = bytes.length ~/ 64;
+    
+    // 7. Format to JSON string exactly as cairo-m expects: [[word1, word2, ...], numChunks]
+    return '[${words.toString()}, $numChunks]';
   }
 
   // Helper to safely get current memory snapshot

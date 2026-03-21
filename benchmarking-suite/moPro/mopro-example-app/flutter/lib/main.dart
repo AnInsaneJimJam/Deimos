@@ -16,14 +16,12 @@ import 'package:battery_plus/battery_plus.dart';
 // IMP1 Integration
 import 'package:Deimos/channels/imp1_channel.dart';
 
+// Models and Pages
+import 'package:Deimos/models/benchmark_item.dart';
+import 'package:Deimos/utils/circuit_registry.dart';
+import 'package:Deimos/pages/batch_execution_page.dart';
+
 // Input data structure
-class InputData {
-  final String name;
-  final String description;
-  final List<String> values;
-  
-  InputData({required this.name, required this.description, required this.values});
-}
 
 class AppTheme {
   static const Color primary = Color(0xFF5B56E6);
@@ -213,7 +211,45 @@ class _MainSelectionPageState extends State<MainSelectionPage> {
               _buildCustomInput(),
               const SizedBox(height: 32),
               _buildRunButton(),
+              const SizedBox(height: 16),
+              _buildBatchButton(),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBatchButton() {
+    return SizedBox(
+      width: double.infinity,
+      height: 56,
+      child: OutlinedButton.icon(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => BatchExecutionPage(allInputs: [
+                ..._bytesInputs,
+                ..._fieldInputsNoir,
+                ..._fieldInputsCircom,
+              ]),
+            ),
+          );
+        },
+        icon: const Icon(Icons.auto_awesome, color: AppTheme.primary),
+        label: const Text(
+          'Prove & Verify All',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: AppTheme.primary,
+          ),
+        ),
+        style: OutlinedButton.styleFrom(
+          side: const BorderSide(color: AppTheme.primary, width: 2),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
           ),
         ),
       ),

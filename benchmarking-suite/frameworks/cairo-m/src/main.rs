@@ -149,6 +149,29 @@ fn main() -> anyhow::Result<()> {
     let keccak_out = run_cairo_program(&keccak_compiled.program, "keccak256_hash", &keccak_args, RunnerOptions::default())?;
     prove_and_verify(keccak_out, "KECCAK-256")?;
 
+
+    // --- RESCUE PRIME ---
+    println!("--- RESCUE PRIME ---");
+    let rp_src = fs::read_to_string("circuits/rescue_prime.cm")?;
+    let rp_res = compile_cairo(rp_src, "rescue_prime.cm".to_string(), CompilerOptions::default());
+    let rp_compiled = match rp_res {
+        Ok(c) => c,
+        Err(e) => {
+            println!("RESCUE PRIME COMPILE ERROR DUMP: {:#?}", e);
+            std::process::exit(1);
+        }
+    };
+    let rp_json = serde_json::to_string_pretty(&rp_compiled.program)?;
+    fs::write(output_dir.join("cairo_rescue_prime.json"), &rp_json)?;
+    let rp_args = vec![
+        InputValue::List(vec![
+            InputValue::Number(123), InputValue::Number(456)
+        ]),
+        InputValue::Number(2), // 2 inputs
+    ];
+    let rp_out = run_cairo_program(&rp_compiled.program, "rescue_prime_hash", &rp_args, RunnerOptions::default())?;
+    prove_and_verify(rp_out, "RESCUE PRIME")?;
+
     Ok(())
 }
 

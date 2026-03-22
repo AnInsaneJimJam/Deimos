@@ -10687,6 +10687,81 @@
         }
       ]
     },
+    "blake2s_round": {
+      "pc": 253,
+      "params": [
+        {
+          "name": "arg0",
+          "ty": {
+            "FixedSizeArray": {
+              "element": "U32",
+              "size": 16
+            }
+          }
+        },
+        {
+          "name": "arg1",
+          "ty": {
+            "FixedSizeArray": {
+              "element": "U32",
+              "size": 16
+            }
+          }
+        },
+        {
+          "name": "arg2",
+          "ty": "Felt"
+        }
+      ]
+    },
+    "blake2s_hash": {
+      "pc": 675,
+      "params": [
+        {
+          "name": "arg0",
+          "ty": {
+            "Pointer": {
+              "element": "U32",
+              "len": null
+            }
+          }
+        },
+        {
+          "name": "arg1",
+          "ty": "U32"
+        }
+      ],
+      "returns": [
+        {
+          "name": "ret0",
+          "ty": {
+            "FixedSizeArray": {
+              "element": "U32",
+              "size": 8
+            }
+          }
+        }
+      ]
+    },
+    "get_sigma": {
+      "pc": 145,
+      "params": [
+        {
+          "name": "arg0",
+          "ty": "Felt"
+        },
+        {
+          "name": "arg1",
+          "ty": "Felt"
+        }
+      ],
+      "returns": [
+        {
+          "name": "ret0",
+          "ty": "U32"
+        }
+      ]
+    },
     "g": {
       "pc": 22,
       "params": [
@@ -10725,81 +10800,6 @@
         }
       ]
     },
-    "get_sigma": {
-      "pc": 145,
-      "params": [
-        {
-          "name": "arg0",
-          "ty": "Felt"
-        },
-        {
-          "name": "arg1",
-          "ty": "Felt"
-        }
-      ],
-      "returns": [
-        {
-          "name": "ret0",
-          "ty": "U32"
-        }
-      ]
-    },
-    "blake2s_hash": {
-      "pc": 675,
-      "params": [
-        {
-          "name": "arg0",
-          "ty": {
-            "Pointer": {
-              "element": "U32",
-              "len": null
-            }
-          }
-        },
-        {
-          "name": "arg1",
-          "ty": "U32"
-        }
-      ],
-      "returns": [
-        {
-          "name": "ret0",
-          "ty": {
-            "FixedSizeArray": {
-              "element": "U32",
-              "size": 8
-            }
-          }
-        }
-      ]
-    },
-    "blake2s_round": {
-      "pc": 253,
-      "params": [
-        {
-          "name": "arg0",
-          "ty": {
-            "FixedSizeArray": {
-              "element": "U32",
-              "size": 16
-            }
-          }
-        },
-        {
-          "name": "arg1",
-          "ty": {
-            "FixedSizeArray": {
-              "element": "U32",
-              "size": 16
-            }
-          }
-        },
-        {
-          "name": "arg2",
-          "ty": "Felt"
-        }
-      ]
-    },
     "compress": {
       "pc": 590,
       "params": [
@@ -10833,7 +10833,7 @@
     }
   },
   "metadata": {
-    "compiled_at": "2026-03-22T07:07:47.675242992+00:00",
+    "compiled_at": "2026-03-22T09:44:37.198608566+00:00",
     "compiler_version": "0.1.0-alpha.1"
   }
 }

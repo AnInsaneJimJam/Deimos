@@ -1451,15 +1451,11 @@
     }
   ],
   "entrypoints": {
-    "mimc7": {
-      "pc": 7,
+    "pow7": {
+      "pc": 0,
       "params": [
         {
           "name": "arg0",
-          "ty": "Felt"
-        },
-        {
-          "name": "arg1",
           "ty": "Felt"
         }
       ],
@@ -1498,11 +1494,15 @@
         }
       ]
     },
-    "pow7": {
-      "pc": 0,
+    "mimc7": {
+      "pc": 7,
       "params": [
         {
           "name": "arg0",
+          "ty": "Felt"
+        },
+        {
+          "name": "arg1",
           "ty": "Felt"
         }
       ],
@@ -1515,7 +1515,7 @@
     }
   },
   "metadata": {
-    "compiled_at": "2026-03-22T07:09:11.032206178+00:00",
+    "compiled_at": "2026-03-22T09:45:55.992920762+00:00",
     "compiler_version": "0.1.0-alpha.1"
   }
 }

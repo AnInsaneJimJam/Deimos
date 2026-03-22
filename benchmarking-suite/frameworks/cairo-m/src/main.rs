@@ -99,6 +99,29 @@ fn main() -> anyhow::Result<()> {
     let mimc_out = run_cairo_program(&mimc_compiled.program, "multi_mimc7", &mimc_args, RunnerOptions::default())?;
     prove_and_verify(mimc_out, "MiMC")?;
 
+
+    // --- POSEIDON2 ---
+    println!("--- POSEIDON2 ---");
+    let p2_src = fs::read_to_string("circuits/poseidon2.cm")?;
+    let p2_res = compile_cairo(p2_src, "poseidon2.cm".to_string(), CompilerOptions::default());
+    let p2_compiled = match p2_res {
+        Ok(c) => c,
+        Err(e) => {
+            println!("POSEIDON2 COMPILE ERROR DUMP: {:#?}", e);
+            std::process::exit(1);
+        }
+    };
+    let p2_json = serde_json::to_string_pretty(&p2_compiled.program)?;
+    fs::write(output_dir.join("cairo_poseidon2.json"), &p2_json)?;
+    let p2_args = vec![
+        InputValue::List(vec![
+            InputValue::Number(123), InputValue::Number(456)
+        ]),
+        InputValue::Number(2), // 2 inputs
+    ];
+    let p2_out = run_cairo_program(&p2_compiled.program, "poseidon2_hash", &p2_args, RunnerOptions::default())?;
+    prove_and_verify(p2_out, "POSEIDON2")?;
+
     Ok(())
 }
 

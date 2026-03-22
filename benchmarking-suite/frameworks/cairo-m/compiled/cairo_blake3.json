@@ -4704,6 +4704,110 @@
     }
   ],
   "entrypoints": {
+    "blake3_hash": {
+      "pc": 404,
+      "params": [
+        {
+          "name": "arg0",
+          "ty": {
+            "Pointer": {
+              "element": "U32",
+              "len": null
+            }
+          }
+        },
+        {
+          "name": "arg1",
+          "ty": "U32"
+        }
+      ],
+      "returns": [
+        {
+          "name": "ret0",
+          "ty": {
+            "FixedSizeArray": {
+              "element": "U32",
+              "size": 8
+            }
+          }
+        }
+      ]
+    },
+    "add32": {
+      "pc": 22,
+      "params": [
+        {
+          "name": "arg0",
+          "ty": "U32"
+        },
+        {
+          "name": "arg1",
+          "ty": "U32"
+        }
+      ],
+      "returns": [
+        {
+          "name": "ret0",
+          "ty": "U32"
+        }
+      ]
+    },
+    "blake3_permute": {
+      "pc": 26,
+      "params": [
+        {
+          "name": "arg0",
+          "ty": {
+            "FixedSizeArray": {
+              "element": "U32",
+              "size": 16
+            }
+          }
+        }
+      ]
+    },
+    "rotr32": {
+      "pc": 0,
+      "params": [
+        {
+          "name": "arg0",
+          "ty": "U32"
+        },
+        {
+          "name": "arg1",
+          "ty": "Felt"
+        }
+      ],
+      "returns": [
+        {
+          "name": "ret0",
+          "ty": "U32"
+        }
+      ]
+    },
+    "blake3_round": {
+      "pc": 178,
+      "params": [
+        {
+          "name": "arg0",
+          "ty": {
+            "FixedSizeArray": {
+              "element": "U32",
+              "size": 16
+            }
+          }
+        },
+        {
+          "name": "arg1",
+          "ty": {
+            "FixedSizeArray": {
+              "element": "U32",
+              "size": 16
+            }
+          }
+        }
+      ]
+    },
     "blake3_compress": {
       "pc": 293,
       "params": [
@@ -4750,72 +4854,6 @@
         }
       ]
     },
-    "blake3_hash": {
-      "pc": 404,
-      "params": [
-        {
-          "name": "arg0",
-          "ty": {
-            "Pointer": {
-              "element": "U32",
-              "len": null
-            }
-          }
-        },
-        {
-          "name": "arg1",
-          "ty": "U32"
-        }
-      ],
-      "returns": [
-        {
-          "name": "ret0",
-          "ty": {
-            "FixedSizeArray": {
-              "element": "U32",
-              "size": 8
-            }
-          }
-        }
-      ]
-    },
-    "blake3_round": {
-      "pc": 178,
-      "params": [
-        {
-          "name": "arg0",
-          "ty": {
-            "FixedSizeArray": {
-              "element": "U32",
-              "size": 16
-            }
-          }
-        },
-        {
-          "name": "arg1",
-          "ty": {
-            "FixedSizeArray": {
-              "element": "U32",
-              "size": 16
-            }
-          }
-        }
-      ]
-    },
-    "blake3_permute": {
-      "pc": 26,
-      "params": [
-        {
-          "name": "arg0",
-          "ty": {
-            "FixedSizeArray": {
-              "element": "U32",
-              "size": 16
-            }
-          }
-        }
-      ]
-    },
     "blake3_g": {
       "pc": 91,
       "params": [
@@ -4853,48 +4891,10 @@
           "ty": "U32"
         }
       ]
-    },
-    "add32": {
-      "pc": 22,
-      "params": [
-        {
-          "name": "arg0",
-          "ty": "U32"
-        },
-        {
-          "name": "arg1",
-          "ty": "U32"
-        }
-      ],
-      "returns": [
-        {
-          "name": "ret0",
-          "ty": "U32"
-        }
-      ]
-    },
-    "rotr32": {
-      "pc": 0,
-      "params": [
-        {
-          "name": "arg0",
-          "ty": "U32"
-        },
-        {
-          "name": "arg1",
-          "ty": "Felt"
-        }
-      ],
-      "returns": [
-        {
-          "name": "ret0",
-          "ty": "U32"
-        }
-      ]
     }
   },
   "metadata": {
-    "compiled_at": "2026-03-22T07:08:30.351509128+00:00",
+    "compiled_at": "2026-03-22T09:45:19.457213140+00:00",
     "compiler_version": "0.1.0-alpha.1"
   }
 }

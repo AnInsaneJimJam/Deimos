@@ -822,7 +822,7 @@ class _MainSelectionPageState extends State<MainSelectionPage> {
       case 'risc0':
         return ['Factor'];
       case 'cairo':
-        return ['SHA256', 'Blake2s256', 'Blake3', 'MiMC'];
+        return ['SHA256', 'Blake2s256', 'Blake3', 'MiMC', 'Poseidon2'];
       case 'imp1':
         return ['SHA256', 'Keccak256', 'Blake2s256', 'Blake3', 'MiMC256', 'Pedersen', 'Poseidon', 'RescuePrime'];
       case 'provekit':
@@ -858,6 +858,9 @@ class _MainSelectionPageState extends State<MainSelectionPage> {
         _availableInputs = _fieldInputsCircom;
       } else if (_selectedFramework == 'provekit') {
         _availableInputs = _fieldInputsNoir;
+      } else if (_selectedFramework == 'cairo') {
+        // Cairo-M uses M31 field — reuse Circom field inputs (truncated to M31 at runtime)
+        _availableInputs = _fieldInputsCircom;
       } else {
         // For other frameworks, use Groth16 inputs as default
         _availableInputs = _fieldInputsCircom;
@@ -2511,6 +2514,11 @@ Timestamp: ${DateTime.now().millisecondsSinceEpoch}
       programPath = "assets/cairo_mimc.json";
       final inputData = _getInputDataForAlgorithm();
       inputsJson = _prepareCairoMiMCInput(inputData);
+    } else if (widget.algorithm.toLowerCase() == "poseidon2") {
+      entrypoint = "poseidon2_hash";
+      programPath = "assets/cairo_poseidon2.json";
+      final inputData = _getInputDataForAlgorithm();
+      inputsJson = _prepareCairoPoseidon2Input(inputData);
     } else {
       // Fallback
       inputsJson = await rootBundle.loadString('assets/cairo_input.json');
@@ -2630,6 +2638,25 @@ Timestamp: ${DateTime.now().millisecondsSinceEpoch}
     
     // 2. Format to JSON string exactly as cairo-m expects: [[felt1, felt2, ...], numInputs, k]
     return '[[${felts.join(', ')}], ${felts.length}, 0]';
+  }
+
+  String _prepareCairoPoseidon2Input(List<String> inputData) {
+    // Poseidon2 over M31: inputs are field elements truncated mod p = 2^31 - 1
+    // Circuit signature: poseidon2_hash(inputs: felt*, num_inputs: felt)
+    // Max 16 inputs (state width T=16), extras are ignored by the circuit.
+    final m31Prime = BigInt.from(2147483647);
+    List<String> felts = inputData.map((s) {
+      final bigVal = BigInt.parse(s);
+      return (bigVal % m31Prime).toString();
+    }).toList();
+    
+    // Clamp to max 16 field elements (state width)
+    if (felts.length > 16) {
+      felts = felts.sublist(0, 16);
+    }
+    
+    // Format: [[felt1, felt2, ...], numInputs]
+    return '[[${felts.join(', ')}], ${felts.length}]';
   }
 
   // Helper to safely get current memory snapshot

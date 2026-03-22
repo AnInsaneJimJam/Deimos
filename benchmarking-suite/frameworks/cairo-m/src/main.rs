@@ -122,6 +122,33 @@ fn main() -> anyhow::Result<()> {
     let p2_out = run_cairo_program(&p2_compiled.program, "poseidon2_hash", &p2_args, RunnerOptions::default())?;
     prove_and_verify(p2_out, "POSEIDON2")?;
 
+
+    // --- KECCAK-256 ---
+    println!("--- KECCAK-256 ---");
+    let keccak_src = fs::read_to_string("circuits/keccak256.cm")?;
+    let keccak_res = compile_cairo(keccak_src, "keccak256.cm".to_string(), CompilerOptions::default());
+    let keccak_compiled = match keccak_res {
+        Ok(c) => c,
+        Err(e) => {
+            println!("KECCAK COMPILE ERROR DUMP: {:#?}", e);
+            std::process::exit(1);
+        }
+    };
+    let keccak_json = serde_json::to_string_pretty(&keccak_compiled.program)?;
+    fs::write(output_dir.join("cairo_keccak256.json"), &keccak_json)?;
+    // Test with 3-byte message packed into a single u32 word (little-endian)
+    let keccak_args = vec![
+        InputValue::List(vec![
+            InputValue::Number(0), InputValue::Number(0), InputValue::Number(0), InputValue::Number(0),
+            InputValue::Number(0), InputValue::Number(0), InputValue::Number(0), InputValue::Number(0),
+            InputValue::Number(0), InputValue::Number(0), InputValue::Number(0), InputValue::Number(0),
+            InputValue::Number(0), InputValue::Number(0), InputValue::Number(0), InputValue::Number(0),
+        ]),
+        InputValue::Number(3), // 3 bytes
+    ];
+    let keccak_out = run_cairo_program(&keccak_compiled.program, "keccak256_hash", &keccak_args, RunnerOptions::default())?;
+    prove_and_verify(keccak_out, "KECCAK-256")?;
+
     Ok(())
 }
 

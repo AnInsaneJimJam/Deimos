@@ -76,6 +76,7 @@ flutter:
     - assets/cairo_blake3.json
     - assets/cairo_mimc.json
     - assets/cairo_poseidon2.json
+    - assets/cairo_keccak256.json
     - assets/cairo_input.json
     - assets/provekit/
 

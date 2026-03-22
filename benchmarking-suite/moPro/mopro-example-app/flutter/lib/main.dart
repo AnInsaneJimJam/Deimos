@@ -822,7 +822,7 @@ class _MainSelectionPageState extends State<MainSelectionPage> {
       case 'risc0':
         return ['Factor'];
       case 'cairo':
-        return ['SHA256', 'Blake2s256', 'Blake3', 'MiMC', 'Poseidon2'];
+        return ['SHA256', 'Blake2s256', 'Blake3', 'Keccak256', 'MiMC', 'Poseidon2'];
       case 'imp1':
         return ['SHA256', 'Keccak256', 'Blake2s256', 'Blake3', 'MiMC256', 'Pedersen', 'Poseidon', 'RescuePrime'];
       case 'provekit':
@@ -2519,6 +2519,11 @@ Timestamp: ${DateTime.now().millisecondsSinceEpoch}
       programPath = "assets/cairo_poseidon2.json";
       final inputData = _getInputDataForAlgorithm();
       inputsJson = _prepareCairoPoseidon2Input(inputData);
+    } else if (widget.algorithm.toLowerCase() == "keccak256") {
+      entrypoint = "keccak256_hash";
+      programPath = "assets/cairo_keccak256.json";
+      final inputData = _getInputDataForAlgorithm();
+      inputsJson = _prepareCairoBlake2sInput(inputData);
     } else {
       // Fallback
       inputsJson = await rootBundle.loadString('assets/cairo_input.json');

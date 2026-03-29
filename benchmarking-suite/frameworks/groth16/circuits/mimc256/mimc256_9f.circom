@@ -18,7 +18,7 @@ template Main(N) {
 
     hashToBytes.in <== mimc.out;
 
-    for (var i = 0; i < N; i++) {
+    for (var i = 0; i < 32; i++) {
         out[i] <== hashToBytes.out[i];
     }
 }

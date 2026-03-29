@@ -84,6 +84,7 @@ class _MainSelectionPageState extends State<MainSelectionPage> {
   final List<InputData> _fieldInputsNoir = [];
   final List<InputData> _fieldInputsCircom = [];
   final List<InputData> _fieldInputsCairo = [];
+  final List<InputData> _u32InputsCairo = [];
 
   @override
   void initState() {
@@ -139,7 +140,7 @@ class _MainSelectionPageState extends State<MainSelectionPage> {
       }
 
       // Load M31 Field inputs for Cairo-M algebraic hashes
-      final m31Sizes = ['2m', '4m', '8m', '16m'];
+      final m31Sizes = ['5m', '9m', '17m', '34m', '67m', '133m', '265m'];
       for (var size in m31Sizes) {
         try {
           final inputData = await _loadInputFromJson(
@@ -150,6 +151,21 @@ class _MainSelectionPageState extends State<MainSelectionPage> {
           _fieldInputsCairo.add(inputData);
         } catch (e) {
           debugPrint('Error loading inputs/m31_field/input$size.json: $e');
+        }
+      }
+
+      // Load U32 Field inputs for Cairo-M byte hashes
+      final u32Sizes = ['4u', '8u', '16u', '32u', '64u', '128u', '256u'];
+      for (var size in u32Sizes) {
+        try {
+          final inputData = await _loadInputFromJson(
+            'inputs/u32/input$size.json',
+            name: 'Input $size',
+            description: '$size U32 integers',
+          );
+          _u32InputsCairo.add(inputData);
+        } catch (e) {
+          debugPrint('Error loading inputs/u32/input$size.json: $e');
         }
       }
       
@@ -863,6 +879,8 @@ class _MainSelectionPageState extends State<MainSelectionPage> {
       if (_selectedFramework == 'arkworks' || _selectedFramework == 'rapidsnark' || _selectedFramework == 'imp1') {
         final allowed = ['Input 16', 'Input 32', 'Input 64', 'Input 128'];
         _availableInputs = _bytesInputs.where((input) => allowed.contains(input.name)).toList();
+      } else if (_selectedFramework == 'cairo') {
+        _availableInputs = _u32InputsCairo;
       } else {
         _availableInputs = _bytesInputs;
       }

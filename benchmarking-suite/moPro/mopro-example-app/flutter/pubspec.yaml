@@ -71,6 +71,7 @@ flutter:
     - inputs/bytes/
     - inputs/field_elements/
     - inputs/m31_field/
+    - inputs/u32/
     - inputs/cairo_input.json
     - assets/cairo-m/
     - assets/cairo_input.json

@@ -209,6 +209,8 @@ class _MainSelectionPageState extends State<MainSelectionPage> {
                 ..._bytesInputs,
                 ..._fieldInputsNoir,
                 ..._fieldInputsCircom,
+                ..._fieldInputsCairo,
+                ..._u32InputsCairo,
               ]),
             ),
           );

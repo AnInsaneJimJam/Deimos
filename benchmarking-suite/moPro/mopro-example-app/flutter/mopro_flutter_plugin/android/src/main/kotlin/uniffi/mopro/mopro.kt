@@ -993,7 +993,7 @@ private fun uniffiCheckApiChecksums(lib: IntegrityCheckingUniffiLib) {
     if (lib.uniffi_mopro_example_app_checksum_func_generate_groth16_proof() != 60165.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
-    if (lib.uniffi_mopro_example_app_checksum_func_generate_rapidsnark_proof() != 16018.toShort()) {
+    if (lib.uniffi_mopro_example_app_checksum_func_generate_rapidsnark_proof() != 41448.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if (lib.uniffi_mopro_example_app_checksum_func_get_barretenberg_verification_key() != 58699.toShort()) {
@@ -1020,7 +1020,7 @@ private fun uniffiCheckApiChecksums(lib: IntegrityCheckingUniffiLib) {
     if (lib.uniffi_mopro_example_app_checksum_func_verify_groth16_proof() != 5366.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
-    if (lib.uniffi_mopro_example_app_checksum_func_verify_rapidsnark_proof() != 24143.toShort()) {
+    if (lib.uniffi_mopro_example_app_checksum_func_verify_rapidsnark_proof() != 20857.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
 }
@@ -2218,16 +2218,6 @@ public object FfiConverterSequenceString: FfiConverterRustBuffer<List<kotlin.Str
     }
     
 
-        /**
-         * Generates a Groth16 proof using the **Rapidsnark** C++ backend.
-         *
-         * # Arguments
-         * - `zkey_path`: path to the `.zkey` proving key file (copied to device storage)
-         * - `circuit_inputs`: JSON-encoded circuit inputs
-         *
-         * # Returns
-         * `Ok(Groth16ProofResult)` containing the proof and public inputs, or a `MoproError`.
-         */
     @Throws(MoproException::class) fun `generateRapidsnarkProof`(`zkeyPath`: kotlin.String, `circuitInputs`: kotlin.String): Groth16ProofResult {
             return FfiConverterTypeGroth16ProofResult.lift(
     uniffiRustCallWithError(MoproException) { _status ->
@@ -2382,16 +2372,6 @@ public object FfiConverterSequenceString: FfiConverterRustBuffer<List<kotlin.Str
     }
     
 
-        /**
-         * Verifies a Groth16 proof using the **Rapidsnark** C++ backend.
-         *
-         * # Arguments
-         * - `zkey_path`: path to the `.zkey` proving key file
-         * - `proof_result`: the proof and public inputs produced by [`generate_rapidsnark_proof`]
-         *
-         * # Returns
-         * `Ok(true)` if the proof is valid, `Err(MoproError)` on failure.
-         */
     @Throws(MoproException::class) fun `verifyRapidsnarkProof`(`zkeyPath`: kotlin.String, `proofResult`: Groth16ProofResult): kotlin.Boolean {
             return FfiConverterBoolean.lift(
     uniffiRustCallWithError(MoproException) { _status ->

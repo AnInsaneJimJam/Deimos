@@ -123,7 +123,7 @@ class _MainSelectionPageState extends State<MainSelectionPage> {
       }
 
       // Load Field inputs for Groth16
-      final fieldSizesCircom = ['16f', '32f', '64f', '128f'];
+      final fieldSizesCircom = ['1f', '2f', '3f', '5f', '9f', '17f', '34f'];
       for (var size in fieldSizesCircom) {
         try {
           final inputData = await _loadInputFromJson(
@@ -816,7 +816,7 @@ class _MainSelectionPageState extends State<MainSelectionPage> {
     switch (framework) {
       case 'arkworks':
       case 'rapidsnark':
-        return ['SHA256', 'Keccak256', 'Blake2s256', 'Blake3', 'MiMC256', 'Pedersen', 'Poseidon', 'RescuePrime'];
+        return ['SHA256', 'Keccak256', 'Blake2s256', 'Blake3', 'MiMC256', 'Pedersen', 'Poseidon', 'Poseidon2', 'RescuePrime'];
       case 'barretenberg':
         return ['SHA256', 'Keccak256', 'Poseidon', 'MiMC', 'Blake2', 'Blake3', 'RescuePrime', 'Anemoi'];
       case 'risc0':
@@ -824,7 +824,7 @@ class _MainSelectionPageState extends State<MainSelectionPage> {
       case 'cairo':
         return ['SHA256'];
       case 'imp1':
-        return ['SHA256', 'Keccak256', 'Blake2s256', 'Blake3', 'MiMC256', 'Pedersen', 'Poseidon', 'RescuePrime'];
+        return ['SHA256', 'Keccak256', 'Blake2s256', 'Blake3', 'MiMC256', 'Pedersen', 'Poseidon', 'Poseidon2', 'RescuePrime'];
       case 'provekit':
         return ['Anemoi', 'MiMC', 'Poseidon', 'RescuePrime'];
       default:

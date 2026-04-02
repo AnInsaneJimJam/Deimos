@@ -827,7 +827,7 @@ internal interface UniffiLib : Library {
     }
 
     // FFI functions
-    fun uniffi_mopro_example_app_fn_func_cairo_prove(`programJson`: RustBuffer.ByValue,`inputsJson`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
+    fun uniffi_mopro_example_app_fn_func_cairo_prove(`programJson`: RustBuffer.ByValue,`inputsJson`: RustBuffer.ByValue,`entrypoint`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
 ): RustBuffer.ByValue
 fun uniffi_mopro_example_app_fn_func_cairo_verify(`proof`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
 ): RustBuffer.ByValue
@@ -981,7 +981,7 @@ private fun uniffiCheckContractApiVersion(lib: IntegrityCheckingUniffiLib) {
 }
 @Suppress("UNUSED_PARAMETER")
 private fun uniffiCheckApiChecksums(lib: IntegrityCheckingUniffiLib) {
-    if (lib.uniffi_mopro_example_app_checksum_func_cairo_prove() != 8447.toShort()) {
+    if (lib.uniffi_mopro_example_app_checksum_func_cairo_prove() != 54316.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if (lib.uniffi_mopro_example_app_checksum_func_cairo_verify() != 38798.toShort()) {
@@ -2151,11 +2151,11 @@ public object FfiConverterSequenceString: FfiConverterRustBuffer<List<kotlin.Str
          * # Returns
          * `Ok(CairoProofOutput)` with serialized proof, or a `CairoError`.
          */
-    @Throws(CairoException::class) fun `cairoProve`(`programJson`: kotlin.String, `inputsJson`: kotlin.String): CairoProofOutput {
+    @Throws(CairoException::class) fun `cairoProve`(`programJson`: kotlin.String, `inputsJson`: kotlin.String, `entrypoint`: kotlin.String): CairoProofOutput {
             return FfiConverterTypeCairoProofOutput.lift(
     uniffiRustCallWithError(CairoException) { _status ->
     UniffiLib.INSTANCE.uniffi_mopro_example_app_fn_func_cairo_prove(
-        FfiConverterString.lower(`programJson`),FfiConverterString.lower(`inputsJson`),_status)
+        FfiConverterString.lower(`programJson`),FfiConverterString.lower(`inputsJson`),FfiConverterString.lower(`entrypoint`),_status)
 }
     )
     }

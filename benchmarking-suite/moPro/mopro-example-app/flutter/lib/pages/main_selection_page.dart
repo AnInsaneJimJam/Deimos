@@ -68,7 +68,7 @@ class _MainSelectionPageState extends State<MainSelectionPage> {
       }
 
       // Load Field inputs for Groth16
-      final fieldSizesCircom = ['16f', '32f', '64f', '128f'];
+      final fieldSizesCircom = ['1f', '2f', '3f', '5f', '9f', '17f', '34f'];
       for (var size in fieldSizesCircom) {
         try {
           final inputData = await _loadInputFromJson(

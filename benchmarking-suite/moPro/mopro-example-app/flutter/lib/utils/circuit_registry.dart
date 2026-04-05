@@ -8,7 +8,7 @@ class CircuitRegistry {
     final groth16Algos = ['SHA256', 'Keccak256', 'Blake2s256', 'Blake3', 'MiMC256', 'Pedersen', 'Poseidon', 'RescuePrime'];
     for (var algo in groth16Algos) {
       final inputName = algo.contains('MiMC') || algo.contains('Poseidon') || algo.contains('Rescue') 
-          ? 'Input 16f' 
+          ? 'Input 1f' 
           : 'Input 16';
       suite.add(BenchmarkResult(
         framework: 'arkworks',
@@ -21,7 +21,7 @@ class CircuitRegistry {
     // Rapidsnark
     for (var algo in groth16Algos) {
       final inputName = algo.contains('MiMC') || algo.contains('Poseidon') || algo.contains('Rescue') 
-          ? 'Input 16f' 
+          ? 'Input 1f' 
           : 'Input 16';
       suite.add(BenchmarkResult(
         framework: 'rapidsnark',
@@ -64,7 +64,7 @@ class CircuitRegistry {
     // IMP1
     for (var algo in groth16Algos) {
       final inputName = algo.contains('MiMC') || algo.contains('Poseidon') || algo.contains('Rescue') 
-          ? 'Input 16f' 
+          ? 'Input 1f' 
           : 'Input 16';
       suite.add(BenchmarkResult(
         framework: 'imp1',

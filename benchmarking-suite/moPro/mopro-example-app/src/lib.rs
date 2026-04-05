@@ -91,31 +91,64 @@ rust_witness::witness!(pedersen64);
 rust_witness::witness!(pedersen128);
 
 #[cfg(feature = "groth16")]
-rust_witness::witness!(mimc25616f);
+rust_witness::witness!(mimc2561f);
 #[cfg(feature = "groth16")]
-rust_witness::witness!(mimc25632f);
+rust_witness::witness!(mimc2562f);
 #[cfg(feature = "groth16")]
-rust_witness::witness!(mimc25664f);
+rust_witness::witness!(mimc2563f);
 #[cfg(feature = "groth16")]
-rust_witness::witness!(mimc256128f);
+rust_witness::witness!(mimc2565f);
+#[cfg(feature = "groth16")]
+rust_witness::witness!(mimc2569f);
+#[cfg(feature = "groth16")]
+rust_witness::witness!(mimc25617f);
+#[cfg(feature = "groth16")]
+rust_witness::witness!(mimc25634f);
 
 #[cfg(feature = "groth16")]
-rust_witness::witness!(poseidon16f);
+rust_witness::witness!(poseidon1f);
 #[cfg(feature = "groth16")]
-rust_witness::witness!(poseidon32f);
+rust_witness::witness!(poseidon2f);
 #[cfg(feature = "groth16")]
-rust_witness::witness!(poseidon64f);
+rust_witness::witness!(poseidon3f);
 #[cfg(feature = "groth16")]
-rust_witness::witness!(poseidon128f);
+rust_witness::witness!(poseidon5f);
+#[cfg(feature = "groth16")]
+rust_witness::witness!(poseidon9f);
+#[cfg(feature = "groth16")]
+rust_witness::witness!(poseidon17f);
+#[cfg(feature = "groth16")]
+rust_witness::witness!(poseidon34f);
 
 #[cfg(feature = "groth16")]
-rust_witness::witness!(rescueprime16f);
+rust_witness::witness!(poseidon21f);
 #[cfg(feature = "groth16")]
-rust_witness::witness!(rescueprime32f);
+rust_witness::witness!(poseidon22f);
 #[cfg(feature = "groth16")]
-rust_witness::witness!(rescueprime64f);
+rust_witness::witness!(poseidon23f);
 #[cfg(feature = "groth16")]
-rust_witness::witness!(rescueprime128f);
+rust_witness::witness!(poseidon25f);
+#[cfg(feature = "groth16")]
+rust_witness::witness!(poseidon29f);
+#[cfg(feature = "groth16")]
+rust_witness::witness!(poseidon217f);
+#[cfg(feature = "groth16")]
+rust_witness::witness!(poseidon234f);
+
+#[cfg(feature = "groth16")]
+rust_witness::witness!(rescueprime1f);
+#[cfg(feature = "groth16")]
+rust_witness::witness!(rescueprime2f);
+#[cfg(feature = "groth16")]
+rust_witness::witness!(rescueprime3f);
+#[cfg(feature = "groth16")]
+rust_witness::witness!(rescueprime5f);
+#[cfg(feature = "groth16")]
+rust_witness::witness!(rescueprime9f);
+#[cfg(feature = "groth16")]
+rust_witness::witness!(rescueprime17f);
+#[cfg(feature = "groth16")]
+rust_witness::witness!(rescueprime34f);
 
 #[cfg(feature = "groth16")]
 set_groth16_circuits! {
@@ -144,20 +177,37 @@ set_groth16_circuits! {
     ("pedersen_64.zkey", circom_prover::witness::WitnessFn::RustWitness(pedersen64_witness)),
     ("pedersen_128.zkey", circom_prover::witness::WitnessFn::RustWitness(pedersen128_witness)),
 
-    ("mimc256_16f.zkey", circom_prover::witness::WitnessFn::RustWitness(mimc25616f_witness)),
-    ("mimc256_32f.zkey", circom_prover::witness::WitnessFn::RustWitness(mimc25632f_witness)),
-    ("mimc256_64f.zkey", circom_prover::witness::WitnessFn::RustWitness(mimc25664f_witness)),
-    ("mimc256_128f.zkey", circom_prover::witness::WitnessFn::RustWitness(mimc256128f_witness)),
+    ("mimc256_1f.zkey", circom_prover::witness::WitnessFn::RustWitness(mimc2561f_witness)),
+    ("mimc256_2f.zkey", circom_prover::witness::WitnessFn::RustWitness(mimc2562f_witness)),
+    ("mimc256_3f.zkey", circom_prover::witness::WitnessFn::RustWitness(mimc2563f_witness)),
+    ("mimc256_5f.zkey", circom_prover::witness::WitnessFn::RustWitness(mimc2565f_witness)),
+    ("mimc256_9f.zkey", circom_prover::witness::WitnessFn::RustWitness(mimc2569f_witness)),
+    ("mimc256_17f.zkey", circom_prover::witness::WitnessFn::RustWitness(mimc25617f_witness)),
+    ("mimc256_34f.zkey", circom_prover::witness::WitnessFn::RustWitness(mimc25634f_witness)),
 
-    ("poseidon_16f.zkey", circom_prover::witness::WitnessFn::RustWitness(poseidon16f_witness)),
-    ("poseidon_32f.zkey", circom_prover::witness::WitnessFn::RustWitness(poseidon32f_witness)),
-    ("poseidon_64f.zkey", circom_prover::witness::WitnessFn::RustWitness(poseidon64f_witness)),
-    ("poseidon_128f.zkey", circom_prover::witness::WitnessFn::RustWitness(poseidon128f_witness)),
+    ("poseidon_1f.zkey", circom_prover::witness::WitnessFn::RustWitness(poseidon1f_witness)),
+    ("poseidon_2f.zkey", circom_prover::witness::WitnessFn::RustWitness(poseidon2f_witness)),
+    ("poseidon_3f.zkey", circom_prover::witness::WitnessFn::RustWitness(poseidon3f_witness)),
+    ("poseidon_5f.zkey", circom_prover::witness::WitnessFn::RustWitness(poseidon5f_witness)),
+    ("poseidon_9f.zkey", circom_prover::witness::WitnessFn::RustWitness(poseidon9f_witness)),
+    ("poseidon_17f.zkey", circom_prover::witness::WitnessFn::RustWitness(poseidon17f_witness)),
+    ("poseidon_34f.zkey", circom_prover::witness::WitnessFn::RustWitness(poseidon34f_witness)),
 
-    ("rescue-prime_16f.zkey", circom_prover::witness::WitnessFn::RustWitness(rescueprime16f_witness)),
-    ("rescue-prime_32f.zkey", circom_prover::witness::WitnessFn::RustWitness(rescueprime32f_witness)),
-    ("rescue-prime_64f.zkey", circom_prover::witness::WitnessFn::RustWitness(rescueprime64f_witness)),
-    ("rescue-prime_128f.zkey", circom_prover::witness::WitnessFn::RustWitness(rescueprime128f_witness)),
+    ("poseidon2_1f.zkey", circom_prover::witness::WitnessFn::RustWitness(poseidon21f_witness)),
+    ("poseidon2_2f.zkey", circom_prover::witness::WitnessFn::RustWitness(poseidon22f_witness)),
+    ("poseidon2_3f.zkey", circom_prover::witness::WitnessFn::RustWitness(poseidon23f_witness)),
+    ("poseidon2_5f.zkey", circom_prover::witness::WitnessFn::RustWitness(poseidon25f_witness)),
+    ("poseidon2_9f.zkey", circom_prover::witness::WitnessFn::RustWitness(poseidon29f_witness)),
+    ("poseidon2_17f.zkey", circom_prover::witness::WitnessFn::RustWitness(poseidon217f_witness)),
+    ("poseidon2_34f.zkey", circom_prover::witness::WitnessFn::RustWitness(poseidon234f_witness)),
+
+    ("rescue-prime_1f.zkey", circom_prover::witness::WitnessFn::RustWitness(rescueprime1f_witness)),
+    ("rescue-prime_2f.zkey", circom_prover::witness::WitnessFn::RustWitness(rescueprime2f_witness)),
+    ("rescue-prime_3f.zkey", circom_prover::witness::WitnessFn::RustWitness(rescueprime3f_witness)),
+    ("rescue-prime_5f.zkey", circom_prover::witness::WitnessFn::RustWitness(rescueprime5f_witness)),
+    ("rescue-prime_9f.zkey", circom_prover::witness::WitnessFn::RustWitness(rescueprime9f_witness)),
+    ("rescue-prime_17f.zkey", circom_prover::witness::WitnessFn::RustWitness(rescueprime17f_witness)),
+    ("rescue-prime_34f.zkey", circom_prover::witness::WitnessFn::RustWitness(rescueprime34f_witness)),
 }
 
 // ==============================================================================

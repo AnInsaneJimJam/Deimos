@@ -13,6 +13,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Deimos',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,
         scaffoldBackgroundColor: AppTheme.background,
@@ -26,4 +27,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
